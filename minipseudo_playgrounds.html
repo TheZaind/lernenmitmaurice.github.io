@@ -1,10 +1,9 @@
 ﻿<!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=768, user-scalable=no" />
-    <title>Minipseudo Playgrounds</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=768, user-scalable=no" />
+<title>Minipseudo Programmierer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.js"></script>
     <style>
         :root {
             --primary-color: #3b82f6;
@@ -137,7 +136,6 @@
             background: var(--border-color);
         }
     </style>
-</head>
 <body>
     <div class="main-container">
         <h1>Minipseudo Playgrounds</h1>
@@ -152,12 +150,15 @@
 
                 <div class="section-title">Programmiere hier:</div>
                 <div id="editor-container"></div>
-
-                <div class="section-title">Lade ein Programmbeispiel:</div>
+				
+				<div class="section-title">Lade ein Programmbeispiel:</div>
                 <div class="button-group">
-                    <button onclick="loadExample('PG1')">Playground 1</button>
-                    <button onclick="loadExample('PG2')">Playground 2</button>
-                    <button onclick="loadExample('PG3')">Playground 3</button>
+                    <button onclick="loadExample('PG1')">Input und Sofort-Output</button>
+                    <button onclick="loadExample('PG2')">Array mit Zahlen</button>
+                    <button onclick="loadExample('PG3')">Zufallszahl</button>
+					<button onclick="loadExample('PG4')">2 For-Schleifen</button>
+					<button onclick="loadExample('PG5')">ASCII-Code</button>
+					<button onclick="loadExample('PG6')">eigene Funktion</button>
                 </div>
             </div>
 
@@ -175,48 +176,95 @@
         </div>
     </div>
 
-    <script>
-        // Code examples
-        const sourceCode = {
-            PG1: `// PG1) Zwei Schritte, Rechtsdrehen, zwei Schritte
-			
-//Hey, Maurice aka. Zaind war hier :)
+<script type="text/javascript">
+//<![CDATA[
+/* J. Grätzer, Leipzig, 2017-2024 */
 
-showGround()
-moveForward()
-moveForward()
-turnRight()
-moveForward()
-moveForward()
-showGround()
-writeLine("PROGRAMM ENDE")`,
-            PG2: `// PG2) Nach rechts am Rand entlang
+// Stand: 2024-10-20
 
-showGround()
-moveForward()
-moveForward()
-moveForward()
-turnRight()
-moveForward()
-moveForward()
-moveForward()
-showGround()`,
-            PG3: `// PG3) Aufgabe: Programmiere einen Roboter-Staubsauger!
+// Man kann Programmbeispiele ausführen. Die Programiersprache ist JavaScript.
 
-showGround()
-moveForward()
-moveForward()
+// --- Mehrere Strings, die Programmbeispiele enthalten ---
+// Mehrzeiliger String mit dem JS-Quelltext, der zu Beginn und nach "Reset" im Editor-Fenster stehen soll:
+// Beachte: Die sog. Template String (in Backticks; darin Backslashes wie in "\n" verdoppeln) für mehrzeiligen
+//  Code unterstützt der IE11 nicht, erst Edge. Aus Kompatibiltätsgründen die Codezeilen evtl. zusammensetzen!
+
+var sourceCode = { 'PG1':
+`// Input und Sofort-Output
+
+var a = input("Gib eine Zahl ein!")
+a = number(a)
+a = a * 1000 + 1
+output(a)
+`,
+
+'PG2':
+`// Array mit Zahlen,
+// Sammel-Ausgabe am Programmende - mit print()
+
+var meinArray = [3, 5, 2, 7];
+meinArray[2] = 8;
+var n = length(meinArray)
+for(var i = 0; i < n; i++) {
+    print(meinArray[i] + "   ")
+}
+`, 'PG3':
+
+`// Zufallszahl erzeugen
+
+var z = random(5)  // Zufällige ganze Zahl von 0 bis 4
+var wert = 2
+if(z > wert) {
+    output(z + " ist größer als " + wert)
+} else if( z == wert) {
+    output(z + " ist gleich " + wert)
+}else {
+    output(z + " ist kleiner als " + wert)
+}
+`,'PG4':
+
+`// Zwei for-Schleifen
+
+for(var i = 0; i < 10; i++) {
+    for(var j = 0; j < 10; j++) {
+        print(10 * j + i + "   ")  
+    }
+    print("\\n") 
+}
+`,'PG5':
+`// ASCII-Code
+
+var asciicode = ord("A")
+output("Der ASCII-Code ist " + asciicode)
+
+asciicode = asciicode + 1
+var zeichen = chr(asciicode)
+output("Das folgende Zeichen ist " + zeichen)
+`,'PG6':
+
+`// Eine Funktion selbst programmieren
+
+var a = input("Gib die erste Zahl ein!")
+var b = input("Gib die zweite Zahl ein!")
+a = number(a)
+b = number(b)
+var c = addiere(a, b)
+print(c)
+
+function addiere(zahl1, zahl2)
+{
+    var ergebnis = zahl1 + zahl2
+    return ergebnis
+}`
+};
 
 
+// Globale Variablen:
+myStorageKey = 'sandbox_08158873';   // Schlüssel für Speichern des Code-Arbeitsstandes im Web Storage des Browsers (hier unbenutzt)
 
-showGround()
-writeLine("ZIMMER SAUBER")`
-        };
+printOutputString = "";   // Globale Variable, die String-Text "sammelt", der mit verschiedenen Print() ausgegeben wird
 
-        let editor;
-        let myStorageKey = 'sandbox_08158873';
-        let printOutputString = "";
-        const consoleOutput = document.getElementById('console-output');
+		const consoleOutput = document.getElementById('console-output');
 
         // Initialize Monaco Editor with dark theme
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
@@ -250,26 +298,22 @@ writeLine("ZIMMER SAUBER")`
             consoleOutput.textContent = '';
         }
 
-        class RunArea {
-            constructor(codeStr) {
-                let posx = 0;
-                let posy = 0;
-                let direction = "E";
-                let dirsym = ">";
-                let footprint = "$";
-                let nr = 0;
-                let ctr = 0;
+	function myRunSorcecode() {
+            new RunArea(editor.getValue());
+    }
 
-                let ground = [
-                    [0, 0, 0, 0],
-                    [0, 0, 0, 0],
-                    [0, 0, 0, 0],
-                    [0, 0, 0, 0]
-                ];
-                let dimx = ground.length;
-                let dimy = ground[0].length;
 
-                try {
+// Klasse, in deren Objekt der Code ausgeführt (mit eval(str)) wird
+class RunArea {
+	constructor(codeStr) {
+		// Die Programmausführung passiert im Construktor, d.h. unmittelbar bei Herstellung des Objektes.
+		
+		// LEIDER: Hier im Sourcecode ist "var" vor Variablen zwingend (zur Deklaration)
+		//	var a = 3333
+		//	alert(a)     // Geht nur, wenn "var" vor a steht!
+		// ... ERKENNTNIS: In der Klasse müssen Variablen IMMER mit "var" oder "let" deklariert werden!!!
+	
+		try {
                     printOutputString = "";
                     eval(codeStr);
                     if(printOutputString != "") {
@@ -292,92 +336,72 @@ writeLine("ZIMMER SAUBER")`
                     consoleOutput.textContent += text + "\n";
                 }
 
-                function random(n) {
-                    return Math.floor(Math.random() * Math.floor(n));
-                }
+		function random(n)
+		{
+			// random(n) generiert ganze Zufallszahl von 0 bis n-1
+			return Math.floor(Math.random() * Math.floor(n));
+		}
 
-                function ord(someCharString) {
-                    return someCharString.charCodeAt(0);
-                }
+		function ord(someCharString)
+		{
+			// ASCII-Code des ersten Zeichens des Strings zurückgeben
+			// "ABC".charCodeAt(0)   // returns 65   // BTW: Beachte Zugriff auf Zeichen im String!!
+			return someCharString.charCodeAt(0)
+		}
 
-                function chr(nr) {
-                    return String.fromCharCode(nr);
-                }
+		function chr(nr)
+		{
+			// Ein (oder mehrere) Zeihen zu gegebenen Code-Nummern zurückgeben.
+			// Normalerweise wird man nur ein Zeichen benötigen: chr(65) liefert "A"
+			// (Mehrere Zeichen möglich String.fromCharCode(65,66,67);  // returns 'ABC')
+			return String.fromCharCode(nr)
+		}
+		
+		function int(n)
+		{
+			// Zahl auf den nächsten Integerwert abrunden
+			return Math.floor(Number(n))
+		}
+		
+		function ceil(n)
+		{
+			// Zahl auf den nächsten Integerwert aufrunden
+			return Math.ceil(Number(n))
+		}
+		
+		function abs(n)
+		{
+			// Den absoluten Betrag der Zahl zurückgeben
+			return Math.abs(Number(n))
+		}
 
-                function showGround() {
-                    writeDirection();
-                    for(let i = 0; i < dimx; i++) {
-                        for(let j = 0; j < dimy; j++) {
-                            print(ground[i][j] + "    ");
-                        }
-                        print("\n");
-                    }
-                    print("--------------\n");
-                }
+		function number(n)
+		{
+			// Konvertierung in eine Zahl: Funktionsname beginnt in JavaScript leider mit Großbuchstaben
+			return Number(n)
+		}
+		
+		function boolean(a)
+		{
+			// Datentyp zu "boolean" wandeln: Funktionsname beginnt in JavaScript leider mit Großbuchstaben
+			return Boolean(a)
+		}
+		
+		function string(a)
+		{
+			// Datentyp zu "string" wandeln: Funktionsname beginnt in JavaScript leider mit Großbuchstaben
+			return String(a)
+		}
+		
+		function length(a)
+		{
+			// Länge eines Arrays oder Strings ermitteln
+			return a.length
+		}
+	}
+}
 
-                function moveForward() {
-                    ground[posx][posy] = footprint;
-                    
-                    if(direction == "E") {
-                        if (posy < dimy - 1) posy++;
-                        else {
-                            print("> Kollision [" + posx + "][" + posy + "]\n--------------\n");
-                            showGround();
-                            if(window.stop) window.stop();
-                        }
-                    }
-                    else if (direction == "S") {
-                        if (posx < dimx - 1) posx++;
-                        else {
-                            print("v Kollision [" + posx + "][" + posy + "]\n--------------\n");
-                            showGround();
-                            if(window.stop) window.stop();
-                        }
-                    }
-                    else if (direction == "W") {
-                        if (posy > 0) posy--;
-                        else {
-                            print("< Kollision [" + posx + "][" + posy + "]\n--------------\n");
-                            showGround();
-                            if(window.stop) window.stop();
-                        }
-                    }
-                    else if (direction == "N") {
-                        if (posx > 0) posx--;
-                        else {
-                            print("^ Kollision [" + posx + "][" + posy + "]\n--------------\n");
-                            showGround();
-                            if(window.stop) window.stop();
-                        }
-                    }
-                    ctr++;
-                    writeDirection();
-                }
-
-                function turnRight() {
-                    if(direction == "E") direction = "S";
-                    else if (direction == "S") direction = "W";
-                    else if (direction == "W") direction = "N";
-                    else direction = "E";
-                    writeDirection();
-                }
-
-                function writeDirection() {
-                    dirsym = direction == "E" ? ">" : 
-                            direction == "S" ? "v" : 
-                            direction == "W" ? "<" : "^";
-                    ground[posx][posy] = dirsym;
-                }
-
-                function writeLine(text) {
-                    print(text + "\n");
-                }
-            }
-        }
-
-        function myRunSorcecode() {
-            new RunArea(editor.getValue());
-        }
-    </script>
+//]]>
+</script>
 </body>
 </html>
