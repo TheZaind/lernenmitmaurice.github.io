@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --text-color: #333;
+            --container-bg: white;
+            --border-color: #ddd;
+            --hover-color: #f0f0f0;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #1b5e20;
+            --danger-color: #b71c1c;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #fff;
+            --container-bg: #2d2d2d;
+            --border-color: #444;
+            --hover-color: #3d3d3d;
+            --primary-color: #4d9eff;
+            --secondary-color: #a0a9b2;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 140px; /* Space for fixed header */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-container {
+            background-color: var(--container-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .option {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: var(--hover-color);
+        }
+
+        .option.correct {
+            background-color: var(--success-color);
+            border-color: #2e7d32;
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: var(--danger-color);
+            border-color: #c62828;
+            color: white;
+        }
+
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: var(--container-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        #theme-toggle {
+            background-color: var(--secondary-color);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 20px;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            color: white;
+            font-weight: bold;
+            line-height: 20px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .badge {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--container-bg);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .badge.earned {
+            opacity: 1;
+            transform: scale(1.1);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge-icon {
+            font-size: 2em;
+        }
+
+        .badge-name {
+            font-size: 0.8em;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .level-info {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .pop-animation {
+            animation: pop 0.5s ease;
+        }
+
+        .streak-counter {
+            background-color: var(--container-bg);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .streak-flame {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .streak-flame.active {
+            transform: scale(1.2);
+        }
+
+        #feedback-message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .feedback-success {
+            background-color: rgba(27, 94, 32, 0.2);
+            color: #1b5e20;
+        }
+
+        .feedback-error {
+            background-color: rgba(183, 28, 28, 0.2);
+            color: #b71c1c;
+        }
+
+        .stats-container {
+            margin-top: 20px;
+            background-color: var(--container-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Achievement popup */
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.1);
+            width: 300px;
+            background-color: var(--container-bg);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .achievement-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .achievement-popup h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .achievement-popup .badge-icon {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .achievement-popup button {
+            margin-top: 20px;
+        }
+
+        /* Overlay for popup */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .total-xp {
+            font-size: 1em;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-header">
+        <div class="header-container">
+            <div class="level-info">Maurice´s-Learning-Game Level: <span id="level">1</span> 🌟</div>
+            <div class="streak-counter">
+                <span id="streak-text">Aktuelle Serie: 0</span>
+                <span class="streak-flame" id="streak-flame">🔥</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <div class="progress-label" id="progress-label">0%</div>
+            </div>
+            <div id="feedback-message"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="toggleTheme()" id="theme-toggle">🌓 Dark/Light Mode</button>
+        <button onclick="newQuiz()">🔄 Neues Quiz</button>
+        <button onclick="toggleStats()">📊 Statistiken</button>
+    </div>
+    <h1>💻 Hardware Quiz - Maurice Fragt dich! 💁🏻‍♂️</h1>
+    
+    <div id="quiz-container"></div>
+    
+    <div class="score-container">
+        <div class="score" id="score">Punktzahl: 0 Punkte 📊</div>
+        <div id="xp-display">XP: 0/100</div>
+    </div>
+    
+    <div class="total-xp">Gesamt-XP: <span id="total-xp">0</span></div>
+    
+    <div class="badge-container" id="badge-container">
+        <div class="badge" id="badge-beginner">
+            <div class="badge-icon">🥉</div>
+            <div class="badge-name">Anfänger (100 XP)</div>
+        </div>
+        <div class="badge" id="badge-intermediate">
+            <div class="badge-icon">🥈</div>
+            <div class="badge-name">Fortgeschritten (350 XP)</div>
+        </div>
+        <div class="badge" id="badge-advanced">
+            <div class="badge-icon">🥇</div>
+            <div class="badge-name">Profi (750 XP)</div>
+        </div>
+        <div class="badge" id="badge-master">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Meister (1500 XP)</div>
+        </div>
+    </div>
+    
+    <div class="stats-container hidden" id="stats-container">
+        <h2>Deine Statistiken 📈</h2>
+        <p>Gespielte Quizze: <span id="total-quizzes">0</span></p>
+        <p>Korrekte Antworten: <span id="total-correct">0</span></p>
+        <p>Durchschnittliche Punktzahl: <span id="average-score">0</span></p>
+        <p>Längste Streak: <span id="best-streak">0</span></p>
+        <p>Verdiente Badges: <span id="earned-badges">0</span>/4</p>
+    </div>
+
+    <!-- Achievement popup -->
+    <div class="achievement-popup" id="achievement-popup">
+        <h2 id="achievement-title">Achievement Unlocked!</h2>
+        <div class="badge-icon" id="achievement-icon">🏆</div>
+        <p id="achievement-description">Du hast etwas Großartiges erreicht!</p>
+        <button onclick="closeAchievementPopup()">Super!</button>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        const questions = [
+        {
+                question: "Was ist die Hauptfunktion eines PC-Gehäuses? 🏠",
+                options: ["Nur zur Dekoration", "Schutz vor äußeren Einflüssen und Aufnahme der Komponenten", "Nur zur Kühlung", "Nur zum Transport"],
+                correct: 1
+            },
+            {
+                question: "Welche Schutzart wird durch IP65 beschrieben? 🛡️",
+                options: ["Wasserdicht", "Staubdicht und Schutz gegen Strahlwasser", "Nur spritzwassergeschützt", "Wasserdicht und feuerfest"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet die erste Ziffer in der IP-Schutzart? 🔢",
+                options: ["Schutz vor Wasser", "Schutz vor Feuer", "Schutz vor Berührung und Fremdkörpern", "Schutz vor Hitze"],
+                correct: 2
+            },
+            {
+                question: "Welche Bauform ist typisch für Server? 📦",
+                options: ["Big Tower", "Rack-Mount", "Mini Tower", "Desktop Case"],
+                correct: 1
+            },
+            {
+                question: "Was ist ein häufiges Problem bei der PC-Kühlung? 🌡️",
+                options: ["Zu viele Lüfter", "Zu niedrige Temperaturen", "Staubablagerungen", "Zu große Gehäuse"],
+                correct: 2
+            },
+            {
+                question: "Wie viele Pole hat ein PWM-Lüfteranschluss? 🔌",
+                options: ["2 Pole", "3 Pole", "4 Pole", "5 Pole"],
+                correct: 2
+            },
+            {
+                question: "Was ist eine Heatpipe? 🌡️",
+                options: ["Ein Wärmeübertrager", "Ein Lüfter", "Ein Netzteil", "Ein USB-Anschluss"],
+                correct: 0
+            },
+            {
+                question: "Welche Bauform war als 'Pizza box' bekannt? 🍕",
+                options: ["Dell Desktop", "Macintosh LC II", "IBM Tower", "Gaming PC"],
+                correct: 1
+            },
+            {
+                question: "Was ist Case-Modding? 🎨",
+                options: ["Gehäusereparatur", "Softwareoptimierung", "Individuelle Gehäusegestaltung", "Lüftereinbau"],
+                correct: 2
+            },
+            {
+                question: "Welche Alternative gibt es zur Luftkühlung? ",
+                options: ["Keine", "Nur Passivkühlung", "Wasserkühlung", "Nur Heatpipes"],
+                correct: 2
+            },
+            {
+                question: "Was bedeutet BTX bei Gehäusen? 🔄",
+                options: ["Basic Tower Extension", "Balanced Technology Extended", "Better Thermal Extension", "Basic Thermal Exchange"],
+                correct: 1
+            },
+            {
+                question: "Welche Funktion hat ein Tachosignal beim Lüfter? 📊",
+                options: ["Stromversorgung", "Drehzahlmessung", "Temperaturmessung", "Lüftersteuerung"],
+                correct: 1
+            },
+            {
+                question: "Was ist PWM bei Lüftern? ⚡",
+                options: ["Power Wattage Management", "Permanent Water Movement", "Pulse Width Modulation", "Performance Water Management"],
+                correct: 2
+            },
+            {
+                question: "Welchen Vorteil bietet ein Industrie-PC-Gehäuse? 🏭",
+                options: ["Besseres Design", "Höherer Schutz vor Umwelteinflüssen", "Niedrigerer Preis", "Geringeres Gewicht"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet die zweite Ziffer der IP-Schutzart? 💧",
+                options: ["Schutz vor Staub", "Schutz vor Feuer", "Schutz vor Wasser", "Schutz vor Stößen"],
+                correct: 2
+            },
+            {
+                question: "Welches Material wird häufig für Heatpipes verwendet? 🔧",
+                options: ["Aluminium", "Plastik", "Kupfer", "Holz"],
+                correct: 2
+            },
+            {
+                
+                question: "Was ist ein wichtiges Auswahlkriterium für ein Gehäuse? 📏",
+                options: ["Nur die Farbe", "Die Größe und der Formfaktor", "Nur der Preis", "Nur das Gewicht"],
+                correct: 1
+            },
+            {
+                question: "Was ist ein Mini Tower? 🏢",
+                options: ["Ein Server-Gehäuse", "Eine kompakte PC-Gehäuseform", "Ein Laptop", "Ein Tablet"],
+                correct: 1
+            },
+            {
+                question: "Welche Art von Kühlung ist am wartungsärmsten? ❄️",
+                options: ["Wasserkühlung", "Luftkühlung mit vielen Lüftern", "Passive Kühlung", "Öl-Kühlung"],
+                correct: 2
+            },
+            {
+                question: "Was ist die Hauptfunktion eines PC-Gehäuses? 🏠",
+                options: ["Schutz vor äußeren Einflüssen und Aufnahme der Komponenten", "Nur zur Dekoration", "Nur zur Kühlung", "Nur zum Transport"],
+                correct: 0
+            },
+            {
+                question: "Welche Schutzart wird durch IP65 beschrieben? 🛡️",
+                options: ["Wasserdicht", "Staubdicht und Schutz gegen Strahlwasser", "Nur spritzwassergeschützt", "Wasserdicht und feuerfest"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet die erste Ziffer in der IP-Schutzart? 🔢",
+                options: ["Schutz vor Wasser", "Schutz vor Feuer", "Schutz vor Berührung und Fremdkörpern", "Schutz vor Hitze"],
+                correct: 2
+            },
+            {
+                question: "Was ist der beste Kühlungsansatz für staubige Umgebungen? 🌪️",
+                options: ["Viele kleine Lüfter", "Keine Lüfter", "Wasserkühlung", "Passivkühlung mit Heatpipes"],
+                correct: 3
+            },
+            {
+                question: "Welche Bauform ist typisch für Server? 📦",
+                options: ["Mini Tower", "Rack-Mount", "Desktop Case", "Cube"],
+                correct: 1
+            },
+            {
+                question: "Welches Kühlkonzept benötigt die meiste Wartung? ⚙️",
+                options: ["Wasserkühlung", "Passivkühlung", "Luftkühlung", "Heatpipes"],
+                correct: 0
+            },
+            {
+                question: "Was ist eine typische Eigenschaft von Industrie-PCs? 🏭",
+                options: ["Besonders schönes Design", "Günstiger Preis", "Hoher Schutz gegen Umwelteinflüsse", "Maximale Leistung"],
+                correct: 2
+            },
+            {
+                question: "Wie viele Pole hat ein PWM-Lüfteranschluss? 🔌",
+                options: ["2 Pole", "3 Pole", "4 Pole", "5 Pole"],
+                correct: 2
+            },
+            {
+                question: "Was ist der Hauptvorteil von Heatpipes? 🌡️",
+                options: ["Hohe Wärmestromdichte auf kleiner Fläche", "Günstiger Preis", "Einfache Wartung", "Geringes Gewicht"],
+                correct: 0
+            },
+            {
+                question: "Welche Gehäuseform wurde als 'Pizza box' bezeichnet? 🍕",
+                options: ["Dell Desktop", "Apple iMac", "Macintosh LC II", "IBM Tower"],
+                correct: 2
+            },
+            {
+                question: "Was kennzeichnet Case-Modding? 🎨",
+                options: ["Standardgehäuse", "Günstige Produktion", "Individuelle Gestaltung", "Maximale Kühlung"],
+                correct: 2
+            },
+            {
+                question: "Welches Kühlmedium wird NICHT in PCs verwendet? 💧",
+                options: ["Wasser", "Öl", "Stickstoff", "Quecksilber"],
+                correct: 3
+            },
+            {
+                question: "Was bedeutet BTX bei Gehäusen? 🔄",
+                options: ["Basic Tower Extension", "Balanced Technology Extended", "Better Thermal Exchange", "Basic Thermal Extension"],
+                correct: 1
+            },
+            {
+                question: "Wozu dient das Tachosignal beim Lüfter? 📊",
+                options: ["Zur Stromversorgung", "Zur Drehzahlmessung", "Zur Temperaturmessung", "Zur Lüftersteuerung"],
+                correct: 1
+            },
+            {
+                question: "Was ist die häufigste Ursache für Überhitzung? 🔥",
+                options: ["Verstaubte Lüfter", "Zu große Gehäuse", "Zu viele Lüfter", "Zu dicke Wände"],
+                correct: 0
+            },
+            {
+                question: "Welche IP-Schutzart bietet den höchsten Wasserschutz? 💦",
+                options: ["IP54", "IP65", "IP67", "IP68"],
+                correct: 3
+            },
+            {
+                question: "Was ist ein Nachteil von Wasserkühlung? 🚰",
+                options: ["Zu laut", "Wartungsaufwändig", "Zu schwer", "Zu ineffizient"],
+                correct: 1
+            },
+            {
+                question: "Welches Material wird häufig für Heatpipes verwendet? 🔧",
+                options: ["Aluminium", "Plastik", "Kupfer", "Eisen"],
+                correct: 2
+            },
+            {
+                question: "Was schützt am besten vor elektromagnetischen Störungen? 📡",
+                options: ["Plastikgehäuse", "Holzgehäuse", "Aluminiumgehäuse", "Metallgehäuse mit Abschirmung"],
+                correct: 3
+            },
+            {
+                question: "Welche Bauform eignet sich am besten für Mobilität? 📱",
+                options: ["Mini Tower", "Big Tower", "Desktop Case", "Cube"],
+                correct: 0
+            },
+            {
+                question: "Was ist KEIN typisches Auswahlkriterium für ein Gehäuse? 📋",
+                options: ["Größe", "Farbe", "Markenname", "Herstellungsland"],
+                correct: 3
+            },
+            {
+                question: "Welcher Lüfteranschluss bietet die meisten Funktionen? 🔌",
+                options: ["2-polig", "3-polig", "4-polig mit PWM", "5-polig"],
+                correct: 2
+            },
+            {
+                question: "Was ist der Hauptvorteil eines Big Tower Gehäuses? 🏢",
+                options: ["Mehr Platz für Komponenten", "Bessere Kühlung", "Günstigerer Preis", "Leichterer Transport"],
+                correct: 0
+            },
+            {
+                question: "Welche Kühlung ist am leisesten? 🤫",
+                options: ["Viele kleine Lüfter", "Wenige große Lüfter", "Wasserkühlung", "Passive Kühlung"],
+                correct: 3
+            },
+            {
+                question: "Was bedeutet 'X' in einer IP-Schutzart (z.B. IPX4)? ❓",
+                options: ["Extra Schutz", "Keine Angabe", "Maximaler Schutz", "Kein Schutz"],
+                correct: 1
+            },
+            {
+                question: "Wozu dient ein Staubfilter im Gehäuse? 🌪️",
+                options: ["Zur Schalldämmung", "Zum Schutz vor Staub", "Zur Luftführung", "Zur Dekoration"],
+                correct: 1
+            },
+            {
+                question: "Was ist ein typisches Merkmal von Gaming-Gehäusen? 🎮",
+                options: ["Besonders klein", "RGB-Beleuchtung", "Keine Lüfter", "Nur schwarze Farbe"],
+                correct: 1
+            },
+            {
+                question: "Welches Material eignet sich NICHT für ein PC-Gehäuse? 🏗️",
+                options: ["Aluminium", "Kunststoff", "Pappe", "Gehärtetes Glas"],
+                correct: 2
+            },
+            {
+                question: "Welche Kühlung eignet sich am besten für übertaktete CPUs? ⚡",
+                options: ["Passive Kühlung", "Kleine Lüfter", "Heatpipes", "Wasserkühlung"],
+                correct: 3
+            },
+            {
+                question: "Was ist die Hauptaufgabe eines Computernetzteils? ⚡",
+                options: ["Nur Kühlung der Komponenten", "Versorgung aller Verbraucher mit benötigter Energie", "Nur Spannungsregulierung", "Nur Stromverteilung"],
+                correct: 1
+            },
+            {
+                question: "Welche Schutzschaltung verhindert Überspannung? 🔌",
+                options: ["UVP", "OCP", "OVP", "SCP"],
+                correct: 2
+            },
+            {
+                question: "Was bedeutet PSU? 💡",
+                options: ["Power Safety Unit", "Power Supply Unit", "Power System Upgrade", "Power Service Utility"],
+                correct: 1
+            },
+            {
+                question: "Welche Effizienz-Zertifizierung ist die höchste? ⭐",
+                options: ["80 PLUS Bronze", "80 PLUS Gold", "80 PLUS Platinum", "80 PLUS Titanium"],
+                correct: 3
+            },
+            {
+                question: "Was ist ein Vorteil des 12V-Konzepts? 🔋",
+                options: ["Höhere Leistung", "Effizientere Spannungswandlung", "Mehr Anschlüsse", "Günstigere Produktion"],
+                correct: 1
+            },
+            {
+                question: "Welcher Formfaktor ist am weitesten verbreitet? 📏",
+                options: ["SFX", "ATX", "TFX", "Flex-ATX"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet PFC? 🔄",
+                options: ["Power Factor Correction", "Power Frequency Control", "Power Flow Control", "Power Fitting Correction"],
+                correct: 0
+            },
+            {
+                question: "Welche Spannung wird in Europa dem Netzteil zugeführt? ⚡",
+                options: ["110V", "230V", "400V", "12V"],
+                correct: 1
+            },
+            {
+                question: "Welche Schutzklasse haben Notebook-Netzteile primärseitig? 🛡️",
+                options: ["Schutzklasse I", "Schutzklasse II", "Schutzklasse III", "Schutzklasse IV"],
+                correct: 1
+            },
+            {
+                question: "Was ist ein 'Multi-Rail' Netzteil? 💪",
+                options: ["Mehrere Netzteile in einem", "Aufgeteilte 12V-Leitungen", "Multiple Spannungen", "Mehrere Kühlsysteme"],
+                correct: 1
+            },
+            {
+                question: "Welche Mindestlast benötigen ATX 2.4 Netzteile? 🔌",
+                options: ["0.5A", "0.05A", "1.0A", "0.1A"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet '80 PLUS'? ⭐",
+                options: ["80W Zusatzleistung", "80% Effizienz bei allen Lasten", "80% Effizienz bei mindestens 50% Last", "80°C Temperaturtoleranz"],
+                correct: 2
+            },
+            {
+                question: "Was ist ein Vorteil redundanter Netzteile? 🔄",
+                options: ["Höhere Leistung", "Bessere Kühlung", "Ausfallsicherheit", "Geringerer Stromverbrauch"],
+                correct: 2
+            },
+            {
+                question: "Welche maximale Leistung liefert ein PCIe 6-Pin Anschluss? ⚡",
+                options: ["75W", "150W", "300W", "450W"],
+                correct: 0
+            },
+            {
+                question: "Was bedeutet 'ErP'? 🌍",
+                options: ["Extended Power", "Energy-related Products", "Enhanced Power Rating", "Efficient Power Resource"],
+                correct: 1
+            },
+            {
+                question: "Welche Funktion hat der Power Good Pin? 📊",
+                options: ["Stromversorgung", "Spannungsüberwachung", "Spannungstabilität", "Temperaturmessung"],
+                correct: 2
+            },
+            {
+                question: "Welche Spannung führt +5VSB im Standby? 🔋",
+                options: ["12V", "5V", "3.3V", "0V"],
+                correct: 1
+            },
+            {
+                question: "Was ist ein Vorteil der aktiven PFC (power factor correction)? ⚡",
+                options: ["Bessere Kühlung", "Höherer Wirkungsgrad", "Mehr Anschlüsse", "Geringere Kosten"],
+                correct: 1
+            },
+            {
+                question: "Welche Effizienz fordert 80 PLUS Gold bei 50% Last? 📊",
+                options: ["88%", "90%", "92%", "94%"],
+                correct: 2
+            },
+            {
+                question: "Welche Schutzschaltung verhindert Überhitzung? 🌡️",
+                options: ["OCP", "OTP", "UVP", "SCP"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet 'Single-Rail'? 💡",
+                options: ["Einzelne Spannungsschiene", "Einzelner Lüfter", "Einzelner Anschluss", "Einzelne Sicherung"],
+                correct: 0
+            },
+            {
+                question: "Welche ATX-Version führte den 24-Pin Anschluss ein? 📌",
+                options: ["ATX 2.0", "ATX 2.1", "ATX 2.2", "ATX 2.3"],
+                correct: 2
+            },
+            {
+                question: "Was ist 'Sleeving' bei Netzteilen? 🎨",
+                options: ["Kabelummantelung", "Gehäusebeschichtung", "Lüftersteuerung", "Spannungsregulierung"],
+                correct: 0
+            },
+            {
+                question: "Welche Spannung ist für SATA-Laufwerke ab Version 3.2 weggefallen? ⚡",
+                options: ["12V", "5V", "3.3V", "7V"],
+                correct: 2
+            },
+            {
+                question: "Was bedeutet 'Hot Swap' bei Netzteilen? 🔄",
+                options: ["Schnelle Kühlung", "Austausch im Betrieb", "Hohe Temperaturtoleranz", "Schnelles Einschalten"],
+                correct: 1
+            },
+            {
+                question: "Welche Mindestanforderung hat ErP2014 bei 50% Last? 📊",
+                options: ["80%", "82%", "85%", "87%"],
+                correct: 2
+            },
+            {
+                question: "Welche Funktion hat ein Varistor im Netzteil? ⚡",
+                options: ["Überspannungsschutz", "Strommessung", "Frequenzregulierung", "Spannungsstabilisierung"],
+                correct: 0
+            },
+            {
+                question: "Was ist ein typisches Merkmal von Server-Netzteilen? 🖥️",
+                options: ["Viel Case-Modding", "Redundanz", "Niedrige Effizienz", "Wenige Schutzschaltungen"],
+                correct: 1
+            },
+            {
+                question: "Welche Art von Stecker wird für 230V-Anschlüsse verwendet? 🔌",
+                options: ["Molex", "SATA", "Kaltgerätestecker", "Berg"],
+                correct: 2
+            },
+            {
+                question: "Was bedeutet 'full range' bei Netzteilen? 🌍",
+                options: ["Maximale Kühlung", "Volle Leistung", "Alle Spannungen", "Weltweite Verwendung"],
+                correct: 3
+            },
+            {
+                question: "Welche maximale Temperatur haben Kaltgerätestecker? 🌡️",
+                options: ["70°C", "100°C", "120°C", "155°C"],
+                correct: 0
+            },
+            {
+                question: "Was ist der Vorteil eines digitalen Sicherungschips? 🔒",
+                options: ["Günstiger", "Schnellere Reaktion", "Höhere Leistung", "Bessere Kühlung"],
+                correct: 1
+            },
+            {
+                question: "Welche Spannung wird für PCIe-Grafikkarten benötigt? ⚡",
+                options: ["3.3V", "5V", "12V", "24V"],
+                correct: 2
+            },
+            {
+                question: "Was ist ein Merkmal von Semi-Passiv-Netzteilen? 🌬️",
+                options: ["Mehrere Lüfter", "Permanente Lüftung", "Kein Lüfter", "Lüfter nur bei Bedarf"],
+                correct: 3
+            },
+            {
+                question: "Welche Schutzklasse haben PC-Netzteile primärseitig? 🛡️",
+                options: ["Schutzklasse I", "Schutzklasse II", "Schutzklasse III", "Schutzklasse IV"],
+                correct: 0
+            },
+            {
+                question: "Was bedeutet 'ATX' bei Netzteilen? 📝",
+                options: ["Advanced Thermal Exchange", "Advanced Technology Extended", "Advanced Thermal Extension", "Advanced Technology Exchange"],
+                correct: 1
+            },
+            {
+                question: "Welche Funktion hat die Schmelzsicherung? 🔥",
+                options: ["Überspannungsschutz", "Temperaturschutz", "Kurzschlussschutz", "Überstromschutz"],
+                correct: 2
+            },
+            {
+                question: "Was ist ein Merkmal des 'Zerhacker'-Prinzips? ⚡",
+                options: ["Mehr Verlustleistung", "Größerer Trafo", "Niedrigere Spannung", "Höhere Frequenz"],
+                correct: 3
+            },
+            {
+                question: "Welche Mindestlast benötigen die meisten ATX-Netzteile unter ATX 2.4? 🔌",
+                options: ["0.5A", "0.3A", "0.1A", "0.7A"],
+                correct: 0
+            },
+            {
+                question: "Was ist ein Vorteil der passiven PFC? 💰",
+                options: ["Höhere Effizienz", "Geringere Kosten", "Bessere Kühlung", "Mehr Leistung"],
+                correct: 1
+            },
+            {
+                question: "Welche Generation von Intel-CPUs führte zu Änderungen in ATX 2.4? 💻",
+                options: ["Ivy Bridge", "Sandy Bridge", "Haswell", "Skylake"],
+                correct: 2
+            },
+            {
+                question: "Was ist der maximal erlaubte Standby-Verbrauch nach ErP2014? ⚡",
+                options: ["0.3 Watt", "0.7 Watt", "1.0 Watt", "0.5 Watt"],
+                correct: 3
+            },
+            {
+                question: "Welche Farbe hat typischerweise die 12V-Leitung? 🎨",
+                options: ["Gelb", "Rot", "Schwarz", "Orange"],
+                correct: 0
+            },
+            {
+                question: "Was bedeutet 'SCP' bei Schutzschaltungen? 🛡️",
+                options: ["System Control Protection", "Short Circuit Protection", "Safety Control Protocol", "System Current Protection"],
+                correct: 1
+            },
+            {
+                question: "Welche Spezifikation erhöhte den Wirkungsgrad auf 80%? 📊",
+                options: ["ATX 2.0", "ATX 2.1", "ATX 2.2", "ATX 2.3"],
+                correct: 2
+            },
+            {
+                question: "Was ist der Powerfaktor-Mindestwert nach ErP2014 bei Volllast? ⚡",
+                options: ["0.7", "0.8", "1.0", "0.9"],
+                correct: 3
+            },
+            {
+                question: "Was bedeutet die Abkürzung OCP bei Netzteilen? 🔌",
+                options: ["Over Current Protection", "Over Circuit Protection", "Optimized Current Protocol", "Output Control Protection"],
+                correct: 0
+            },
+            {
+                question: "Welche Schutzschaltung verhindert Schäden durch zu hohe Gesamtleistung? ⚡",
+                options: ["Kurzschlussschutz", "Überleistungsschutz", "Überspannungsschutz", "Überstromschutz"],
+                correct: 1
+            },
+            {
+                question: "Was ist die deutsche Bezeichnung für UVP? 🔋",
+                options: ["Übervoltsicherung", "Unterspannungsschutz", "Umspannungsvorrichtung", "Übervoltsperrer"],
+                correct: 1
+            },
+            {
+                question: "Welche Schutzschaltung reagiert auf zu niedrige Spannungswerte? 📉",
+                options: ["OVP", "OCP", "UVP", "SCP"],
+                correct: 2
+            },
+            {
+                question: "Was ist die Hauptaufgabe des Kurzschlussschutzes (SCP)? ⚠️",
+                options: ["Spannungsregulierung", "Stromregulierung", "Leistungsbegrenzung", "Sofortige Abschaltung"],
+                correct: 3
+            },
+            {
+                question: "Welche Schutzschaltung verhindert Schäden durch zu hohe Stromstärken? 🛡️",
+                options: ["OCP", "OVP", "UVP", "SCP"],
+                correct: 0
+            },
+            {
+                question: "Was bedeutet OPP? 💪",
+                options: ["Output Power Protocol", "Over Power Protection", "Optimized Power Performance", "Operating Power Protection"],
+                correct: 1
+            },
+            {
+                question: "Welche Schutzschaltung greift bei zu hoher Spannung ein? ⚡",
+                options: ["UVP", "SCP", "OVP", "OCP"],
+                correct: 2
+            },
+            {
+                question: "Was ist der Hauptzweck dieser Schutzschaltungen? 🎯",
+                options: ["Kostenreduktion", "Energieeinsparung", "Geräuschminimierung", "Verlängerung der Lebensdauer"],
+                correct: 3
+            },
+            {
+                question: "Welche Schutzschaltung ist für die Spannung zuständig? 🔌",
+                options: ["OVP und UVP", "OCP und SCP", "OPP und OCP", "SCP und OPP"],
+                correct: 0
+            },
+            {
+                question: "Was schützt vor gefährlich niedrigen Spannungswerten? ⚡",
+                options: ["OCP", "UVP", "OVP", "SCP"],
+                correct: 1
+            },
+            {
+                question: "Bei welchem Problem schaltet OVP das Netzteil ab? 🛑",
+                options: ["Niedrige Stromstärke", "Hohe Stromstärke", "Hohe Spannung", "Kurzschluss"],
+                correct: 2
+            },
+            {
+                question: "Welche Schutzschaltung verhindert Systeminstabilität? 💻",
+                options: ["SCP", "OCP", "OPP", "UVP"],
+                correct: 3
+            },
+            {
+                question: "Was bedeutet die Abkürzung SCP? 🔌",
+                options: ["Short Circuit Protection", "System Control Protocol", "Safety Current Protection", "Surge Control Protection"],
+                correct: 0
+            },
+            {
+                question: "Welcher Schutzmechanismus ist für die Gesamtleistung zuständig? ⚡",
+                options: ["UVP", "OPP", "OCP", "SCP"],
+                correct: 1
+            },{
+                question: "Was passiert mit dem elektrischen Widerstand eines Kaltleiters (NTC) bei steigender Temperatur? 🌡️",
+                options: ["Er steigt an", "Er sinkt", "Er bleibt konstant", "Er schwankt zufällig"],
+                correct: 1
+            },
+            {
+                question: "Welche Spannung ist in deutschen Haushalten üblich? ⚡",
+                options: ["110V", "230V", "400V", "1000V"],
+                correct: 1
+            },
+            {
+                question: "Was ist die Einheit für die elektrische Leistung? 💪",
+                options: ["Ampere", "Volt", "Watt", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Wie wird der elektrische Widerstand gemessen? 📏",
+                options: ["Parallel zur Spannung", "In Reihe zum Strom", "Egal wie", "Mit einem Ohmmeter"],
+                correct: 3
+            },
+            {
+                question: "Was zeigt ein Oszilloskop an? 📊",
+                options: ["Nur Spannung", "Spannungsverlauf über die Zeit", "Nur Strom", "Nur Frequenz"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet die Abkürzung AC? ⚡",
+                options: ["Wechselstrom", "Gleichstrom", "Konstantstrom", "Alternativstrom"],
+                correct: 0
+            },
+            {
+                question: "Wie hoch ist die Netzfrequenz in Deutschland? 🔄",
+                options: ["60 Hz", "50 Hz", "40 Hz", "100 Hz"],
+                correct: 1
+            },
+            {
+                question: "Was schützt vor Überstrom? 🛡️",
+                options: ["Transformator", "Sicherung", "Kondensator", "Widerstand"],
+                correct: 1
+            },
+            {
+                question: "Was ist die Grundeinheit des elektrischen Stroms? ⚡",
+                options: ["Volt", "Watt", "Ampere", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Welches Messgerät misst die elektrische Spannung? 📈",
+                options: ["Amperemeter", "Voltmeter", "Wattmeter", "Ohmmeter"],
+                correct: 1
+            },
+            {
+                question: "Wie funktioniert ein Leitungsschutzschalter? 🔌",
+                options: ["Thermisch-magnetisch", "Nur thermisch", "Nur magnetisch", "Elektrostatisch"],
+                correct: 0
+            },
+            {
+                question: "Was ist der Unterschied zwischen Leiter und Isolator? 🔍",
+                options: ["Keine Unterschiede", "Anzahl der Protonen", "Anzahl der freien Elektronen", "Farbe des Materials"],
+                correct: 2
+            },
+            {
+                question: "Welche Einheit hat der elektrische Widerstand? 🎯",
+                options: ["Volt", "Ampere", "Watt", "Ohm"],
+                correct: 3
+            },
+            {
+                question: "Was passiert bei einem Kurzschluss? ⚠️",
+                options: ["Spannung steigt stark", "Strom wird sehr groß", "Widerstand erhöht sich", "Leistung wird null"],
+                correct: 1
+            },
+            {
+                question: "Wozu dient ein Transformator? 🔄",
+                options: ["Stromerzeugung", "Spannungsumwandlung", "Widerstandsmessung", "Strommessung"],
+                correct: 1
+            },
+            {
+                question: "Bei Heißleitern sinkt der elektrische Widerstand mit steigender Temperatur. 🔥",
+                options: ["Wahr", "Falsch", "Manchmal", "Kommt auf das Material an"],
+                correct: 0
+            },
+            {
+                question: "Ein Spannungsmesser   wird immer parallel zum Verbraucher angeschlossen. ⚡",
+                options: ["Falsch", "Wahr", "Kann sein", "Nur bei Gleichstrom"],
+                correct: 1
+            },
+            {
+                question: "Die elektrische Leistung wird in _____ gemessen. 🔋",
+                options: ["Ampere", "Volt", "Watt", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Ein Ohmmeter misst den elektrischen.... 📏",
+                options: ["Strom", "Spannung", "Widerstand", "Leistung"],
+                correct: 2
+            },
+            {
+                question: "Welches Formelzeichen steht für die elektrische Stromstärke? ⚡",
+                options: ["I", "U", "R", "P"],
+                correct: 0
+            },
+            {
+                question: "Die Periodendauer einer Sinusschwingung ist der Kehrwert der Frequenz. ⏱️",
+                options: ["Wahr", "Falsch", "Kommt auf die Amplitude an", "Unabhängig von der Frequenz"],
+                correct: 0
+            },
+            {
+                question: "Ein Transformator wandelt was um..? 🔄",
+                options: ["Widerstand", "Strom", "Spannung", "Leistung"],
+                correct: 2
+            },
+            {
+                question: "Ein Leitungsschutzschalter unterbricht den Stromkreis bei Überstrom. 🚨",
+                options: ["Wahr", "Falsch", "Manchmal", "Nur bei Kurzschluss"],
+                correct: 0
+            },
+            {
+                question: "Die Einheit der elektrischen Spannung ist ...? 🔌",
+                options: ["Ampere", "Watt", "Ohm", "Volt"],
+                correct: 3
+            },
+            {
+                question: "Ein Energiezähler misst den Energieverbrauch (meistens) in ...? 💡",
+                options: ["A", "V", "W", "kWh"],
+                correct: 3
+            },
+            {
+                question: "Der elektrische Widerstand wird mit dem Ohmmeter gemessen. 📏",
+                options: ["Nein Amperemeter", "Nein Strommeter", "Nein Zollstock", "Ja"],
+                correct: 3
+            },
+            {
+                question: "Ein elektrischer Leiter leitet den Strom besser, wenn er kühler ist. ❄️",
+                options: ["Wahr", "Falsch", "Keine Auswirkung", "Nur bei Wechselstrom"],
+                correct: 0
+            },
+            {
+                question: "Das Multimeter kann mehrere elektrische Größen messen. 🛠️",
+                options: ["Nur Spannung", "Nur Strom", "Spannung und Strom", "Nur Widerstand"],
+                correct: 2
+            },
+            {
+                question: "Die Netzspannung in Europa beträgt üblicherweise 230 V. 🇪🇺",
+                options: ["110 V", "230 V", "400 V", "1000 V"],
+                correct: 1
+            },
+            {
+                question: "Ein Kurzschluss führt zu einem sehr hohen Stromfluss. ⚠️",
+                options: ["Wahr", "Falsch", "Unbedeutend", "Langsam ansteigend"],
+                correct: 0
+            },
+            {
+                question: "Wie wird die elektrische Leistung berechnet? 🔢",
+                options: ["U * I", "I / U", "U + I", "U - I"],
+                correct: 0
+            },
+            {
+                question: "Wie wird die elektrische Stromstärke berechnet? 🔢",
+                options: ["U * R", "U / R", "U + R", "R - I"],
+                correct: 0
+            },
+            {
+                question: "Das Formelzeichen für die elektrische Leistung lautet... 💪",
+                options: ["I", "U", "R", "P"],
+                correct: 3
+            },
+            {
+                question: "Die physikalische Stromrichtung geht von Plus nach Minus. ➡️",
+                options: ["Wahr", "Falsch", "Beide Richtungen", "Unklar"],
+                correct: 1
+            },
+            {
+                question: "Der Stromkreis muss geschlossen sein, damit Strom fließen kann. 🔄",
+                options: ["Wahr", "Falsch", "Nur bei Gleichstrom", "Nur bei Wechselstrom"],
+                correct: 0
+            },
+            {
+                question: "Die elektrische Leistung wird in was angegeben. ⚡",
+                options: ["Volt", "Ampere", "Watt", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Ein elektrischer Transformator kann Spannungen erhöhen oder verringern. 🔼🔽",
+                options: ["Nur erhöhen", "Nur verringern", "Erhöhen und verringern", "Keine Veränderung"],
+                correct: 2
+            },
+            {
+                question: "Die Frequenz des Stromnetzes in Deutschland beträgt...",
+                options: ["50 Hz", "60 Hz", "40 Hz", "100 Hz"],
+                correct: 0
+            },
+            {
+                question: "Der Blindstrom entsteht durch Phasenverschiebung zwischen Strom und Widerstand. ⏱️",
+                options: ["Wahr", "Manchmal", "Falsch", "Unabhängig von der Last"],
+                correct: 2
+            },
+            {
+                question: "Ein Leitungsschutzschalter ist ein Überstromschutz. 🚨",
+                options: ["Wahr", "Falsch", "Nur für Gleichstrom", "Nur bei Unterspannung"],
+                correct: 0
+            },
+            {
+                question: "Der elektrische Widerstand eines Leiters hängt von seinem Material ab. 🧪",
+                options: ["Wahr", "Falsch", "Nur von der Länge", "Nur von der Temperatur"],
+                correct: 0
+            },
+            {
+                question: "Ein Oszilloskop zeigt den zeitlichen Verlauf einer elektrischen Spannung. 📊",
+                options: ["Wahr", "Falsch", "Nur den Wert", "Nur den Stromfluss"],
+                correct: 0
+            },
+            {
+                question: "Der Querschnitt eines Leiters beeinflusst seinen elektrischen Widerstand. 📏",
+                options: ["Kommt auf das Material an", "Falsch", "Nein aber die Länge zählt", "Wahr"],
+                correct: 3
+            },
+            {
+                question: "Welches Formelzeichen steht für die elektrische Spannung? ⚡",
+                options: ["I", "U", "P", "R"],
+                correct: 1
+            },
+            {
+                question: "Ein Isolator verhindert den Fluss von elektrischem Strom. 🚫",
+                options: ["Nein nur die Spannung", "Wahr", "Falsch", "Nur bei Kälte"],
+                correct: 1
+            },
+            {
+                question: "Die Abkürzung 'DC' steht für... ➡️",
+                options: ["Wechselstrom", "Gleichstrom", "Dauerstrom", "Direktstrom"],
+                correct: 1
+            },
+            {
+                question: "Ein elektrischer Stromkreis besteht aus einer Spannungsquelle, Leitungen und Verbrauchern. 🔄",
+                options: ["Wahr", "Falsch", "Nur aus Leitungen", "Nur aus Verbrauchern"],
+                correct: 0
+            },
+            {
+                question: "Die Angabe '230 V~' bezeichnet eine... ⚡",
+                options: ["Gleichspannung", "Wechselspannung", "Drehspannung", "Impulsspannung"],
+                correct: 1
+            },
+            {
+                question: "Die elektrische Stromstärke wird in Ampere (A) gemessen. ⚡",
+                options: ["Volt", "Watt", "Ampere", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Welcher USV-Typ wird auch als 'Offline-USV' bezeichnet? 🔌",
+                options: ["VFD", "VI", "VFI", "AVR"],
+                correct: 0
+            },
+            {
+                question: "Wie lang ist die Umschaltzeit einer VI (Line-interactive) USV? ⏱️",
+                options: ["0 ms", "2-4 ms", "4-10 ms", "10-20 ms"],
+                correct: 1
+            },
+            {
+                question: "Welcher USV-Typ hat keine Umschaltzeit? ⚡",
+                options: ["VFD (Offline)", "Keines von den Genannten", "VFI (Online)", "VI (Line-interactive)"],
+                correct: 3
+            },
+            {
+                question: "Was bedeutet die Abkürzung USV? 🔄",
+                options: ["Unterstützende Stromverteilung", "Unverzichtbare Spannungsversorgung", "Unterbrechungsfreie Stromversorgung", "Universelle Spannungsverarbeitung"],
+                correct: 2
+            },
+            {
+                question: "Vor wie vielen Arten von Netzstörungen schützt eine VFD (Offline) USV? 🛡️",
+                options: ["3", "5", "7", "10"],
+                correct: 0
+            },
+            {
+                question: "Bei welcher Netzstörung handelt es sich um Spannungsspitzen von 4 bis 16 ms? 📈",
+                options: ["Netzstörung 1", "Netzstörung 2", "Netzstörung 3", "Netzstörung 4"],
+                correct: 2
+            },
+            {
+                question: "Was ist ein anderer Name für die VFI-USV? 🔌",
+                options: ["Standby-USV", "Line-interactive-USV", "Offline-USV", "Online-USV"],
+                correct: 3
+            },
+            {
+                question: "Welcher USV-Typ schützt vor allen Netzstörungsarten? 🛡️",
+                options: ["VFD", "VI", "VFI", "AVR"],
+                correct: 2
+            },
+            {
+                question: "Was bedeutet eine Netzverfügbarkeit von 99,9%? ⏱️",
+                options: ["8,75 Stunden Ausfallzeit pro Jahr", "52 Minuten Ausfallzeit pro Jahr", "5 Minuten Ausfallzeit pro Jahr", "Keine Ausfallzeit"],
+                correct: 0
+            },
+            {
+                question: "Welches System wird besonders für die VFI (Online) USV empfohlen? 🏥",
+                options: ["Heimcomputer", "Einfache Telekommunikationsanlagen", "Medizinische Geräte", "CAD-Systeme"],
+                correct: 2
+            },
+            {
+                question: "Was ist die Umschaltzeit einer VFD (Offline) USV? ⏱️",
+                options: ["0 ms", "2-4 ms", "4-10 ms", "10-20 ms"],
+                correct: 2
+            },
+            {
+                question: "Welche Netzstörung beschreibt kontinuierliche Unterspannung? 📉",
+                options: ["Netzstörung 2", "Netzstörung 3", "Netzstörung 4", "Netzstörung 5"],
+                correct: 2
+            },
+            {
+                question: "Was ist ein Vorteil redundanter (paralleler) USV-Anlagen? 🔄",
+                options: ["Geringere Kosten", "Höhere Ausfallsicherheit", "Niedrigerer Energieverbrauch", "Einfachere Installation"],
+                correct: 1
+            },
+            {
+                question: "Vor welchen Netzstörungen schützt eine VI (Line-interactive) USV? 🛡️",
+                options: ["Netzstörungen 1-3", "Netzstörungen 1-5", "Netzstörungen 1-7", "Allen Netzstörungen"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet die Abkürzung AVR bei USV-Anlagen? 🔄",
+                options: ["Alternative Voltage Regulation", "Automatic Voltage Regulation", "Advanced Voltage Response", "Alternating Voltage Reduction"],
+                correct: 1
+            },
+            {
+                question: "Welche Art von Leistung ist die Dauerleistung des in einer USV integrierten Wechselrichters? ⚡",
+                options: ["Wirkleistung (W)", "Scheinleistung (VA)", "Blindleistung (VAr)", "Spitzenleistung (P)"],
+                correct: 1
+            },
+            {
+                question: "Was ist typischerweise der Sicherheitsaufschlag bei der Dimensionierung einer USV? 📊",
+                options: ["10%", "15%", "25%", "50%"],
+                correct: 2
+            },
+            {
+                question: "Bei welcher Netzverfügbarkeit hat man etwa 52 Minuten Ausfallzeit pro Jahr? ⏱️",
+                options: ["99,9%", "99,99%", "99,999%", "100%"],
+                correct: 1
+            },
+            {
+                question: "Welche USV-Topologie wird nach EN50091-3 als 'spannungsunabhängig' klassifiziert? 🔌",
+                options: ["VFD", "VI", "VFI", "UPS"],
+                correct: 1
+            },
+            {
+                question: "Was ist der Hauptzweck einer USV-Anlage? 🛡️",
+                options: ["Stromkosten senken", "IT-Systeme vor Netzstörungen schützen", "Netzwerke beschleunigen", "Daten verschlüsseln"],
+                correct: 1
+            },
+            {
+                question: "Welcher Prozentsatz aller Störungen in der Datenverarbeitung hat seine Ursache in der Stromversorgung? 📊",
+                options: ["25%", "50%", "75%", "90%"],
+                correct: 1
+            },
+            {
+                question: "Was ist die maximal tolerierbare Unterspannung für typische IT-Systeme? 📉",
+                options: ["5%", "10%", "20%", "30%"],
+                correct: 2
+            },
+            {
+                question: "Was kann bei einem PC mit einem Leistungsbedarf von 260W als geeignete USV-Größe berechnet werden? ⚡",
+                options: ["300 VA", "400 VA", "500 VA", "600 VA"],
+                correct: 2
+            },
+            {
+                question: "Welche Netzstörung beschreibt Blitzeinwirkungen? ⚡",
+                options: ["Netzstörung 3", "Netzstörung 4", "Netzstörung 6", "Netzstörung 8"],
+                correct: 2
+            },
+            {
+                question: "Was ist eine mögliche Folge von unzureichendem Schutz vor Netzstörungen? 💾",
+                options: ["Höhere Stromkosten", "Schnellere Internetverbindung", "Inkonsistente Datenbanken", "Verbesserte Systemleistung"],
+                correct: 2
+            },
+            {
+                question: "Wofür steht die Abkürzung VFI bei USV-Anlagen? 🔌",
+                options: ["Very Fast Inverter", "Voltage Failure Indicator", "Voltage and Frequency Independent", "Verified Failsafe Installation"],
+                correct: 2
+            },
+            {
+                question: "Welche Komponente ist essenziell für den Betrieb einer USV? 🔋",
+                options: ["Festplatte", "Akkumulator", "Netzwerkkarte", "Kühllüfter"],
+                correct: 1
+            },
+            {
+                question: "Bei welcher Netzverfügbarkeit ist man etwa 5 Minuten pro Jahr ohne EDV? ⏱️",
+                options: ["99,999%", "99,99%", "99,9%", "4,20%"],
+                correct: 0
+            }    
+        ];
+
+        // Game state
+        let currentQuestions = [];
+        let score = 0;
+        let xp = 0;
+        let totalXP = 0;
+        let level = 1;
+        let darkMode = true;
+        let currentStreak = 0;
+        let bestStreak = 0;
+        let totalCorrect = 0;
+        let totalQuestions = 0;
+        let totalQuizzes = 0;
+        let badges = {
+            beginner: false,  // 100 XP
+            intermediate: false,  // 250 XP
+            advanced: false,  // 500 XP
+            master: false     // 1000 XP
+        };
+
+        // Load saved data if available
+        function loadSavedData() {
+            const savedData = localStorage.getItem('hardwareQuizData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                level = data.level || 1;
+                xp = data.xp || 0;
+                totalXP = data.totalXP || 0;
+                totalCorrect = data.totalCorrect || 0;
+                totalQuestions = data.totalQuestions || 0;
+                totalQuizzes = data.totalQuizzes || 0;
+                bestStreak = data.bestStreak || 0;
+                badges = data.badges || {
+                    beginner: false,
+                    intermediate: false,
+                    advanced: false,
+                    master: false
+                };
+                darkMode = data.darkMode !== undefined ? data.darkMode : true;
+                
+                updateLevel();
+                updateBadges();
+                updateStats();
+                document.getElementById('total-xp').textContent = totalXP;
+            }
+        }
+
+        // Save game data
+        function saveGameData() {
+            const gameData = {
+                level,
+                xp,
+                totalXP,
+                totalCorrect,
+                totalQuestions,
+                totalQuizzes,
+                bestStreak,
+                badges,
+                darkMode
+            };
+            localStorage.setItem('hardwareQuizData', JSON.stringify(gameData));
+        }
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            darkMode = false;
+        }
+
+        function initTheme() {
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.querySelector('.fixed-header').style.backgroundColor = 
+                darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+        }
+
+        function toggleTheme() {
+            darkMode = !darkMode;
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.querySelector('.fixed-header').style.backgroundColor = 
+                darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+            saveGameData();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectRandomQuestions() {
+            const shuffled = shuffleArray([...questions]);
+            return shuffled.slice(0, 20);
+        }
+
+        function celebrateSuccess() {
+            const duration = 3 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti({
+                    ...defaults,
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                });
+                confetti({
+                    ...defaults,
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                });
+            }, 250);
+        }
+
+        function showAchievementPopup(title, icon, description) {
+            document.getElementById('achievement-title').textContent = title;
+            document.getElementById('achievement-icon').textContent = icon;
+            document.getElementById('achievement-description').textContent = description;
+            
+            document.getElementById('achievement-popup').classList.add('show');
+            document.getElementById('overlay').classList.add('show');
+            
+            celebrateSuccess();
+        }
+
+        function closeAchievementPopup() {
+            document.getElementById('achievement-popup').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        function updateProgressBar() {
+            const percent = Math.min(100, Math.round((score / 20) * 100));
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-label').textContent = `${percent}%`;
+        }
+
+        function updateStreak(isCorrect) {
+            if (isCorrect) {
+                currentStreak++;
+                document.getElementById('streak-flame').classList.add('active');
+            } else {
+                currentStreak = 0;
+                document.getElementById('streak-flame').classList.remove('active');
+            }
+            
+            if (currentStreak > bestStreak) {
+                bestStreak = currentStreak;
+            }
+            
+            document.getElementById('streak-text').textContent = `Aktuelle Serie: ${currentStreak}`;
+        }
+
+        function updateLevel() {
+            const xpNeeded = level * 100;
+            
+            if (xp >= xpNeeded && level < 10) {
+                xp -= xpNeeded;
+                level++;
+                celebrateSuccess();
+                showFeedback(`🎉 Glückwunsch! Du hast Level ${level} erreicht!`, true);
+            }
+            
+            document.getElementById('level').textContent = level;
+            document.getElementById('xp-display').textContent = `XP: ${xp}/${level * 100}`;
+        }
+
+        function checkForBadges() {
+            const previousBadges = {...badges};
+            
+            // Check if total XP meets badge requirements
+            if (totalXP >= 100 && !badges.beginner) {
+                badges.beginner = true;
+                showAchievementPopup("Anfänger Badge freigeschaltet!", "🥉", "Du hast 100 XP gesammelt!");
+            }
+            else if (totalXP >= 350 && !badges.intermediate) {
+                badges.intermediate = true;
+                showAchievementPopup("Fortgeschrittener Badge freigeschaltet!", "🥈", "Du hast 350 XP gesammelt!");
+            }
+            else if (totalXP >= 750 && !badges.advanced) {
+                badges.advanced = true;
+                showAchievementPopup("Profi Badge freigeschaltet!", "🥇", "Du hast 750 XP gesammelt!");
+            }
+            else if (totalXP >= 1500 && !badges.master) {
+                badges.master = true;
+                showAchievementPopup("Meister Badge freigeschaltet!", "👑", "Du hast 1500 XP gesammelt!");
+            }
+            
+            // If any badge changed, update the display
+            if (JSON.stringify(previousBadges) !== JSON.stringify(badges)) {
+                updateBadges();
+            }
+        }
+
+        function updateBadges() {
+            if (badges.beginner) {
+                document.getElementById('badge-beginner').classList.add('earned');
+            }
+            if (badges.intermediate) {
+                document.getElementById('badge-intermediate').classList.add('earned');
+            }
+            if (badges.advanced) {
+                document.getElementById('badge-advanced').classList.add('earned');
+            }
+            if (badges.master) {
+                document.getElementById('badge-master').classList.add('earned');
+            }
+            
+            // Count earned badges
+            const earnedCount = Object.values(badges).filter(value => value).length;
+            document.getElementById('earned-badges').textContent = earnedCount;
+        }
+
+        function updateStats() {
+            document.getElementById('total-quizzes').textContent = totalQuizzes;
+            document.getElementById('total-correct').textContent = totalCorrect;
+            document.getElementById('best-streak').textContent = bestStreak;
+            
+            const averageScore = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) / 10 : 0;
+            document.getElementById('average-score').textContent = averageScore;
+        }
+
+        function showFeedback(message, isSuccess) {
+            const feedbackElement = document.getElementById('feedback-message');
+            feedbackElement.textContent = message;
+            feedbackElement.className = '';
+            feedbackElement.classList.add(isSuccess ? 'feedback-success' : 'feedback-error');
+            feedbackElement.style.opacity = 1;
+            
+            setTimeout(() => {
+                feedbackElement.style.opacity = 0;
+            }, 3000);
+        }
+
+        function toggleStats() {
+            const statsContainer = document.getElementById('stats-container');
+            statsContainer.classList.toggle('hidden');
+        }
+
+        function checkAnswer(questionIndex, selectedOption) {
+            const question = currentQuestions[questionIndex];
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            const isCorrect = selectedOption === question.correct;
+            
+            totalQuestions++;
+
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                }
+                if (index === selectedOption && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                totalCorrect++;
+                
+                // Base points
+                const basePoints = 5;
+                
+                // Bonus points for streak
+                const streakBonus = currentStreak > 0 ? Math.min(5, currentStreak) : 0;
+                
+                // Level bonus
+                const levelBonus = Math.floor(level / 2);
+                
+                // Calculate total XP gained
+                const xpGained = basePoints + streakBonus + levelBonus;
+                xp += xpGained;
+                totalXP += xpGained;
+                
+                document.getElementById('score').textContent = `Punktzahl: ${score} Punkte 📊`;
+                document.getElementById('total-xp').textContent = totalXP;
+                updateProgressBar();
+                updateLevel();
+                showFeedback(`+${xpGained} XP! ${streakBonus > 0 ? `(+${streakBonus} Streak Bonus)` : ''}`, true);
+                
+                document.getElementById('score').classList.add('pop-animation');
+                setTimeout(() => {
+                    document.getElementById('score').classList.remove('pop-animation');
+                }, 500);
+
+                if (score === 20) {
+                    celebrateSuccess();
+                    totalQuizzes++;
+                    
+                    setTimeout(() => {
+                        alert('🎉 Perfekt! Du hast alle Fragen richtig beantwortet! 🏆');
+                    }, 500);
+                }
+                
+                // Check for badge unlocks based on total XP
+                checkForBadges();
+            } else {
+                showFeedback('Das war leider falsch. Versuche es weiter!', false);
+            }
+            
+            updateStreak(isCorrect);
+            saveGameData();
+            updateStats();
+
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        function createQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            score = 0;
+            document.getElementById('score').textContent = 'Punktzahl: 0 Punkte 📊';
+            updateProgressBar();
+
+            currentQuestions.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.id = `question-${questionIndex}`;
+
+                // Randomize options but keep track of correct answer
+                const originalCorrectIndex = question.correct;
+                const optionsCopy = [...question.options];
+                const randomizedOptions = [];
+                const optionMapping = []; // Maps new indices to original indices
+                
+                // Randomly select options until none remain
+                while (optionsCopy.length > 0) {
+                    const randIndex = Math.floor(Math.random() * optionsCopy.length);
+                    const originalIndex = question.options.indexOf(optionsCopy[randIndex]);
+                    randomizedOptions.push(optionsCopy[randIndex]);
+                    optionMapping.push(originalIndex);
+                    optionsCopy.splice(randIndex, 1);
+                }
+                
+                // Find new position of correct answer
+                const newCorrectIndex = optionMapping.indexOf(originalCorrectIndex);
+                
+                // Store the new correct index in the current question object
+                currentQuestions[questionIndex].randomizedCorrect = newCorrectIndex;
+
+                questionDiv.innerHTML = `
+                    <h3>Frage ${questionIndex + 1}</h3>
+                    <p>${question.question}</p>
+                    ${randomizedOptions.map((option, index) => `
+                        <div class="option" onclick="checkAnswer(${questionIndex}, ${index})">${option}</div>
+                    `).join('')}
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(questionIndex, selectedOption) {
+            const question = currentQuestions[questionIndex];
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            const isCorrect = selectedOption === question.randomizedCorrect;
+            
+            totalQuestions++;
+
+            options.forEach((option, index) => {
+                if (index === question.randomizedCorrect) {
+                    option.classList.add('correct');
+                }
+                if (index === selectedOption && index !== question.randomizedCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                totalCorrect++;
+                
+                // Base points
+                const basePoints = 5;
+                
+                // Bonus points for streak
+                const streakBonus = currentStreak > 0 ? Math.min(5, currentStreak) : 0;
+                
+                // Level bonus
+                const levelBonus = Math.floor(level / 2);
+                
+                // Calculate total XP gained
+                const xpGained = basePoints + streakBonus + levelBonus;
+                xp += xpGained;
+                totalXP += xpGained;
+                
+                document.getElementById('score').textContent = `Punktzahl: ${score} Punkte 📊`;
+                document.getElementById('total-xp').textContent = totalXP;
+                updateProgressBar();
+                updateLevel();
+                showFeedback(`+${xpGained} XP! ${streakBonus > 0 ? `(+${streakBonus} Streak Bonus)` : ''}`, true);
+                
+                document.getElementById('score').classList.add('pop-animation');
+                setTimeout(() => {
+                    document.getElementById('score').classList.remove('pop-animation');
+                }, 500);
+
+                if (score === 20) {
+                    celebrateSuccess();
+                    totalQuizzes++;
+                    
+                    setTimeout(() => {
+                        alert('🎉 Perfekt! Du hast alle Fragen richtig beantwortet! 🏆');
+                    }, 500);
+                }
+                
+                // Check for badge unlocks based on total XP
+                checkForBadges();
+            } else {
+                showFeedback('Das war leider falsch. Versuche es weiter!', false);
+            }
+            
+            updateStreak(isCorrect);
+            saveGameData();
+            updateStats();
+
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        function newQuiz() {
+            currentQuestions = selectRandomQuestions();
+            createQuiz();
+            currentStreak = 0;
+            document.getElementById('streak-text').textContent = `Aktuelle Serie: ${currentStreak}`;
+            document.getElementById('streak-flame').classList.remove('active');
+        }
+
+        // Fix header on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.fixed-header');
+            header.style.backgroundColor = darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+        });
+
+        // Initialize the game
+        initTheme();
+        loadSavedData();
+        newQuiz();
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            darkMode = event.matches;
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.querySelector('.fixed-header').style.backgroundColor = 
+                darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+            saveGameData();
+        });
+    </script>
+</body>
+</html>

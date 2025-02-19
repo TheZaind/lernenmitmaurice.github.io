@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Konfetti-Bibliothek -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #f5f5f5;
+      --text-color: #333;
+      --container-bg: white;
+      --border-color: #ddd;
+      --hover-color: #f0f0f0;
+      --card-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      --card-gradient: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
+    }
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --text-color: #fff;
+      --container-bg: #2d2d2d;
+      --border-color: #444;
+      --hover-color: #3d3d3d;
+      --card-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      --card-gradient: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    #theme-toggle {
+      background-color: #6c757d;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    /* Gamification Anzeige */
+    .gamification {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.2em;
+      background-color: var(--container-bg);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+    }
+    .progress-bar-container {
+      width: 80%;
+      height: 20px;
+      background-color: var(--border-color);
+      margin: 15px auto 5px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #28a745, #34d058);
+      transition: width 0.5s;
+      border-radius: 10px;
+    }
+    /* Instruction text */
+    .instruction {
+      text-align: center;
+      margin-bottom: 20px;
+      font-style: italic;
+      color: var(--text-color);
+      opacity: 0.8;
+      font-size: 1.1em;
+      padding: 10px;
+      background-color: var(--container-bg);
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+    }
+    /* Flashcard Container & Improved Stack Effect */
+    .flashcard-container {
+      background-color: var(--container-bg);
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 15px;
+      box-shadow: var(--card-shadow);
+      perspective: 1000px;
+      position: relative;
+      overflow: visible;
+    }
+    /* Improved Card stack effect - more ordered */
+    .flashcard-container::before,
+    .flashcard-container::after {
+      content: '';
+      position: absolute;
+      width: 98%;
+      height: 100%;
+      background-color: var(--container-bg);
+      border-radius: 15px;
+      z-index: -1;
+      box-shadow: var(--card-shadow);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .flashcard-container::before {
+      bottom: -8px;
+      width: 96%;
+      height: 98%;
+    }
+    .flashcard-container::after {
+      bottom: -16px;
+      width: 92%;
+      height: 96%;
+    }
+    .flashcard {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      border: 1px solid var(--border-color);
+      border-radius: 15px;
+      background: var(--card-gradient);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .card-front:hover, .card-back:hover {
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+    .card-image {
+      max-width: 85%;
+      max-height: 180px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .card-face h3 {
+      font-size: 1.4em;
+      text-align: center;
+      margin-top: 10px;
+    }
+    /* Improved action buttons with more bottom padding */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+      margin-bottom: 50px; /* Added more bottom padding */
+      padding-bottom: 20px; /* Additional padding at bottom */
+    }
+    .action-buttons button {
+      padding: 12px 30px;
+      font-size: 1.1em;
+      min-width: 120px;
+      transition: all 0.3s;
+    }
+    .action-buttons button:first-child {
+      background-color: #28a745;
+    }
+    .action-buttons button:first-child:hover {
+      background-color: #218838;
+    }
+    .action-buttons button:last-child {
+      background-color: #dc3545;
+    }
+    .action-buttons button:last-child:hover {
+      background-color: #c82333;
+    }
+    .progress {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin: 20px 0;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: var(--container-bg);
+      box-shadow: var(--card-shadow);
+    }
+    /* Animation: Fade-in */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s;
+    }
+    /* Animation: Shake */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.5s;
+    }
+    /* Animation: Grüne Flash (bei richtiger Antwort) */
+    @keyframes greenFlash {
+      0% { background: var(--card-gradient); }
+      50% { background: linear-gradient(135deg, #a3e4a3 0%, #7fd77f 100%); }
+      100% { background: var(--card-gradient); }
+    }
+    .correct .card-face {
+      animation: greenFlash 0.6s;
+    }
+    /* Animation: Rote Flash (bei falscher Antwort) */
+    @keyframes redFlash {
+      0% { background: var(--card-gradient); }
+      50% { background: linear-gradient(135deg, #f5a6a6 0%, #e67a7a 100%); }
+      100% { background: var(--card-gradient); }
+    }
+    .incorrect .card-face {
+      animation: redFlash 0.6s;
+    }
+    /* Animation: Karte packt sich weg (slide out) */
+    @keyframes slideOut {
+      from { transform: translateX(0) scale(1); opacity: 1; }
+      to { transform: translateX(-100%) scale(0.8); opacity: 0; }
+    }
+    .slide-out {
+      animation: slideOut 0.6s forwards;
+    }
+    /* Score animation */
+    @keyframes scoreChange {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .score-change {
+      animation: scoreChange 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button onclick="toggleTheme()" id="theme-toggle">🌓 Dark/Light Mode</button>
+    <button onclick="resetDeck()">🔄 Neu starten</button>
+  </div>
+  
+  <h1>📚 Lernkarten</h1>
+  
+  <!-- Gamification-Anzeige -->
+  <div class="gamification">
+    <span>Punkte: <span id="points">0</span></span> |
+    <span>Level: <span id="level">1</span> <span id="level-emoji">😃</span></span>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+  </div>
+  
+  <!-- Instruction text -->
+  <div class="instruction">
+    Tippe auf die Karte, um die Lösung zu sehen
+  </div>
+  
+  <div id="flashcard-container" class="flashcard-container">
+    <div class="flashcard" onclick="flipCard()">
+      <div class="card-face card-front">
+        <!-- Inhalt wird hier eingefügt -->
+      </div>
+      <div class="card-face card-back">
+        <!-- Inhalt wird hier eingefügt -->
+      </div>
+    </div>
+  </div>
+  
+  <div class="action-buttons" id="action-buttons">
+    <button onclick="markCorrect()">✅ Richtig</button>
+    <button onclick="markIncorrect()">❌ Falsch</button>
+  </div>
+  
+  <div class="progress" id="progress">Karten übrig: 0</div>
+  
+  <script>
+    const flashcards = [
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "Berg, FDD",
+        imageUrl: "https://i.ibb.co/W442fkWN/1.png"
+      },
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "Molex, PATA",
+        imageUrl: "https://i.ibb.co/tMwR2JSY/Screenshot-2025-02-17-150223.png"
+      },
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "SATA",
+        imageUrl: "https://i.ibb.co/b54vwrWs/Screenshot-2025-02-17-150324.png"
+      },
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "PCIe (6+2/6)",
+        imageUrl: "https://i.ibb.co/HDbcfmv7/Screenshot-2025-02-17-150401.png"
+      },
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "EPS12V",
+        imageUrl: "https://i.ibb.co/C3x7ynmK/Screenshot-2025-02-17-150517.png"
+      },
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "ATX12V",
+        imageUrl: "https://i.ibb.co/4ZjXwy8m/Screenshot-2025-02-17-150637.png"
+      },
+      {
+        question: "Was ist das für ein Stecker?",
+        answer: "AT-Main Power(Motherboard)",
+        imageUrl: "https://i.ibb.co/21kVZFWZ/Screenshot-2025-02-17-150721.png"
+      },
+      {
+        question: "Wie viele Pins hat dieser Stecker?",
+        answer: "4",
+        imageUrl: "https://i.ibb.co/W442fkWN/1.png"
+      },
+      {
+        question: "Wie viele Pins hat dieser Stecker?",
+        answer: "4",
+        imageUrl: "https://i.ibb.co/tMwR2JSY/Screenshot-2025-02-17-150223.png"
+      },
+      {
+        question: "Wie viele Pins hat dieser Stecker?",
+        answer: "5",
+        imageUrl: "https://i.ibb.co/b54vwrWs/Screenshot-2025-02-17-150324.png"
+      },
+      {
+        question: "Wie viele Pins hat dieser Stecker?",
+        answer: "8",
+        imageUrl: "https://i.ibb.co/C3x7ynmK/Screenshot-2025-02-17-150517.png"
+      },
+      {
+        question: "Wie viele Pins hat dieser Stecker?",
+        answer: "20+4",
+        imageUrl: "https://i.ibb.co/21kVZFWZ/Screenshot-2025-02-17-150721.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "FDD Cardreader",
+        imageUrl: "https://i.ibb.co/W442fkWN/1.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "HDD, ODD, Lüfter",
+        imageUrl: "https://i.ibb.co/tMwR2JSY/Screenshot-2025-02-17-150223.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "HDD, SSD; ODD",
+        imageUrl: "https://i.ibb.co/b54vwrWs/Screenshot-2025-02-17-150324.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "PCIe für GPUs",
+        imageUrl: "https://i.ibb.co/HDbcfmv7/Screenshot-2025-02-17-150401.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "Mainboard(CPU)",
+        imageUrl: "https://i.ibb.co/C3x7ynmK/Screenshot-2025-02-17-150517.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "Mainboard(CPU)",
+        imageUrl: "https://i.ibb.co/4ZjXwy8m/Screenshot-2025-02-17-150637.png"
+      },
+      {
+        question: "Für was wird dieser Stecker genutzt?",
+        answer: "Mainboard",
+        imageUrl: "https://i.ibb.co/21kVZFWZ/Screenshot-2025-02-17-150721.png"
+      },
+      {
+        question: "Was für ein USV-Typ ist das? ",
+        answer: "VFD",
+        imageUrl: "https://i.ibb.co/CKjVCd5k/1.png"
+      },
+      {
+        question: "Was für ein USV-Typ ist das?",
+        answer: "Typ VI",
+        imageUrl: "https://i.ibb.co/hRPhq1Jn/2.png"
+      },
+      {
+        question: "Was für ein USV-Typ ist das?",
+        answer: "Typ VFI",
+        imageUrl: "https://i.ibb.co/BH4J1g4r/3.png"
+      }
+    ];
+    
+    // Gamification Score
+    let score = { points: 0, level: 1, badges: [] };
+    
+    // Dark Mode
+    let darkMode = true;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      darkMode = false;
+    }
+    function initTheme() {
+      document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    }
+    function toggleTheme() {
+      darkMode = !darkMode;
+      document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    }
+    
+    // Deck
+    let deck = [...flashcards];
+    const totalCards = flashcards.length;
+    let currentCard = null;
+    
+    function getLevelEmoji(level) {
+      // Je höher das Level, desto "besser" das Emoji:
+      if (level === 1) return "😃";
+      else if (level === 2) return "😎";
+      else if (level === 3) return "🥳";
+      else if (level === 4) return "🚀";
+      else if (level === 5) return "👑";
+      else return "🏆";
+    }
+    
+    function updateProgress() {
+      const progressEl = document.getElementById('progress');
+      progressEl.textContent = deck.length > 0 
+        ? `Karten übrig: ${deck.length} von ${totalCards}`
+        : 'Alle Karten abgeschlossen! 🎉';
+    }
+    
+    function updateGamification(animate = false) {
+      const pointsEl = document.getElementById('points');
+      const levelEl = document.getElementById('level');
+      
+      if (animate) {
+        pointsEl.classList.add('score-change');
+        setTimeout(() => {
+          pointsEl.classList.remove('score-change');
+        }, 500);
+      }
+      
+      pointsEl.textContent = score.points;
+      levelEl.textContent = score.level;
+      document.getElementById('level-emoji').textContent = getLevelEmoji(score.level);
+      
+      const prevThreshold = (score.level - 1) * 50;
+      const nextThreshold = score.level * 50;
+      let progressPercent = ((score.points - prevThreshold) / (nextThreshold - prevThreshold)) * 100;
+      progressPercent = Math.min(Math.max(progressPercent, 0), 100);
+      document.getElementById('progress-bar').style.width = progressPercent + '%';
+    }
+    
+    function updateCard() {
+      const container = document.getElementById('flashcard-container');
+      const flashcardEl = container.querySelector('.flashcard');
+      // Reset aller animierten Klassen
+      flashcardEl.classList.remove('flipped', 'slide-out', 'correct', 'incorrect');
+      
+      if (deck.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:40px;">
+            <h2 style="margin-bottom:30px;">Glückwunsch! Du hast alle Karten abgeschlossen!</h2>
+            <p style="margin-bottom:20px; font-size:1.2em;">Dein Endergebnis: <strong>${score.points} Punkte</strong> und <strong>Level ${score.level}</strong> ${getLevelEmoji(score.level)}</p>
+            <button onclick="resetDeck()" style="padding:15px 30px; font-size:1.2em;">Neu starten</button>
+          </div>
+        `;
+        document.getElementById('action-buttons').style.display = 'none';
+        document.querySelector('.instruction').style.display = 'none';
+        updateProgress();
+        // Confetti am Ende
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#007bff', '#28a745', '#ffc107', '#dc3545']
+        });
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * deck.length);
+      currentCard = deck[randomIndex];
+      const frontFace = flashcardEl.querySelector('.card-front');
+      const backFace = flashcardEl.querySelector('.card-back');
+      
+      frontFace.innerHTML = `
+        ${currentCard.imageUrl ? `<img src="${currentCard.imageUrl}" alt="Kartenabbildung" class="card-image">` : ''}
+        <h3>${currentCard.question}</h3>
+      `;
+      backFace.innerHTML = `<h3>${currentCard.answer}</h3>`;
+      
+      flashcardEl.classList.add('fade-in');
+      setTimeout(() => {
+        flashcardEl.classList.remove('fade-in');
+      }, 500);
+      
+      updateProgress();
+    }
+    
+    function flipCard() {
+      const flashcardEl = document.querySelector('.flashcard');
+      flashcardEl.classList.toggle('flipped');
+    }
+    
+    function markCorrect() {
+      const flashcardEl = document.querySelector('.flashcard');
+      // Grüne Flash
+      flashcardEl.classList.add('correct');
+      
+      // Punkte erhöhen und Level prüfen
+      score.points += 10;
+      let levelUp = false;
+      if (score.points >= score.level * 50) {
+        score.level++;
+        levelUp = true;
+      }
+      updateGamification(true);
+      
+      // Karte "packt sich weg" – Slide-Out Animation
+      flashcardEl.classList.add('slide-out');
+      setTimeout(() => {
+        deck = deck.filter(card => card !== currentCard);
+        updateCard();
+        // Confetti nur bei Level-Up
+        if (levelUp) {
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#28a745', '#40e363', '#22c339', '#134e21']
+          });
+        }
+      }, 600);
+    }
+    
+    function markIncorrect() {
+      const flashcardEl = document.querySelector('.flashcard');
+      flashcardEl.classList.add('shake');
+      flashcardEl.classList.add('incorrect');
+      
+      // Punkte abziehen, aber nicht unter 0
+      score.points = Math.max(0, score.points - 5);
+      updateGamification(true);
+      
+      setTimeout(() => {
+        flashcardEl.classList.remove('shake');
+        flashcardEl.classList.remove('incorrect');
+        updateCard();
+      }, 600);
+    }
+    
+    function resetDeck() {
+      deck = [...flashcards];
+      score = { points: 0, level: 1, badges: [] };
+      document.getElementById('action-buttons').style.display = 'flex';
+      document.querySelector('.instruction').style.display = 'block';
+      updateCard();
+      updateGamification();
+    }
+    
+    // Initialisierung
+    initTheme();
+    updateCard();
+    updateGamification();
+    
+    // Listener für System-Darkmode-Änderungen
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      darkMode = event.matches;
+      document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>
