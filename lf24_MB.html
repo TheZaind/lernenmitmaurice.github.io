@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --text-color: #333;
+            --container-bg: white;
+            --border-color: #ddd;
+            --hover-color: #f0f0f0;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #1b5e20;
+            --danger-color: #b71c1c;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #fff;
+            --container-bg: #2d2d2d;
+            --border-color: #444;
+            --hover-color: #3d3d3d;
+            --primary-color: #4d9eff;
+            --secondary-color: #a0a9b2;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 140px; /* Space for fixed header */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-container {
+            background-color: var(--container-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .option {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: var(--hover-color);
+        }
+
+        .option.correct {
+            background-color: var(--success-color);
+            border-color: #2e7d32;
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: var(--danger-color);
+            border-color: #c62828;
+            color: white;
+        }
+
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: var(--container-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        #theme-toggle {
+            background-color: var(--secondary-color);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 20px;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            color: white;
+            font-weight: bold;
+            line-height: 20px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .badge {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--container-bg);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .badge.earned {
+            opacity: 1;
+            transform: scale(1.1);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge-icon {
+            font-size: 2em;
+        }
+
+        .badge-name {
+            font-size: 0.8em;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .level-info {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .pop-animation {
+            animation: pop 0.5s ease;
+        }
+
+        .streak-counter {
+            background-color: var(--container-bg);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .streak-flame {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .streak-flame.active {
+            transform: scale(1.2);
+        }
+
+        #feedback-message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .feedback-success {
+            background-color: rgba(27, 94, 32, 0.2);
+            color: #1b5e20;
+        }
+
+        .feedback-error {
+            background-color: rgba(183, 28, 28, 0.2);
+            color: #b71c1c;
+        }
+
+        .stats-container {
+            margin-top: 20px;
+            background-color: var(--container-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Achievement popup */
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.1);
+            width: 300px;
+            background-color: var(--container-bg);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .achievement-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .achievement-popup h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .achievement-popup .badge-icon {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .achievement-popup button {
+            margin-top: 20px;
+        }
+
+        /* Overlay for popup */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .total-xp {
+            font-size: 1em;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-header">
+        <div class="header-container">
+            <div class="level-info">Maurice´s-Learning-Game Level: <span id="level">1</span> 🌟</div>
+            <div class="streak-counter">
+                <span id="streak-text">Aktuelle Serie: 0</span>
+                <span class="streak-flame" id="streak-flame">🔥</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <div class="progress-label" id="progress-label">0%</div>
+            </div>
+            <div id="feedback-message"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="toggleTheme()" id="theme-toggle">🌓 Dark/Light Mode</button>
+        <button onclick="newQuiz()">🔄 Neues Quiz</button>
+        <button onclick="toggleStats()">📊 Statistiken</button>
+    </div>
+    <h1>💻 Hardware Quiz - Maurice Fragt dich! 💁🏻‍♂️</h1>
+    
+    <div id="quiz-container"></div>
+    
+    <div class="score-container">
+        <div class="score" id="score">Punktzahl: 0 Punkte 📊</div>
+        <div id="xp-display">XP: 0/100</div>
+    </div>
+    
+    <div class="total-xp">Gesamt-XP: <span id="total-xp">0</span></div>
+    
+    <div class="badge-container" id="badge-container">
+        <div class="badge" id="badge-beginner">
+            <div class="badge-icon">🥉</div>
+            <div class="badge-name">Anfänger (100 XP)</div>
+        </div>
+        <div class="badge" id="badge-intermediate">
+            <div class="badge-icon">🥈</div>
+            <div class="badge-name">Fortgeschritten (350 XP)</div>
+        </div>
+        <div class="badge" id="badge-advanced">
+            <div class="badge-icon">🥇</div>
+            <div class="badge-name">Profi (750 XP)</div>
+        </div>
+        <div class="badge" id="badge-master">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Meister (1500 XP)</div>
+        </div>
+    </div>
+    
+    <div class="stats-container hidden" id="stats-container">
+        <h2>Deine Statistiken 📈</h2>
+        <p>Gespielte Quizze: <span id="total-quizzes">0</span></p>
+        <p>Korrekte Antworten: <span id="total-correct">0</span></p>
+        <p>Durchschnittliche Punktzahl: <span id="average-score">0</span></p>
+        <p>Längste Streak: <span id="best-streak">0</span></p>
+        <p>Verdiente Badges: <span id="earned-badges">0</span>/4</p>
+    </div>
+
+    <!-- Achievement popup -->
+    <div class="achievement-popup" id="achievement-popup">
+        <h2 id="achievement-title">Achievement Unlocked!</h2>
+        <div class="badge-icon" id="achievement-icon">🏆</div>
+        <p id="achievement-description">Du hast etwas Großartiges erreicht!</p>
+        <button onclick="closeAchievementPopup()">Super!</button>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        const questions = [
+        {
+ 
+            },
+            {
+                question: "Welche Alternative gibt es zur Luftkühlung? ",
+                options: ["Keine", "Nur Passivkühlung", "Wasserkühlung", "Nur Heatpipes"],
+                correct: 2
+            },
+            {
+                question: "Was bedeutet BTX bei Gehäusen? 🔄",
+                options: ["Basic Tower Extension", "Balanced Technology Extended", "Better Thermal Extension", "Basic Thermal Exchange"],
+                correct: 1
+            },
+            {
+                question: "Welche Funktion hat ein Tachosignal beim Lüfter? 📊",
+                options: ["Stromversorgung", "Drehzahlmessung", "Temperaturmessung", "Lüftersteuerung"],
+                correct: 1
+            },
+            {
+                question: "Was ist PWM bei Lüftern? ⚡",
+                options: ["Power Wattage Management", "Permanent Water Movement", "Pulse Width Modulation", "Performance Water Management"],
+                correct: 2
+            },
+            {
+                question: "Welchen Vorteil bietet ein Industrie-PC-Gehäuse? 🏭",
+                options: ["Besseres Design", "Höherer Schutz vor Umwelteinflüssen", "Niedrigerer Preis", "Geringeres Gewicht"],
+                correct: 1
+            },
+            {
+                question: "Was bedeutet die zweite Ziffer der IP-Schutzart? 💧",
+                options: ["Schutz vor Staub", "Schutz vor Feuer", "Schutz vor Wasser", "Schutz vor Stößen"],
+                correct: 2
+            },
+ 
+            {
+                question: "Welche Schutzschaltung verhindert Systeminstabilität? 💻",
+                options: ["SCP", "OCP", "OPP", "UVP"],
+                correct: 3
+            },
+            {
+                question: "Was bedeutet die Abkürzung SCP? 🔌",
+                options: ["Short Circuit Protection", "System Control Protocol", "Safety Current Protection", "Surge Control Protection"],
+                correct: 0
+            },
+            {
+                question: "Welcher Schutzmechanismus ist für die Gesamtleistung zuständig? ⚡",
+                options: ["UVP", "OPP", "OCP", "SCP"],
+                correct: 1
+            },{
+                question: "Was passiert mit dem elektrischen Widerstand eines Kaltleiters (NTC) bei steigender Temperatur? 🌡️",
+                options: ["Er steigt an", "Er sinkt", "Er bleibt konstant", "Er schwankt zufällig"],
+                correct: 1
+            },
+            {
+                question: "Was schützt vor Überstrom? 🛡️",
+                options: ["Transformator", "Sicherung", "Kondensator", "Widerstand"],
+                correct: 1
+            },
+            {
+                question: "Was ist die Grundeinheit des elektrischen Stroms? ⚡",
+                options: ["Volt", "Watt", "Ampere", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Welches Messgerät misst die elektrische Spannung? 📈",
+                options: ["Amperemeter", "Voltmeter", "Wattmeter", "Ohmmeter"],
+                correct: 1
+            },
+            {
+                question: "Wie funktioniert ein Leitungsschutzschalter? 🔌",
+                options: ["Thermisch-magnetisch", "Nur thermisch", "Nur magnetisch", "Elektrostatisch"],
+                correct: 0
+            },
+            {
+                question: "Was ist der Unterschied zwischen Leiter und Isolator? 🔍",
+                options: ["Keine Unterschiede", "Anzahl der Protonen", "Anzahl der freien Elektronen", "Farbe des Materials"],
+                correct: 2
+            },
+            {
+                question: "Welche Einheit hat der elektrische Widerstand? 🎯",
+                options: ["Volt", "Ampere", "Watt", "Ohm"],
+                correct: 3
+            },
+            {
+                question: "Ein elektrischer Leiter leitet den Strom besser, wenn er kühler ist. ❄️",
+                options: ["Wahr", "Falsch", "Keine Auswirkung", "Nur bei Wechselstrom"],
+                correct: 0
+            },
+            {
+                question: "Das Multimeter kann mehrere elektrische Größen messen. 🛠️",
+                options: ["Nur Spannung", "Nur Strom", "Spannung und Strom", "Nur Widerstand"],
+                correct: 2
+            },
+            {
+                question: "Die Netzspannung in Europa beträgt üblicherweise...?. 🇪🇺",
+                options: ["110 V", "230 V", "400 V", "1000 V"],
+                correct: 1
+            },
+            {
+                question: "Ein Kurzschluss führt zu einem sehr hohen Stromfluss. ⚠️",
+                options: ["Wahr", "Falsch", "Unbedeutend", "Langsam ansteigend"],
+                correct: 0
+            },
+            {
+                question: "Wie wird die elektrische Leistung berechnet? 🔢",
+                options: ["U * I", "I / U", "U + I", "U - I"],
+                correct: 0
+            },
+            {
+                question: "Wie wird die elektrische Stromstärke berechnet? 🔢",
+                options: ["U * R", "U / R", "U + R", "R - I"],
+                correct: 0
+            },
+            {
+                question: "Das Formelzeichen für die elektrische Leistung lautet... 💪",
+                options: ["I", "U", "R", "P"],
+                correct: 3
+            },
+            {
+                question: "Die physikalische Stromrichtung geht von Plus nach Minus. ➡️",
+                options: ["Wahr", "Falsch", "Beide Richtungen", "Unklar"],
+                correct: 1
+            },
+            {
+                question: "Der Stromkreis muss geschlossen sein, damit Strom fließen kann. 🔄",
+                options: ["Wahr", "Falsch", "Nur bei Gleichstrom", "Nur bei Wechselstrom"],
+                correct: 0
+            },
+            {
+                question: "Die elektrische Leistung wird in was angegeben. ⚡",
+                options: ["Volt", "Ampere", "Watt", "Ohm"],
+                correct: 2
+            },
+            {
+                question: "Ein elektrischer Transformator kann Spannungen erhöhen oder verringern. 🔼🔽",
+                options: ["Nur erhöhen", "Nur verringern", "Erhöhen und verringern", "Keine Veränderung"],
+                correct: 2
+            },
+            {
+                question: "Die Frequenz des Stromnetzes in Deutschland beträgt...",
+                options: ["50 Hz", "60 Hz", "40 Hz", "100 Hz"],
+                correct: 0
+            },
+            {
+                question: "Der Blindstrom entsteht durch Phasenverschiebung zwischen Strom und Widerstand. ⏱️",
+                options: ["Wahr", "Manchmal", "Falsch", "Unabhängig von der Last"],
+                correct: 2
+            },
+            {
+                question: "Ein Leitungsschutzschalter ist ein Überstromschutz. 🚨",
+                options: ["Wahr", "Falsch", "Nur für Gleichstrom", "Nur bei Unterspannung"],
+                correct: 0
+            },
+            {
+                question: "Die Abkürzung 'DC' steht für... ➡️",
+                options: ["Wechselstrom", "Gleichstrom", "Dauerstrom", "Direktstrom"],
+                correct: 1
+            },
+            {
+                question: "Ein elektrischer Stromkreis besteht aus einer Spannungsquelle, Leitungen und Verbrauchern. 🔄",
+                options: ["Wahr", "Falsch", "Nur aus Leitungen", "Nur aus Verbrauchern"],
+                correct: 0
+            },
+            {
+                question: "Wie lang ist die Umschaltzeit einer VI (Line-interactive) USV? ⏱️",
+                options: ["0 ms", "2-4 ms", "4-10 ms", "10-20 ms"],
+                correct: 1
+            },
+            {
+                question: "Welcher USV-Typ wird auch als 'Dauerwandler' bezeichnet? ⚙️",
+                options: ["VFD", "VI", "VFI", "AVR"],
+                correct: 2
+            },
+            {
+                question: "Bei welchem USV-Typ bezieht ein Wechselrichter die Energie bei Normalbetrieb über den Gleichrichter? 🔋",
+                options: ["VFD", "VI", "VFI", "keiner davon"],
+                correct: 2
+            },
+            {
+                question: "Wofür wird typischerweise der interne Bypass bei einem Dauerwandler verwendet? 🔄",
+                options: ["Energieeinsparung", "bei Überlast", "zum Batterieladen", "zur Frequenzstabilisierung"],
+                correct: 1
+            },
+            {
+                question: "Welcher USV-Typ eignet sich für kleine Netzwerke? 🖥️",
+                options: ["ausschließlich VFD", "ausschließlich VFI", "VI", "keiner der genannten"],
+                correct: 2
+            },
+            {
+                question: "Welcher USV-Typ schützt vor den wenigsten Netzstörungsarten? ⚡",
+                options: ["VFD", "VI", "VFI", "alle schützen gleich"],
+                correct: 0
+            },
+            {
+                question: "Was testet der Benchmark 'Dhrystone' hauptsächlich? ⚙️",
+                options: ["Die FPU", "Die ALU (Ganzzahloperationen)", "Den Arbeitsspeicher", "Die Netzwerkgeschwindigkeit"],
+                correct: 1
+            },
+            {
+                question: "Welches Problem tritt beim Von-Neumann-Rechner bei hoher Auslastung auf? 🧠",
+                options: ["Überhitzung der CPU", "Signalstau im Bus-System", "RAM-Überlauf", "Grafikkartenfehler"],
+                correct: 1
+            },
+            {
+                question: "Was versteht man unter dem Begriff 'Rechnerarchitektur'? 🏗️",
+                options: ["Das Gehäusedesign eines Computers", "Die Beschreibung der Eigenschaften, Struktur und des funktionellen Verhaltens eines Systems", "Die Anordnung der Peripheriegeräte", "Die Bauform des Motherboards"],
+                correct: 1
+            },
+            {
+                question: "Welche Abkürzung steht für 'million instructions per second'? ⚡",
+                options: ["FLOPS", "WIPS", "MIPS", "TIPS"],
+                correct: 2
+            },
+            {
+                question: "In welchem Bereich des L1-Caches werden bei modernen Prozessoren Befehle gespeichert? 📝",
+                options: ["Im gemeinsamen Bereich", "Im dedizierten Befehlscache", "Im Datencache", "Im externen Cache"],
+                correct: 1
+            },
+            {
+                question: "Was war eine Limitation des Z1 Computers? ⚠️",
+                options: ["Er hatte zu wenig Arbeitsspeicher", "Er konnte nur einfache mathematische Operationen ausführen", "Er konnte keine Grafiken anzeigen", "Er hatte kein Internetanschluss"],
+                correct: 1
+            },
+            {
+                question: "Welche zwei Bus-Systeme sind charakteristisch für die Harvard-Architektur? 🔌",
+                options: ["Adress- und Daten-Bus", "Daten- und Befehls-Bus", "Ein- und Ausgabe-Bus", "Speicher- und Prozessor-Bus"],
+                correct: 1
+            },
+            {
+                question: "Was ist die korrekte Bezeichnung für die materiellen Bestandteile eines IT-Systems? 💻",
+                options: ["Software", "Middleware", "Hardware", "Firmware"],
+                correct: 2
+            },
+            {
+        question: "Was ist die zentrale Aufgabe eines Mainboards? 🖥️",
+        options: ["Nur Kühlung der Komponenten", "Stromversorgung aller Geräte", "Zentrales Bauteil, das alle Komponenten verbindet", "Nur Datenspeicherung"],
+        correct: 2
+    },
+    {
+        question: "Woraus besteht die Trägerplatte eines Mainboards? 🧪",
+        options: ["Aluminiumlegierung", "Kunstharz", "Glasfaser", "Silizium"],
+        correct: 1
+    },
+    {
+        question: "Was sind Leiterbahnen auf dem Mainboard? 🔌",
+        options: ["Dünne Kupfer- oder Silberschichten", "Plastikabdeckungen", "Kühlkanäle", "Schutzschichten gegen Staub"],
+        correct: 0
+    },
+    {
+        question: "Was ist ein Problem bei zu dünnen Leiterbahnen? 🔥",
+        options: ["Sie brechen leicht", "Sie können korrodieren", "Hohe Stromdichte führt zu starker Erwärmung", "Sie sind zu laut"],
+        correct: 2
+    },
+    {
+        question: "Was ist EMI? 📡",
+        options: ["Elektronische Memory Integration", "Enhanced Memory Interface", "Elektromagnetische Interferenz", "External Module Integration"],
+        correct: 2
+    },
+    {
+        question: "Welche Maßnahme hilft gegen EMI auf dem Mainboard? 🛡️",
+        options: ["Mehr Lüfter installieren", "Trennung und Abschirmung sensibler Komponenten", "Höhere Spannung anlegen", "Mehr RAM einbauen"],
+        correct: 1
+    },
+    {
+        question: "Wofür steht die Abkürzung BIOS? 💾",
+        options: ["Binary Input/Output System", "Basic Input/Output System", "Backup Internal Operating System", "Binary Internal Operating Software"],
+        correct: 1
+    },
+    {
+        question: "Was ist ein Formfaktor bei Mainboards? 📏",
+        options: ["Die Anzahl der CPU-Kerne", "Standardisierte Vorgabe für Größe und Layout", "Die Geschwindigkeit des Mainboards", "Die Farbe des PCBs"],
+        correct: 1
+    },
+    {
+        question: "Wozu dient die Stützbatterie auf dem Mainboard? 🔋",
+        options: ["Zur Stromversorgung der CPU", "Zur Versorgung des BIOS/UEFI und der Systemuhr", "Zum Betrieb der Grafikkarte", "Zum Starten des Computers"],
+        correct: 1
+    },
+    {
+        question: "Was bedeutet VRM auf einem Mainboard? ⚡",
+        options: ["Voltage Regulator Module", "Virtual RAM Memory", "Video Resolution Manager", "Variable Resource Monitor"],
+        correct: 0
+    },
+    {
+        question: "Welche Sockeltypen werden von AMD und Intel entwickelt? 🔄",
+        options: ["Nur gemeinsame Standards", "Identische Sockel für beide Hersteller", "Eigene, unterschiedliche Sockeltypen", "Universalsockel für alle CPUs"],
+        correct: 2
+    },
+    {
+        question: "Was zeigen unterschiedliche Farben bei RAM-Steckplätzen an? 🌈",
+        options: ["Nur ästhetische Gestaltung", "Maximale Speicherkapazität", "Gemeinsame mehrkanalige Zugriffsmöglichkeit (z.B. Dual Channel)", "Verschiedene RAM-Typen"],
+        correct: 2
+    },
+    {
+        question: "Welcher RAM-Typ wird bei aktuellen Mainboards (laut Präsentation) erwartet? 💻",
+        options: ["DDR3", "DDR4", "DDR5", "SDRAM"],
+        correct: 1
+    },
+    {
+        question: "Wofür werden die PCIe-Steckplätze hauptsächlich benötigt? 🎮",
+        options: ["Nur für Soundkarten", "Nur für Netzwerkkarten", "Hauptsächlich für leistungsfähige Grafikkarten", "Nur für USB-Erweiterungen"],
+        correct: 2
+    },
+    {
+        question: "Welche Farbe kennzeichnet im Beispiel die schnelleren SATA-III-Anschlüsse? 🔴",
+        options: ["Blau", "Schwarz", "Rot", "Gelb"],
+        correct: 2
+    },
+    {
+        question: "Was ist ein Nachteil eines Tablet-PC-Mainboards laut Präsentation? 📱",
+        options: ["Zu groß", "Zu schwer", "Verlöteter Hauptprozessor und Arbeitsspeicher erschweren Austausch", "Zu viele Anschlüsse"],
+        correct: 2
+    },
+    {
+        question: "Was bezeichnet man als 'proprietär' bei Mainboards? 🔒",
+        options: ["Besonders hochwertige Qualität", "Herstellerspezifisch und nicht standardisiert", "Besonders günstige Herstellung", "Open-Source-Design"],
+        correct: 1
+    },
+    {
+        question: "Was bestimmt der Formfaktor eines Mainboards? 📐",
+        options: ["Nur die Größe", "Nur die Lage der Bauteile", "Größe, Bauteilpositionen, Befestigungslöcher und Energieversorgungsstandards", "Nur die Anzahl der CPU-Kerne"],
+        correct: 2
+    },
+    {
+        question: "Was muss beim Einbau eines Mainboards unbedingt berücksichtigt werden? 🔧",
+        options: ["Nur die Farbe des Mainboards", "Die Anzahl und Position der Befestigungslöcher", "Nur die Größe des Mainboards", "Nur die Anzahl der USB-Anschlüsse"],
+        correct: 1
+    },
+    {
+        question: "Was ist ein Chipsatz auf dem Mainboard? 🧩",
+        options: ["Ein Teil des Prozessors", "Nebenprozessoren zur Steuerung", "Nur der Arbeitsspeicher", "Anschluss für externe Geräte"],
+        correct: 1
+    },
+    {
+        question: "Welche mechanische Eigenschaft haben die Leiterbahnen auf dem Mainboard? 💪",
+        options: ["Sehr flexibel", "Sehr belastbar", "Mechanisch nur wenig belastbar", "Vollständig unzerstörbar"],
+        correct: 2
+    },
+    {
+        question: "Was ist ein '2x Copper PCB Design' laut Präsentation? 🔄",
+        options: ["Doppelt so teures Mainboard", "Dickere Leiterbahnen für bessere Strombelastbarkeit", "Doppelte Anzahl an USB-Anschlüssen", "Zwei Mainboards in einem Gehäuse"],
+        correct: 1
+    },
+    {
+        question: "Wofür ist eine separate Audio-Hardware-Zone auf dem Mainboard wichtig? 🎵",
+        options: ["Für bessere Kühlung", "Zum Schutz vor elektromagnetischen Interferenzen", "Nur für das Design", "Für mehr Anschlüsse"],
+        correct: 1
+    },
+    {
+        question: "Was ist RTC im Zusammenhang mit Mainboards? ⏰",
+        options: ["Real-Time Clock (Echtzeituhr)", "Remote Terminal Connection", "Real-Time Computing", "Rapid Thermal Control"],
+        correct: 0
+    },
+    {
+        question: "Welche Funktion haben Jumper auf älteren Mainboards? 🔀",
+        options: ["Zur Kühlung", "Zur Konfiguration von Hardware-Einstellungen", "Als Anschluss für Monitore", "Zum Schutz vor Überspannung"],
+        correct: 1
+    },
+    {
+        question: "Wofür steht die Abkürzung UEFI? 💻",
+        options: ["Universal External Function Interface", "Unified Extensible Firmware Interface", "User Environment Function Integration", "Universal Ethernet Firmware Interface"],
+        correct: 1
+    },
+    {
+        question: "Welches Material wird für die Leiterbahnen auf dem Mainboard verwendet? 🧪",
+        options: ["Aluminium oder Gold", "Kupfer oder Silber", "Platin oder Titan", "Zinn oder Blei"],
+        correct: 1
+    },
+    {
+        question: "Warum können PC-Mainboards nicht einfach in Tablets verwendet werden? 📱",
+        options: ["Sie sind zu dick", "Sie sind proprietär und nicht standardisiert", "Sie sind zu leistungsschwach", "Sie brauchen zu viel Strom"],
+        correct: 1
+    },
+    {
+        question: "Was ist ein DIP-Schalter auf einem älteren Mainboard? 🔄",
+        options: ["Digital Interface Processor", "Direkter Internet Port", "Dual In-line Package (Konfigurationsschalter)", "Dynamic Input Protocol"],
+        correct: 2
+    },
+    {
+        question: "Welche Komponenten sind bei einem Tablet-PC-Mainboard häufig verlötet? 💾",
+        options: ["Nur der Hauptprozessor", "Nur der Arbeitsspeicher", "Hauptprozessor und Arbeitsspeicher", "Nur die Anschlüsse"],
+        correct: 2
+    },
+    {
+        question: "Wofür steht die Abkürzung PCIe? 🔌",
+        options: ["Personal Computer Infrastructure", "Peripheral Component Interface express", "Primary Central Interface extension", "Power Computing Interface enhanced"],
+        correct: 1
+    },
+    {
+        question: "Was ist ein Backpanel am Mainboard? 🖥️",
+        options: ["Hintere Abdeckung des Gehäuses", "Bereich mit externen Anschlüssen", "Kühlsystem für die CPU", "Abdeckung für das BIOS"],
+        correct: 1
+    },
+    {
+        question: "Was sind Kühlkörper auf dem Mainboard? ❄️",
+        options: ["Komponenten zur Wärmeableitung", "Schutzabdeckungen für Chips", "Spezielle RAM-Steckplätze", "Lüfteranschlüsse"],
+        correct: 0
+    },
+    {
+        question: "Was ist eine Heatpipe im Kontext von Mainboards? 🔥",
+        options: ["Ein Kanal zur Wärmeableitung", "Ein Kabel für die Stromversorgung", "Ein Anschluss für externe Geräte", "Ein Datenkanal zwischen CPU und RAM"],
+        correct: 0
+    },
+    {
+        question: "Welcher der folgenden ist KEIN üblicher PC-Mainboard-Formfaktor? 📏",
+        options: ["ATX", "Micro-ATX", "Mini-ITX", "Mega-DTX"],
+        correct: 3
+    },
+    {
+        question: "Wofür dient ein PS/2-Anschluss am Backpanel? 🖱️",
+        options: ["Für USB-Geräte", "Für Mäuse und Tastaturen", "Für Monitore", "Für Drucker"],
+        correct: 1
+    },
+    {
+        question: "Was ist SATA? 💽",
+        options: ["Serial Advanced Technology Attachment", "System Advanced Terminal Access", "Storage Access Technical Architecture", "Synchronous Array Transfer Adapter"],
+        correct: 0
+    },
+    {
+        question: "Welche Bedeutung haben die verschiedenen Farben bei SATA-Anschlüssen? 🌈",
+        options: ["Keine Bedeutung, nur Design", "Unterschiedliche Datenübertragungsgeschwindigkeiten", "Unterschiedliche Kompatibilität", "Verschiedene Stromstärken"],
+        correct: 1
+    },
+    {
+        question: "Was ist für die Auswahl eines Mainboards bezüglich des Prozessors wichtig? 🧠",
+        options: ["Nur die Marke", "Nur die Geschwindigkeit", "Passender Prozessorsockel", "Nur der Preis"],
+        correct: 2
+    },
+    {
+        question: "Was ist eSATA? 📂",
+        options: ["External SATA", "Enhanced SATA", "Encrypted SATA", "Extended SATA"],
+        correct: 0
+    },
+    {
+        question: "Welche Art von Speicher wird in den Speicherbänken eines Mainboards installiert? 💾",
+        options: ["Festplatte (HDD)", "Solid State Drive (SSD)", "Arbeitsspeicher (RAM)", "Cache-Speicher"],
+        correct: 2
+    },
+    {
+        question: "Was bezeichnet man als 'Dual Channel' bei RAM-Steckplätzen? 🔄",
+        options: ["Zwei verschiedene RAM-Typen", "Zwei identische RAM-Module für parallelen Zugriff", "Doppelte Speicherkapazität", "Zwei verschiedene Betriebssysteme"],
+        correct: 1
+    },
+    {
+        question: "Wofür wird ein RAID-Controller verwendet? 💽",
+        options: ["Zur Virenbekämpfung", "Zur Verwaltung mehrerer Festplatten als logische Einheit", "Zur RAM-Erweiterung", "Zur CPU-Übertaktung"],
+        correct: 1
+    },
+    {
+        question: "Was ermöglicht ein mehrlagiger Aufbau des Mainboards? 📊",
+        options: ["Bessere Kühlung", "Mehr Leiterbahnen auf begrenztem Raum", "Geringeres Gewicht", "Höhere Stabilität"],
+        correct: 1
+    },
+    {
+        question: "Was sind VRMs auf dem Mainboard? ⚡",
+        options: ["Variable RAM Module", "Voltage Regulator Modules", "Video Rendering Mechanics", "Virtual Resource Management"],
+        correct: 1
+    },
+    {
+        question: "Was bestimmt den Formfaktor ATX? 📏",
+        options: ["Nur die Größe des Mainboards", "Nur die Position der Anschlüsse", "Größe, Bauteilpositionen, Befestigungslöcher und Energieversorgung", "Nur der Hersteller"],
+        correct: 2
+    },
+    {
+        question: "Welches Problem verursacht eine hohe Stromdichte auf dem Mainboard? 🔥",
+        options: ["Starke Erwärmung", "Zu laute Lüftergeräusche", "Datenverlust", "Niedrigere Leistung"],
+        correct: 0
+    },
+    {
+        question: "Was ist ein 'Header' auf dem Mainboard? 🔌",
+        options: ["Ein Teil des BIOS", "Ein interner Anschluss für Komponenten", "Ein Kühlkörper", "Ein Teil des Prozessors"],
+        correct: 1
+    },
+    {
+        question: "Welche Komponente auf dem Mainboard ermöglicht den Betrieb des BIOS ohne Stromversorgung? 🔋",
+        options: ["Prozessor", "Kondensator", "Stützbatterie", "Lüfter"],
+        correct: 2
+    },
+    {
+        question: "Was ist beim Supermicro CSE-826 ATX Mainboard X8DTN+ besonders? 🖥️",
+        options: ["Es unterstützt nur einen Prozessor", "Es hat 18 DIMM-Slots für bis zu 288 GiB RAM", "Es ist für Heimanwender konzipiert", "Es benötigt keine Kühlung"],
+        correct: 1
+    },
+    {
+        question: "Wenn ich untersuchen möchte, ob ein Mainboard für Übertaktung geeignet ist, worauf sollte ich gemäß der Präsentation achten? 🔎",
+        options: ["Dickere Leiterbahnen (z.B. 2x Copper PCBs)", "Nur auf die Größe des Mainboards", "Ausschließlich auf die CPU-Marke", "Die Farbe der PCB-Platte"],
+        correct: 0
+    },
+    {
+        question: "Vervollständige den Satz: 'Das Mainboard ist das ____ Bauteil in einem IT-System.' 🧩",
+        options: ["unwichtigste", "zentrale", "optionale", "kleinste"],
+        correct: 1
+    },
+    {
+        question: "Ein Kunde fragt dich: 'Warum unterscheiden sich die Mainboards bei PCs und Tablets?' Was ist laut Präsentation korrekt? 🤔",
+        options: ["Sie unterscheiden sich nicht", "PC-Mainboards haben immer mehr Anschlüsse", "PC-Mainboards sind genormt, Tablet-Mainboards proprietär", "Tablet-Mainboards sind immer leistungsfähiger"],
+        correct: 2
+    },
+    {
+        question: "Welches Risiko besteht laut Präsentation beim Einbau eines Mainboards? ⚠️",
+        options: ["Elektrostatische Entladung kann nur den Prozessor beschädigen", "Keine besonderen Risiken", "Die Leiterbahnen sind mechanisch nur wenig belastbar", "Mainboards sind vollständig stoßfest"],
+        correct: 2
+    },
+    {
+        question: "Ordne zu: Welche Komponente gehört NICHT zu den typischen Bestandteilen eines Mainboards? 🔍",
+        options: ["ROM-Chip für BIOS/UEFI", "Netzteil", "Steckplätze für Arbeitsspeicher", "Prozessorsockel"],
+        correct: 1
+    },
+    {
+        question: "Stell dir vor, du baust einen PC: Warum ist es wichtig, dass die Befestigungslöcher des Mainboards mit denen des Gehäuses übereinstimmen? 🔧",
+        options: ["Es hat keine Auswirkungen", "Es beeinflusst die Leistung der CPU", "Zur sicheren Befestigung und Vermeidung von Kurzschlüssen", "Es verbessert nur die Optik"],
+        correct: 2
+    },
+    {
+        question: "Ein Computer startet nicht mehr. Welche Mainboard-Komponente könnte laut Präsentation Schuld sein, wenn die Uhrzeit immer wieder zurückgesetzt wird? 🕒",
+        options: ["Defekte Stützbatterie", "Defekter Prozessor", "Defekter RAM", "Defekte Grafikkarte"],
+        correct: 0
+    },
+    {
+        question: "Aus wie vielen Schichten können die Leiterbahnen auf modernen Mainboards bestehen? 📊",
+        options: ["Nur einer Schicht", "Mehreren Schichten", "Maximal zwei Schichten", "Immer genau drei Schichten"],
+        correct: 1
+    },
+    {
+        question: "Du möchtest verstehen, was die rote und schwarze Farbe bei SATA-Anschlüssen bedeutet. Was ist richtig? 🎨",
+        options: ["Sie haben keine funktionale Bedeutung", "Rot = SATA III (schneller), Schwarz = SATA II", "Rot = nur für SSDs, Schwarz = nur für HDDs", "Rot = weniger Stromverbrauch, Schwarz = mehr Stromverbrauch"],
+        correct: 1
+    },
+    {
+        question: "Was passiert laut Präsentation, wenn eine dünne Leiterbahn von zu vielen Elektronen durchströmt wird? ⚡",
+        options: ["Die Leitung wird stärker übertaktet", "Das Mainboard wird schneller", "Die Leitung und das Mainboard erwärmen sich stark", "Es hat keine Auswirkungen"],
+        correct: 2
+    },
+    {
+        question: "Betrachte das Backpanel eines Mainboards: Wofür steht die Abkürzung eSATA dort? 💻",
+        options: ["External SATA", "Enhanced SATA", "Electronic SATA", "Extended SATA"],
+        correct: 0
+    },
+    {
+        question: "Was wäre KEINE typische Frage bei der Auswahl eines Mainboards laut der Präsentation? 🛒",
+        options: ["Passt der Prozessorsockel zur CPU?", "Welche Farbe hat das Mainboard?", "Welche Formfaktor-Anforderungen bestehen?", "Wie viele RAM-Steckplätze werden benötigt?"],
+        correct: 1
+    },
+    {
+        question: "Du packst ein Mainboard aus. Welche Vorsichtsmaßnahme ist laut Präsentation beim Handling NICHT notwendig? 📦",
+        options: ["Mainboard an den Rändern halten", "Mainboard auf antistatischer Unterlage ablegen", "Mainboard mit Wasser reinigen", "Erdung vor dem Anfassen"],
+        correct: 2
+    },
+    {
+        question: "Was bedeuten die Buchstaben 'ATX' bei einem Mainboard-Formfaktor? 📏",
+        options: ["Advanced Technology Extended", "Audio Technology Expansion", "Automated Thermal Exchange", "Adaptive Transfer Extension"],
+        correct: 0
+    },
+    {
+        question: "Finde den Fehler: Welche Aussage über das GIGABYTE 2x Copper PCB Design ist FALSCH? 🧐",
+        options: ["Es bietet mehr Material für Leiterbahnen", "Es hilft beim Übertakten", "Es verbessert die Wärmeableitung", "Es verringert die Anzahl der Anschlüsse"],
+        correct: 3
+    },
+    {
+        question: "Beim Einblick ins Computergehäuse: Wo befindet sich normalerweise die Stützbatterie auf dem Mainboard? 🔋",
+        options: ["Neben dem RAM", "In der Nähe des BIOS/UEFI-Chips", "Unter dem Prozessor", "Auf der Rückseite des Mainboards"],
+        correct: 1
+    },
+    {
+        question: "Warum verwendet GIGABYTE eine separate Audio-Hardware-Zone auf ihren Mainboards? 🎵",
+        options: ["Nur für das Marketing", "Um den Preis zu erhöhen", "Zum Schutz vor elektromagnetischen Interferenzen (EMI)", "Um mehr Audioanschlüsse anzubieten"],
+        correct: 2
+    },
+    {
+        question: "Welchen Vorteil bietet die Trennung von analogem und digitalem Ground auf Mainboards? 🛡️",
+        options: ["Schutz vor EMI", "Geringerer Stromverbrauch", "Höhere CPU-Geschwindigkeit", "Bessere Grafik"],
+        correct: 0
+    },
+    {
+        question: "Du siehst rot und schwarz gefärbte RAM-Steckplätze auf einem Mainboard. Was bedeutet das höchstwahrscheinlich? 🌈",
+        options: ["Verschiedene RAM-Typen", "Unterschiedliche Geschwindigkeiten", "Dual-Channel-Konfiguration", "Verschiedene Spannungen"],
+        correct: 2
+    },
+    {
+        question: "Ein Kunde möchte einen alten Computer aufrüsten. Warum könnte es problematisch sein, nur das Mainboard zu tauschen? 🔄",
+        options: ["Mainboards sind immer abwärtskompatibel", "Die Formfaktoren könnten nicht kompatibel sein", "Mainboards sind immer identisch", "Mainboards haben keine Kompatibilitätsprobleme"],
+        correct: 1
+    },
+    {
+        question: "Denkaufgabe: Wenn ein Mainboard zu heiß wird, was könnte laut der Präsentation ein Grund sein? 🌡️",
+        options: ["Zu viele angeschlossene USB-Geräte", "Zu dünne Leiterbahnen mit hoher Stromdichte", "Die Raumtemperatur ist zu hoch", "Die BIOS-Batterie ist zu alt"],
+        correct: 1
+    },
+    {
+        question: "Bei einer Server-Installation: Was zeichnet das Supermicro X8DTN+ Mainboard besonders aus? 🖥️",
+        options: ["Es unterstützt nur einen Prozessor", "Es hat besonders wenige RAM-Steckplätze", "Es unterstützt bis zu 288 GiB DDR3 Speicher", "Es ist für Heimanwender konzipiert"],
+        correct: 2
+    },
+    {
+        question: "Wie würdest du einem Kunden den Unterschied zwischen normalen und 2x Copper PCBs erklären? 💡",
+        options: ["Es hat keine technischen Vorteile", "Dickere Leiterbahnen können mehr Strom transportieren und weniger Wärme erzeugen", "Es betrifft nur die Optik", "Es verdoppelt die Anzahl der Anschlüsse"],
+        correct: 1
+    },
+    {
+        question: "Du findest auf einem alten Mainboard DIP-Schalter. Wozu dienten diese hauptsächlich? 🕹️",
+        options: ["Zur Steigerung der Prozessorleistung", "Zur Hardware-Konfiguration", "Als Stromschalter", "Zur Lüftersteuerung"],
+        correct: 1
+    },
+    {
+        question: "Analyse: Warum können Leiterbahnen auf einem Mainboard nicht beliebig dünn sein? 🔬",
+        options: ["Sie wären zu teuer", "Sie würden sich zu stark erwärmen", "Sie wären zu laut", "Sie würden zu viel Strom verbrauchen"],
+        correct: 1
+    },
+    {
+        question: "Ein Kunde mit einem Tablet fragt, ob er den Prozessor aufrüsten kann. Was antwortest du basierend auf der Präsentation? 🔄",
+        options: ["Ja, das ist einfach möglich", "Nein, bei Tablets ist der Prozessor meist verlötet", "Nur wenn das Tablet weniger als ein Jahr alt ist", "Ja, aber nur gegen den gleichen Prozessortyp"],
+        correct: 1
+    },
+    {
+        question: "Welche Aussage über Formfaktoren trifft NICHT zu? 📐",
+        options: ["Sie bestimmen die Größe des Mainboards", "Sie legen Lochabstände zur Befestigung fest", "Sie definieren Standards bei der Energieversorgung", "Sie haben keinen Einfluss auf die Kompatibilität mit Gehäusen"],
+        correct: 3
+    },
+    {
+        question: "Ein Kunde fragt nach einem Mainboard für Übertaktung. Was solltest du laut Präsentation empfehlen? 🚀",
+        options: ["Ein Mainboard mit 2x Copper PCB Design", "Ein möglichst kleines Mainboard", "Ein Mainboard ohne Kühlkörper", "Ein Mainboard ohne Audio-Zone"],
+        correct: 0
+    },
+    {
+        question: "Interpretation: Was passiert, wenn die Leiterbahnen auf einem Mainboard mechanisch zu stark belastet werden? 💥",
+        options: ["Sie können brechen und das Mainboard wird unbrauchbar", "Das Mainboard wird schneller", "Die Lüfter drehen schneller", "Die CPU wird übertaktet"],
+        correct: 0
+    },
+    {
+        question: "Entscheide: Welches dieser Teile fällt NICHT unter die Kategorie 'externe Anschlüsse' eines Mainboards? 🔄",
+        options: ["USB-Port", "HDMI-Anschluss", "SATA-Anschluss", "Audio-Buchse"],
+        correct: 2
+    },
+    {
+        question: "Beim Blick auf das Backpanel: Welcher Anschluss ist laut Abbildung für optisch-digitales Mehrkanal-Audio? 🔊",
+        options: ["USB 3.0", "eSATA", "Optischer S/PDIF-Ausgang", "RJ-45 (Netzwerk)"],
+        correct: 2
+    },
+    {
+        question: "Knifflig: Was haben Intel® 5520 Tylersburg, ICH10R und IOH-36D gemeinsam? 🧠",
+        options: ["Es sind Prozessoren", "Es sind RAM-Typen", "Es sind Komponenten eines Chipsatzes", "Es sind Lüftertypen"],
+        correct: 2
+    },
+    {
+        question: "Rätsel: Was ist am Mainboard für die Systemuhr verantwortlich und behält die Zeit auch ohne Stromversorgung? ⏰",
+        options: ["RTC mit Stützbatterie", "BIOS ohne Batterie", "CPU-Cache", "USB-Controller"],
+        correct: 0
+    },
+    {
+        question: "Bei der Mainboard-Fertigung: Aus welchem Material besteht die Trägerplatte eines Mainboards? 🧪",
+        options: ["Reines Silizium", "Kunstharz", "Aluminiumlegierung", "Reines Kupfer"],
+        correct: 1
+    },
+    {
+        question: "Worüber informiert die Präsentation bezüglich der Befestigungslöcher verschiedener Mainboard-Formfaktoren? ⚠️",
+        options: ["Sie sind immer identisch", "Sie müssen vor dem Einbau gebohrt werden", "Position und Anzahl stimmen nicht überein", "Sie sind unwichtig beim Einbau"],
+        correct: 2
+    },
+    {
+        question: "Kreuzworträtsel-Stil: '7 Buchstaben, Bezeichnung für Anschlüsse am hinteren Teil des Mainboards'? 🔤",
+        options: ["Frontpanel", "Backpanel", "Sidepanel", "Toppanel"],
+        correct: 1
+    },
+    {
+        question: "Bilderrätsel: Was zeigt die Abbildung mit 'Audio Hardware Zone' auf Folie 5 hauptsächlich? 🖼️",
+        options: ["Eine Grafikkarte", "Eine Methode zur EMI-Reduzierung", "Ein Kühlsystem", "Ein Netzteil"],
+        correct: 1
+    },
+    {
+        question: "Technische Analyse: Warum ist die Trennung von analog und digital auf dem Mainboard wichtig? 🔌",
+        options: ["Um Strom zu sparen", "Um EMI zu reduzieren", "Um mehr Anschlüsse zu haben", "Um das Design zu verbessern"],
+        correct: 1
+    },
+    {
+        question: "Kombiniere dein Wissen: Welches Problem löst ein Mainboard mit dickeren Kupferleiterbahnen NICHT? 🛠️",
+        options: ["Hohe Stromdichte", "Überhitzung", "Elektromagnetische Interferenz", "Mangelnde Anschlüsse"],
+        correct: 3
+    },
+    {
+        question: "Stelle dir vor: Ein Mainboard hat keine Befestigungsmöglichkeit im Gehäuse. Was kann passieren? ⚡",
+        options: ["Die CPU arbeitet langsamer", "Es können Kurzschlüsse entstehen", "Der RAM wird nicht erkannt", "Das BIOS startet nicht"],
+        correct: 1
+    },
+    {
+        question: "Verständnisfrage: Wenn ein Mainboard als 'proprietär' bezeichnet wird, was bedeutet das für den Besitzer? 🔒",
+        options: ["Es ist besonders langlebig", "Es ist schwer durch ein Standardmodell zu ersetzen", "Es ist besonders preiswert", "Es hat mehr Anschlüsse"],
+        correct: 1
+    },
+    {
+        question: "Memory-Spiel: Welche dieser Komponenten ist NICHT auf Folie 7 als Mainboard-Bestandteil aufgeführt? 🎮",
+        options: ["ROM-Chip für BIOS/UEFI", "Steckplätze für Arbeitsspeicher", "Grafikkarte", "Stützbatterie für das BIOS/UEFI"],
+        correct: 2
+    },
+    {
+        question: "Schätzfrage: Wie viele DIMM-Slots hat das Supermicro X8DTN+ Mainboard laut Präsentation? 🔢",
+        options: ["8", "12", "18", "24"],
+        correct: 2
+    },
+    {
+        question: "Logik-Aufgabe: Was muss man laut Präsentation vor dem Kauf eines Mainboards vom Kunden erfragen? 🤔",
+        options: ["Nur den Preis", "Die gewünschte Farbe", "Die Anforderungen an Größe und Ausstattung", "Das Gewicht des Computers"],
+        correct: 2
+    },
+    {
+        question: "Anwendungsfrage: Wozu dient der silberne Halterahmen beim Prozessorsockel? 🔨",
+        options: ["Zur Kühlung", "Zur Fixierung des Hauptprozessors", "Zur Verzierung", "Zur Abschirmung vor EMI"],
+        correct: 1
+    },
+    {
+        question: "Interpretiere die Abbildung: Was zeigt das Mainboard-Beispiel auf Folie 17? 📷",
+        options: ["Ein Server-Mainboard", "Ein Gaming-Mainboard", "Ein Tablet-PC-Mainboard mit verlötetem Prozessor", "Ein Standard-Office-Mainboard"],
+        correct: 2
+    },
+    {
+        question: "Vervollständige: Die Präsentation empfiehlt Vorsicht beim Einbau des Mainboards, weil... ⚠️",
+        options: ["...es zu schwer ist", "...es zu leicht ist", "...die Leiterbahnen mechanisch nur wenig belastbar sind", "...es zu viele Anschlüsse hat"],
+        correct: 2
+    },
+    {
+        question: "Beobachtungsfrage: Welche Farbe haben die schnelleren SATA-III-Anschlüsse im Beispiel auf Folie 11? 🔍",
+        options: ["Blau", "Schwarz", "Rot", "Grün"],
+        correct: 2
+    },
+    {
+        question: "Was bezeichnet 'LGA' bei einem Prozessorsockel wie dem 'Sockel 2011' von Intel? 🧩",
+        options: ["Large Grid Array", "Land Grid Array", "Linear Graphics Adapter", "Local Grid Access"],
+        correct: 1
+    },
+    {
+        question: "Technologie-Geschichte: Was war laut der Präsentation ein frühes Feature älterer Mainboards, das heute selten zu finden ist? 🕰️",
+        options: ["USB-Anschlüsse", "SATA-Anschlüsse", "Jumper und/oder DIP-Schalter", "HDMI-Ports"],
+        correct: 2
+    },
+    {
+        question: "Vervollständige den Satz: 'Die Leiterbahnen auf einem Mainboard sind mehrlagig und bestehen aus...' 🔍",
+        options: ["Aluminiumplatten", "dünnen Kupfer- oder Silberschichten", "Glasfaserkabeln", "dicken Golddrähten"],
+        correct: 1
+    },
+    {
+        question: "Richtig oder falsch: Ein Mainboard für einen PC kann problemlos in einem Tablet verwendet werden. 📱",
+        options: ["Richtig, sie sind vollständig kompatibel", "Falsch, PC-Mainboards sind genormt, Tablet-Mainboards sind proprietär", "Richtig, mit kleinen Anpassungen", "Falsch, aber nur wegen der Größe"],
+        correct: 1
+    },
+    {
+        question: "Welches Problem löst der Hersteller GIGABYTE mit seinem '2x Copper PCBs design'? ⚡",
+        options: ["Zu langsame Datenübertragung", "Zu laute Betriebsgeräusche", "Hohe Stromdichte und Erwärmung", "Zu geringe Speicherkapazität"],
+        correct: 2
+    },
+    {
+        question: "Ordne zu: Was gehört NICHT zu den typischen Bestandteilen eines Mainboards? 🧩",
+        options: ["BIOS/UEFI ROM-Chip", "Speicherbänke für RAM", "Festplatten (HDDs)", "Steckplätze für Erweiterungskarten"],
+        correct: 2
+    },
+    {
+        question: "Im Bild auf Folie 12 sind verschiedene Anschlüsse nummeriert. Was ist Anschluss Nummer 7? 🔌",
+        options: ["USB 2.0", "Gigabit-Netzwerk", "eSATA", "Mehrkanal-Audio optisch-digital"],
+        correct: 3
+    },
+    {
+        question: "Was wäre die direkte Konsequenz, wenn man ein Mainboard mit falschem Formfaktor in ein Gehäuse einbauen würde? 🛠️",
+        options: ["Die Befestigungslöcher passen nicht", "Der Computer würde überhitzen", "Es gäbe Softwareprobleme", "Die CPU würde beschädigt"],
+        correct: 0
+    },
+    {
+        question: "Analysiere: Warum haben Speicherbänke auf manchen Mainboards unterschiedliche Farben? 🎨",
+        options: ["Nur für ästhetische Zwecke", "Um verschiedene RAM-Generationen zu kennzeichnen", "Um die Dual-Channel-Konfiguration anzuzeigen", "Um die maximale Speicherkapazität anzuzeigen"],
+        correct: 2
+    },
+    {
+        question: "Wie viele DIMM-Slots hat das Supermicro CSE-826 ATX Mainboard X8DTN+ laut der Präsentation? 🔢",
+        options: ["8", "12", "16", "18"],
+        correct: 3
+    },
+    {
+        question: "Das Foto auf Folie 13 zeigt ein Mainboard eines Tablet-PCs. Was ist daran besonders im Vergleich zu PC-Mainboards? 🔎",
+        options: ["Es hat mehr Anschlüsse", "Es hat gar keine Anschlüsse", "CPU und RAM sind verlötet", "Es hat keinen Prozessor"],
+        correct: 2
+    },
+    {
+        question: "Wenn du ein Mainboard mit 'dedizierter Audio-Hardware-Zone' kaufst, welches Problem wird damit hauptsächlich adressiert? 🔊",
+        options: ["Zu geringe Lautstärke", "Elektromagnetische Interferenzen", "Zu wenige Audio-Anschlüsse", "Mangelnde Bass-Wiedergabe"],
+        correct: 1
+    },
+    {
+        question: "Stelle dir vor, du musst ein Mainboard austauschen. Was musst du VOR dem Kauf eines neuen unbedingt prüfen? 📋",
+        options: ["Nur den Preis", "Formfaktor und Prozessorsockel", "Nur die Marke", "Nur die Farbe"],
+        correct: 1
+    },
+    {
+        question: "Auf Folie 22 ist ein Backpanel abgebildet. Was befindet sich an Position 5? 🖥️",
+        options: ["PS/2-Anschluss", "USB 2.0", "eSATA", "Audio-Anschluss"],
+        correct: 2
+    },
+    {
+        question: "Was könnte passieren, wenn die Leiterbahnen auf einem Mainboard mechanisch zu stark belastet werden? ⚠️",
+        options: ["Sie könnten beschädigt werden", "Nichts, sie sind robust", "Die Lüfter würden schneller laufen", "Der Arbeitsspeicher wird schneller"],
+        correct: 0
+    },
+    {
+        question: "Stell dir vor, ein Kunde fragt nach einem Mainboard für seinen neuen PC. Welche Information musst du NICHT erfragen? 🤔",
+        options: ["Gewünschter Prozessor", "Benötigte Anschlüsse", "Gewünschte Farbe des Mainboards", "Größe des Gehäuses"],
+        correct: 2
+    },
+    {
+        question: "Ein Mainboard wird als 'ATX' bezeichnet. Worauf bezieht sich diese Angabe? 📏",
+        options: ["Die Leistungsfähigkeit", "Den Hersteller", "Den Formfaktor", "Die Anzahl der USB-Anschlüsse"],
+        correct: 2
+    },
+    {
+        question: "Betrachte die Abbildung auf Folie 15: Welcher Formfaktor hat die GERINGSTE Größe? 📉",
+        options: ["ATX", "Mini-ITX", "Micro-ATX", "SSI-CEB"],
+        correct: 1
+    },
+    {
+        question: "Aus der Perspektive eines Technikers: Was ist der Vorteil eines abnehmbaren CPU-Sockels gegenüber einer verlöteten CPU? 🔧",
+        options: ["Bessere Leistung", "Einfachere Aufrüstbarkeit", "Geringerer Stromverbrauch", "Bessere Kühlung"],
+        correct: 1
+    },
+    {
+        question: "Wenn ein Mainboard die Bezeichnung 'Z97X' trägt, worauf bezieht sich wahrscheinlich die Angabe 'Z97'? 💭",
+        options: ["Die Größe", "Den Chipsatz", "Die maximale RAM-Kapazität", "Die Anzahl der USB-Anschlüsse"],
+        correct: 1
+    },
+    {
+        question: "Schätze: Wie viele Prozessoren kann das Supermicro CSE-826 ATX Mainboard maximal aufnehmen? 🧮",
+        options: ["Einen", "Zwei", "Vier", "Acht"],
+        correct: 1
+    },
+    {
+        question: "Auf der Folie 11 sind SATA-Anschlüsse in verschiedenen Farben zu sehen. Welche Farbe haben die SATA-II-Anschlüsse? ⚫",
+        options: ["Rot", "Blau", "Schwarz", "Gelb"],
+        correct: 2
+    },
+    {
+        question: "Entscheide: Welche der folgenden Aussagen zum Mainboard ist laut Präsentation FALSCH? ❌",
+        options: ["Es enthält den Hauptprozessor", "Es verbindet alle Komponenten", "Es besteht aus einer Trägerplatte aus Kunstharz", "Bei älteren Modellen können Jumper vorhanden sein"],
+        correct: 0
+    },
+    {
+        question: "Was bedeutet die Abkürzung 'LGA' bei einem Prozessorsockel wie 'LGA 2011'? 🔤",
+        options: ["Low Grade Access", "Linear Grid Array", "Land Grid Array", "Large Gate Access"],
+        correct: 2
+    },
+    {
+        question: "Vergleiche: Warum könnten dickere Leiterbahnen auf einem Mainboard vorteilhaft sein? 📊",
+        options: ["Sie ermöglichen höhere Übertragungsgeschwindigkeiten", "Sie benötigen weniger Platz", "Sie erwärmen sich weniger bei hohen Stromstärken", "Sie sind billiger in der Herstellung"],
+        correct: 2
+    },
+    {
+        question: "Auf Folie 20 wird ein Server-Mainboard beschrieben. Welcher Chipsatz wird dabei verwendet? 🖥️",
+        options: ["Intel 5520 (Tylersburg)", "AMD X570", "Intel Z97", "NVIDIA nForce"],
+        correct: 0
+    },
+    {
+        question: "Löse das Rätsel: Ich bin ein Bauteil auf dem Mainboard, sorge für die Zeitmessung und funktioniere auch ohne Hauptstromversorgung. Was bin ich? ⏰",
+        options: ["CPU", "RTC (Real-Time Clock)", "RAM", "BIOS"],
+        correct: 1
+    },
+    {
+        question: "Angenommen, ein Mainboard hat 'RAID-Controller' - wofür würde man diesen verwenden? 💾",
+        options: ["Zur Virenabwehr", "Zur Verwaltung mehrerer Festplatten", "Zur Netzwerkverwaltung", "Zur Übertaktung der CPU"],
+        correct: 1
+    },
+    {
+        question: "Erkenne den Zusammenhang: Warum sind proprietäre Mainboards in Tablets problematisch bei Reparaturen? 🔍",
+        options: ["Sie sind zu klein", "Sie können nicht einfach durch standardisierte Modelle ersetzt werden", "Sie sind zu teuer", "Sie haben zu wenige Anschlüsse"],
+        correct: 1
+    },
+    {
+        question: "Was bedeutet es, wenn ein Mainboard als 'LN2' bezeichnet wird (wie bei GA-Z97X-SOC Force LN2)? ❄️",
+        options: ["Low Noise Level 2", "Limited Network 2", "Liquid Nitrogen (für extreme Übertaktung)", "Long Node 2"],
+        correct: 2
+    },
+    {
+        question: "Wenn du ein Mainboard aus dem Gehäuse entfernst, was solltest du laut Präsentation besonders beachten? 🛠️",
+        options: ["Die Leiterbahnen sind mechanisch anfällig", "Die Farbe könnte abblättern", "Das BIOS könnte gelöscht werden", "Die Anschlüsse könnten rosten"],
+        correct: 0
+    },
+    {
+        question: "Auf einem Mainboard sind verschiedene passive Bauteile zu finden. Welche werden in der Präsentation NICHT erwähnt? 🔋",
+        options: ["Quartze", "Spulen", "Transistoren", "Kondensatoren"],
+        correct: 2
+    }                           
+        ];
+
+        // Game state
+        let currentQuestions = [];
+        let score = 0;
+        let xp = 0;
+        let totalXP = 0;
+        let level = 1;
+        let darkMode = true;
+        let currentStreak = 0;
+        let bestStreak = 0;
+        let totalCorrect = 0;
+        let totalQuestions = 0;
+        let totalQuizzes = 0;
+        let badges = {
+            beginner: false,  // 100 XP
+            intermediate: false,  // 250 XP
+            advanced: false,  // 500 XP
+            master: false     // 1000 XP
+        };
+
+        // Load saved data if available
+        function loadSavedData() {
+            const savedData = localStorage.getItem('hardwareQuizData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                level = data.level || 1;
+                xp = data.xp || 0;
+                totalXP = data.totalXP || 0;
+                totalCorrect = data.totalCorrect || 0;
+                totalQuestions = data.totalQuestions || 0;
+                totalQuizzes = data.totalQuizzes || 0;
+                bestStreak = data.bestStreak || 0;
+                badges = data.badges || {
+                    beginner: false,
+                    intermediate: false,
+                    advanced: false,
+                    master: false
+                };
+                darkMode = data.darkMode !== undefined ? data.darkMode : true;
+                
+                updateLevel();
+                updateBadges();
+                updateStats();
+                document.getElementById('total-xp').textContent = totalXP;
+            }
+        }
+
+        // Save game data
+        function saveGameData() {
+            const gameData = {
+                level,
+                xp,
+                totalXP,
+                totalCorrect,
+                totalQuestions,
+                totalQuizzes,
+                bestStreak,
+                badges,
+                darkMode
+            };
+            localStorage.setItem('hardwareQuizData', JSON.stringify(gameData));
+        }
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            darkMode = false;
+        }
+
+        function initTheme() {
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.querySelector('.fixed-header').style.backgroundColor = 
+                darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+        }
+
+        function toggleTheme() {
+            darkMode = !darkMode;
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.querySelector('.fixed-header').style.backgroundColor = 
+                darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+            saveGameData();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectRandomQuestions() {
+            const shuffled = shuffleArray([...questions]);
+            return shuffled.slice(0, 20);
+        }
+
+        function celebrateSuccess() {
+            const duration = 3 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti({
+                    ...defaults,
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                });
+                confetti({
+                    ...defaults,
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                });
+            }, 250);
+        }
+
+        function showAchievementPopup(title, icon, description) {
+            document.getElementById('achievement-title').textContent = title;
+            document.getElementById('achievement-icon').textContent = icon;
+            document.getElementById('achievement-description').textContent = description;
+            
+            document.getElementById('achievement-popup').classList.add('show');
+            document.getElementById('overlay').classList.add('show');
+            
+            celebrateSuccess();
+        }
+
+        function closeAchievementPopup() {
+            document.getElementById('achievement-popup').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        function updateProgressBar() {
+            const percent = Math.min(100, Math.round((score / 20) * 100));
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-label').textContent = `${percent}%`;
+        }
+
+        function updateStreak(isCorrect) {
+            if (isCorrect) {
+                currentStreak++;
+                document.getElementById('streak-flame').classList.add('active');
+            } else {
+                currentStreak = 0;
+                document.getElementById('streak-flame').classList.remove('active');
+            }
+            
+            if (currentStreak > bestStreak) {
+                bestStreak = currentStreak;
+            }
+            
+            document.getElementById('streak-text').textContent = `Aktuelle Serie: ${currentStreak}`;
+        }
+
+        function updateLevel() {
+            const xpNeeded = level * 100;
+            
+            if (xp >= xpNeeded && level < 10) {
+                xp -= xpNeeded;
+                level++;
+                celebrateSuccess();
+                showFeedback(`🎉 Glückwunsch! Du hast Level ${level} erreicht!`, true);
+            }
+            
+            document.getElementById('level').textContent = level;
+            document.getElementById('xp-display').textContent = `XP: ${xp}/${level * 150}`;
+        }
+
+        function checkForBadges() {
+            const previousBadges = {...badges};
+            
+            // Check if total XP meets badge requirements
+            if (totalXP >= 100 && !badges.beginner) {
+                badges.beginner = true;
+                showAchievementPopup("Anfänger Badge freigeschaltet!", "🥉", "Du hast 100 XP gesammelt!");
+            }
+            else if (totalXP >= 350 && !badges.intermediate) {
+                badges.intermediate = true;
+                showAchievementPopup("Fortgeschrittener Badge freigeschaltet!", "🥈", "Du hast 350 XP gesammelt!");
+            }
+            else if (totalXP >= 750 && !badges.advanced) {
+                badges.advanced = true;
+                showAchievementPopup("Profi Badge freigeschaltet!", "🥇", "Du hast 750 XP gesammelt!");
+            }
+            else if (totalXP >= 1500 && !badges.master) {
+                badges.master = true;
+                showAchievementPopup("Meister Badge freigeschaltet!", "👑", "Du hast 1500 XP gesammelt!");
+            }
+            
+            // If any badge changed, update the display
+            if (JSON.stringify(previousBadges) !== JSON.stringify(badges)) {
+                updateBadges();
+            }
+        }
+
+        function updateBadges() {
+            if (badges.beginner) {
+                document.getElementById('badge-beginner').classList.add('earned');
+            }
+            if (badges.intermediate) {
+                document.getElementById('badge-intermediate').classList.add('earned');
+            }
+            if (badges.advanced) {
+                document.getElementById('badge-advanced').classList.add('earned');
+            }
+            if (badges.master) {
+                document.getElementById('badge-master').classList.add('earned');
+            }
+            
+            // Count earned badges
+            const earnedCount = Object.values(badges).filter(value => value).length;
+            document.getElementById('earned-badges').textContent = earnedCount;
+        }
+
+        function updateStats() {
+            document.getElementById('total-quizzes').textContent = totalQuizzes;
+            document.getElementById('total-correct').textContent = totalCorrect;
+            document.getElementById('best-streak').textContent = bestStreak;
+            
+            const averageScore = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) / 10 : 0;
+            document.getElementById('average-score').textContent = averageScore;
+        }
+
+        function showFeedback(message, isSuccess) {
+            const feedbackElement = document.getElementById('feedback-message');
+            feedbackElement.textContent = message;
+            feedbackElement.className = '';
+            feedbackElement.classList.add(isSuccess ? 'feedback-success' : 'feedback-error');
+            feedbackElement.style.opacity = 1;
+            
+            setTimeout(() => {
+                feedbackElement.style.opacity = 0;
+            }, 3000);
+        }
+
+        function toggleStats() {
+            const statsContainer = document.getElementById('stats-container');
+            statsContainer.classList.toggle('hidden');
+        }
+
+        function checkAnswer(questionIndex, selectedOption) {
+            const question = currentQuestions[questionIndex];
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            const isCorrect = selectedOption === question.correct;
+            
+            totalQuestions++;
+
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                }
+                if (index === selectedOption && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                totalCorrect++;
+                
+                // Base points
+                const basePoints = 5;
+                
+                // Bonus points for streak
+                const streakBonus = currentStreak > 0 ? Math.min(5, currentStreak) : 0;
+                
+                // Level bonus
+                const levelBonus = Math.floor(level / 2);
+                
+                // Calculate total XP gained
+                const xpGained = basePoints + streakBonus + levelBonus;
+                xp += xpGained;
+                totalXP += xpGained;
+                
+                document.getElementById('score').textContent = `Punktzahl: ${score} Punkte 📊`;
+                document.getElementById('total-xp').textContent = totalXP;
+                updateProgressBar();
+                updateLevel();
+                showFeedback(`+${xpGained} XP! ${streakBonus > 0 ? `(+${streakBonus} Streak Bonus)` : ''}`, true);
+                
+                document.getElementById('score').classList.add('pop-animation');
+                setTimeout(() => {
+                    document.getElementById('score').classList.remove('pop-animation');
+                }, 500);
+
+                if (score === 20) {
+                    celebrateSuccess();
+                    totalQuizzes++;
+                    
+                    setTimeout(() => {
+                        alert('🎉 Perfekt! Du hast alle Fragen richtig beantwortet! 🏆');
+                    }, 500);
+                }
+                
+                // Check for badge unlocks based on total XP
+                checkForBadges();
+            } else {
+                showFeedback('Das war leider falsch. Versuche es weiter!', false);
+            }
+            
+            updateStreak(isCorrect);
+            saveGameData();
+            updateStats();
+
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        function createQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            score = 0;
+            document.getElementById('score').textContent = 'Punktzahl: 0 Punkte 📊';
+            updateProgressBar();
+
+            currentQuestions.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.id = `question-${questionIndex}`;
+
+                // Randomize options but keep track of correct answer
+                const originalCorrectIndex = question.correct;
+                const optionsCopy = [...question.options];
+                const randomizedOptions = [];
+                const optionMapping = []; // Maps new indices to original indices
+                
+                // Randomly select options until none remain
+                while (optionsCopy.length > 0) {
+                    const randIndex = Math.floor(Math.random() * optionsCopy.length);
+                    const originalIndex = question.options.indexOf(optionsCopy[randIndex]);
+                    randomizedOptions.push(optionsCopy[randIndex]);
+                    optionMapping.push(originalIndex);
+                    optionsCopy.splice(randIndex, 1);
+                }
+                
+                // Find new position of correct answer
+                const newCorrectIndex = optionMapping.indexOf(originalCorrectIndex);
+                
+                // Store the new correct index in the current question object
+                currentQuestions[questionIndex].randomizedCorrect = newCorrectIndex;
+
+                questionDiv.innerHTML = `
+                    <h3>Frage ${questionIndex + 1}</h3>
+                    <p>${question.question}</p>
+                    ${randomizedOptions.map((option, index) => `
+                        <div class="option" onclick="checkAnswer(${questionIndex}, ${index})">${option}</div>
+                    `).join('')}
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(questionIndex, selectedOption) {
+            const question = currentQuestions[questionIndex];
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            const isCorrect = selectedOption === question.randomizedCorrect;
+            
+            totalQuestions++;
+
+            options.forEach((option, index) => {
+                if (index === question.randomizedCorrect) {
+                    option.classList.add('correct');
+                }
+                if (index === selectedOption && index !== question.randomizedCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                totalCorrect++;
+                
+                // Base points
+                const basePoints = 5;
+                
+                // Bonus points for streak
+                const streakBonus = currentStreak > 0 ? Math.min(5, currentStreak) : 0;
+                
+                // Level bonus
+                const levelBonus = Math.floor(level / 2);
+                
+                // Calculate total XP gained
+                const xpGained = basePoints + streakBonus + levelBonus;
+                xp += xpGained;
+                totalXP += xpGained;
+                
+                document.getElementById('score').textContent = `Punktzahl: ${score} Punkte 📊`;
+                document.getElementById('total-xp').textContent = totalXP;
+                updateProgressBar();
+                updateLevel();
+                showFeedback(`+${xpGained} XP! ${streakBonus > 0 ? `(+${streakBonus} Streak Bonus)` : ''}`, true);
+                
+                document.getElementById('score').classList.add('pop-animation');
+                setTimeout(() => {
+                    document.getElementById('score').classList.remove('pop-animation');
+                }, 500);
+
+                if (score === 20) {
+                    celebrateSuccess();
+                    totalQuizzes++;
+                    
+                    setTimeout(() => {
+                        alert('🎉 Perfekt! Du hast alle Fragen richtig beantwortet! 🏆');
+                    }, 500);
+                }
+                
+                // Check for badge unlocks based on total XP
+                checkForBadges();
+            } else {
+                showFeedback('Das war leider falsch. Versuche es weiter!', false);
+            }
+            
+            updateStreak(isCorrect);
+            saveGameData();
+            updateStats();
+
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        function newQuiz() {
+            currentQuestions = selectRandomQuestions();
+            createQuiz();
+            currentStreak = 0;
+            document.getElementById('streak-text').textContent = `Aktuelle Serie: ${currentStreak}`;
+            document.getElementById('streak-flame').classList.remove('active');
+        }
+
+        // Fix header on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.fixed-header');
+            header.style.backgroundColor = darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+        });
+
+        // Initialize the game
+        initTheme();
+        loadSavedData();
+        newQuiz();
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            darkMode = event.matches;
+            document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.querySelector('.fixed-header').style.backgroundColor = 
+                darkMode ? 'var(--bg-color)' : 'var(--bg-color)';
+            saveGameData();
+        });
+    </script>
+</body>
+</html>
