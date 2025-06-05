@@ -1,0 +1,3444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro Learning Content</title>
+    <style>        /* Duolingo-inspirierte Dark Mode Design-Variablen */
+        :root {
+            --primary-color: #5e43b5; /* Beibehalten für Akzente, falls benötigt */
+            --secondary-color: #ffa726; /* Beibehalten für Akzente */
+            
+            /* Haupt-Dark-Theme Farben */
+            --dark-bg: #121212; /* Äußerster Hintergrund (Body) */
+            --app-bg: #1E1E1E; /* Hintergrund des Haupt-App-Containers mit Grid */
+            --card-bg: #242424; /* Hintergrund für Inhaltskarten, etwas heller */
+            --header-bg: #1A1A1A; /* Hintergrund für den Header */
+            
+            --text-color-primary: #f0f0f0; /* Primäre helle Textfarbe */
+            --text-color-secondary: #b0b0b0; /* Sekundäre helle Textfarbe */
+            --text-color: #f0f0f0; /* Kompatibilität mit bestehendem Code */            --text-secondary: #b0b0b0; /* Kompatibilität mit bestehendem Code */
+              --border-radius: 16px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 24px;
+            --spacing-lg: 40px;
+            --spacing-xl: 52px; /* 120% größer als --spacing-lg für Textbox-Inhalte */
+            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); /* Angepasster Schatten für Dark Mode */
+            --grid-line-color: rgba(255, 255, 255, 0.05); /* Sehr dezente Gitterlinien */
+            --border-color: #383838; /* Allgemeine Randfarbe für dunkle Elemente */            /* Design-UI-Elemente (angepasst für Dark Mode) */
+            --progress-bar-bg: #383838;
+            --progress-bar-fill: #7F5AF0; /* CHANGED: Lila für Fortschrittsbalken */
+            --button-primary-bg: #7F5AF0; /* CHANGED: Lila für primäre Buttons */
+            --button-primary-text: #ffffff;
+            --button-primary-shadow: 0 4px 0 #6A48D0; /* CHANGED: Dunkellila für Button-Schatten */
+            --button-disabled-bg: #444444;
+            --button-disabled-text: #888888;
+            --word-choice-bg: #2c2c2c;
+            --word-choice-border: #4a4a4a;
+            --word-choice-text: var(--text-color-primary);
+            --header-border: var(--border-color);
+        }        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }        body {
+            background-color: var(--dark-bg); /* Dunkelster Hintergrund */
+            color: var(--text-color-primary); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Oben starten, da main-app-container ggf. margin hat */
+            height: 100vh; /* FIXED: Use exact height instead of min-height */
+            overflow: hidden; /* FIXED: Completely prevent body scrolling */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }          .main-app-container {
+            width: 100%;
+            /* Hintergrund und Gitter für den App-Container */
+            background-color: var(--app-bg); 
+            background-image:
+                linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* FIXED: Use exact viewport height */
+            overflow-y: auto; /* FIXED: Only main container scrolls */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            max-height: 100vh; /* CRITICAL: Prevent expanding beyond viewport */
+            
+            /* Hide scrollbars while keeping scroll functionality */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        /* Hide scrollbars for WebKit browsers (Chrome, Safari, Edge) */
+        .main-app-container::-webkit-scrollbar {
+            display: none;
+        }/* Modern Header */        .micro-header {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--header-border);
+            background-color: var(--header-bg); /* Eigener Hintergrund für Header */
+            height: 3.75rem; /* RESPONSIVE: Use rem instead of px (60px = 3.75rem) */
+            flex-shrink: 0;
+            width: 100%; /* Header immer volle Breite */
+        }
+
+        .nav-button-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-color-secondary);
+            cursor: pointer;
+            padding: 0 var(--spacing-sm);
+        }
+        .nav-button-close:hover {
+            color: var(--text-color-primary);
+        }        .progress-bar-container {
+            flex-grow: 1;
+            height: 1rem; /* RESPONSIVE: Use rem instead of px (16px = 1rem) */
+            background-color: var(--progress-bar-bg);
+            border-radius: 0.5rem; /* RESPONSIVE: Use rem (8px = 0.5rem) */
+            overflow: hidden;
+            margin: 0 var(--spacing-md);
+        }        .progress-bar-fill {            width: 0%;
+            height: 100%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 0.5rem; /* RESPONSIVE: Use rem (8px = 0.5rem) */
+            transition: width 0.3s ease-in-out;        }        /* Wrapper für den Hauptinhalt (Slides), der auf Desktop zentriert wird */        .content-area-wrapper {
+            width: 100%;
+            flex-grow: 1; /* FIXED: Allow wrapper to expand for content */
+            flex-shrink: 0; /* Don't shrink */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Content starts at top */
+            height: auto; /* FIXED: Auto height for dynamic content */
+            min-height: 0; /* FIXED: Allow shrinking below flex-basis */
+            overflow: visible; /* FIXED: Allow scrolling when needed */
+            padding-bottom: 100px; /* CRITICAL: Space for fixed footer (80px + margin) */
+        }/* Slides Container and Individual Slides */        .slides-container {
+            flex-grow: 1; /* FIXED: Allow container to grow to accommodate content */
+            flex-shrink: 0; /* Don't shrink */
+            position: relative;
+            display: flex;
+            overflow: visible; /* FIXED: Allow scrolling when needed */
+            height: auto; /* FIXED: Auto height instead of fit-content */
+            min-height: fit-content; /* FIXED: Height based on active slide content */
+        }.micro-slide {
+            min-width: 100%;
+            height: fit-content; /* Dynamic height based on content */
+            min-height: auto; /* FIXED: Remove excessive min-height */
+            display: flex; /* Always flex, controlled by opacity and transform */
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(100%); /* Start off-screen to the right */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 0;
+            overflow-y: visible; /* FIXED: Allow natural scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            padding-bottom: 1.5rem; /* FIXED: Reduced padding to 1.5rem */
+        }        .micro-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 1;
+            position: relative !important; /* FIXED: Active slide determines container height */
+        }
+
+        /* SLIDES CONTAINER - ALLOW DYNAMIC HEIGHT */
+        .slides-container {
+            flex-grow: 1; /* FIXED: Allow container to grow to accommodate content */
+            flex-shrink: 0; /* Don't shrink */
+            position: relative;
+            display: flex;
+            overflow: visible; /* FIXED: Allow scrolling when needed */
+            height: auto; /* FIXED: Auto height instead of fit-content */
+            min-height: fit-content; /* FIXED: Height based on active slide content */
+        }/* MAIN CONTAINER - DYNAMIC HEIGHT, NO UNNECESSARY SCROLLING */
+        .micro-container-slide-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;            height: fit-content !important; /* FIXED: Dynamic height based on content */
+            min-height: auto; /* FIXED: Remove excessive min-height */
+            padding: var(--spacing-md);
+            overflow: visible; /* Allow content to extend */
+        }
+        
+        /* RESTRUCTURE EXISTING CONTENT TO MATCH DESIGN */
+        .micro-container-slide-content .knowledge-content,
+        .micro-container-slide-content .visual-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+          /* EXTRACT TITLES FROM CONTENT BOXES - LIKE DESIGN TEMPLATE */
+        .micro-container-slide-content .micro-title {
+            margin-bottom: var(--spacing-lg);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-color-primary);
+            text-align: left;
+            flex-shrink: 0;
+            order: -1; /* Put title first, OUTSIDE the content box */
+            background: none !important; /* No background */
+            border: none !important; /* No border */
+            box-shadow: none !important; /* No shadow */
+            padding: 0 !important; /* No padding */
+        }
+          /* ENSURE TITLES ARE POSITIONED ABOVE CONTENT BOXES */
+        .knowledge-content .micro-title,
+        .visual-content .micro-title {
+            position: absolute;
+            top: calc(-1.75rem - var(--spacing-md)); /* Position above the content box with smaller gap */
+            left: 0;
+            right: 0;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }/* TITLE STYLING - MATCH DESIGN TEMPLATE */
+        .micro-title {
+            margin-bottom: var(--spacing-lg);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-color-primary);
+            text-align: left;
+            width: 100%;
+        }        /* CONTENT BOXES - DYNAMIC HEIGHT BASED ON CONTENT */        .knowledge-content {
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--border-radius); 
+            padding: calc(var(--spacing-xl) * 2); /* IMPROVED: 200% größeres padding für optimale Textabstände */
+            box-shadow: var(--card-shadow); 
+            color: var(--text-color-primary);
+            width: 100%;
+            min-height: fit-content; /* Minimum height fits content */
+            height: fit-content; /* Dynamic height based on actual content */
+            max-height: none; /* Remove any height restrictions */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Text content aligned to top */
+            overflow: visible; /* No internal scrolling */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin-bottom: var(--spacing-md);
+            margin-top: calc(0.75rem + var(--spacing-md)); /* 50% smaller gap between title and box */
+            position: relative; /* For absolute positioned title */
+        }/* RESPONSIVE VISUAL DIMENSIONS: 1024x768 (4:3 Format) */
+        .visual-content {
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--border-radius); 
+            box-shadow: var(--card-shadow); 
+            color: var(--text-color-primary);
+            
+            /* Base dimensions: 1024x768 (4:3) - Responsive scaling */
+            width: 1024px;
+            height: 768px;
+            aspect-ratio: 4 / 3; /* Maintain 4:3 ratio */
+            
+            /* Responsive constraints */
+            max-width: 90vw;
+            max-height: 60vh;
+            
+            /* Maintain aspect ratio and center content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            
+            /* No padding - iframe fills entire visual area */
+            padding: 0;
+            overflow: hidden; /* Clip content to exact dimensions */
+            margin: 0 auto; /* Center horizontally */
+            position: relative;
+            flex-shrink: 0;
+            
+            /* Scale down uniformly when needed */
+            transform-origin: center center;
+        }
+        
+        /* Desktop - Full size when screen is large enough */
+        @media (min-width: 1200px) and (min-height: 900px) {
+            .visual-content {
+                width: 1024px;
+                height: 768px;
+                max-width: 1024px;
+                max-height: 768px;
+            }
+        }
+        
+        /* Tablet - Scale down proportionally */
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .visual-content {
+                width: min(80vw, 1024px);
+                height: auto; /* Let aspect-ratio control height */
+                max-width: 80vw;
+                max-height: 50vh;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .knowledge-content {
+                padding: 3rem; /* RESPONSIVE: 200% larger padding for optimal text spacing */
+            }
+        }
+        
+        /* Mobile - Smaller and more constrained */        @media (max-width: 768px) {
+            .visual-content {
+                width: min(95vw, 600px);
+                height: auto; /* Let aspect-ratio control height */
+                max-width: 95vw;
+                max-height: 40vh;
+            }
+        }
+          /* Hide scrollbars for WebKit browsers */
+        .knowledge-content::-webkit-scrollbar,
+        .visual-content::-webkit-scrollbar {
+            display: none;
+        }        /* TITLE STYLING - Only for knowledge content (visual titles are now external) */
+        .knowledge-content .micro-title {
+            color: var(--text-color-primary);
+            margin: 0 0 var(--spacing-lg) 0;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: bold;
+            padding: 0;
+            text-align: left; /* LEFT ALIGNED */
+            flex-shrink: 0;
+        }
+        
+        /* Visual content should NOT have internal titles anymore - they are external */
+        .visual-content .micro-title {
+            display: none !important; /* Hide any internal titles in visual content */
+        }        /* IMPROVED CONTENT TEXT STYLING - BETTER MARKDOWN RENDERING */
+        .knowledge-content p,
+        .knowledge-content div:not(.micro-title):not(.mini-quiz-header):not(.duo-instruction-area):not(.duo-interactive-area),
+        .visual-content p,
+        .visual-content div:not(.micro-title):not(.mini-quiz-header):not(.duo-instruction-area):not(.duo-interactive-area) {
+            margin: 0 0 var(--spacing-md) 0; /* FIXED: Consistent bottom margin for clean paragraph separation */
+            text-align: left;
+            line-height: 1.7; /* IMPROVED: Better line height for readability */
+            color: var(--text-color-primary);
+            font-size: 1rem;
+            font-weight: normal;
+            word-wrap: break-word; /* Handle long words */
+        }
+
+        /* Ensure the last paragraph doesn't have excessive bottom margin */
+        .knowledge-content p:last-child,
+        .knowledge-content div:last-child,
+        .visual-content p:last-child,
+        .visual-content div:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Heading specific styling */
+        .knowledge-content h1,
+        .knowledge-content h2,
+        .knowledge-content h3,
+        .visual-content h1,
+        .visual-content h2,
+        .visual-content h3 {
+            margin: var(--spacing-md) 0 var(--spacing-sm) 0; /* Consistent spacing for headings */
+            text-align: left;
+            line-height: 1.3;
+            color: var(--text-color-primary);
+            font-weight: bold;
+        }
+
+        .knowledge-content h1,
+        .visual-content h1 {
+            font-size: 1.5rem;
+        }
+
+        .knowledge-content h2,
+        .visual-content h2 {
+            font-size: 1.3rem;
+        }
+
+        .knowledge-content h3,
+        .visual-content h3 {
+            font-size: 1.1rem;
+        }
+
+        /* List specific styling */
+        .knowledge-content ul,
+        .knowledge-content ol,
+        .visual-content ul,
+        .visual-content ol {
+            margin: var(--spacing-sm) 0;
+            padding-left: var(--spacing-lg); /* Better indentation for lists */
+            text-align: left;
+            line-height: 1.6;
+            color: var(--text-color-primary);
+        }
+
+        .knowledge-content li,
+        .visual-content li {
+            margin-bottom: var(--spacing-xs); /* Smaller spacing between list items */
+            line-height: 1.6;
+        }        /* Ensure proper spacing between paragraphs */
+        .knowledge-content p + p,
+        .visual-content p + p {
+            margin-top: var(--spacing-md); /* FIXED: Consistent and clean spacing between consecutive paragraphs */
+        }
+
+        /* Ensure proper spacing after headings */
+        .knowledge-content h1 + p,
+        .knowledge-content h2 + p,
+        .knowledge-content h3 + p,
+        .visual-content h1 + p,
+        .visual-content h2 + p,
+        .visual-content h3 + p {
+            padding: 1.2vw; /* Smaller spacing after headings since headings have their own bottom margin */
+        }
+
+        /* Code blocks and inline code */
+        .knowledge-content code,
+        .visual-content code {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .knowledge-content pre,
+        .visual-content pre {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-md) 0;
+            overflow-x: auto;
+            line-height: 1.6;
+        }        /* TESTER CONTENT STYLING - DYNAMIC HEIGHT */
+        .micro-slide[data-slide-type="tester"] .micro-container-slide-content {
+            height: fit-content !important; /* FIXED: Dynamic height */
+        }        .question-block {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: calc(var(--spacing-xl) * 2); /* IMPROVED: 200% größeres padding für Tester-Fragen */
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            height: fit-content !important; /* FIXED: Dynamic height based on content */
+            overflow: visible; /* No internal scrolling */            flex-shrink: 0;
+            margin-bottom: var(--spacing-md);
+            margin-top: calc(0.75rem + var(--spacing-md)); /* 50% smaller gap between title and box */
+            position: relative; /* For absolute positioned title */
+        }.question-text {
+            font-size: 1rem; /* Match other content font size */
+            color: var(--text-color-primary);
+            margin-bottom: var(--spacing-md);
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /* VISUAL TITLE - ADD TITLES TO VISUAL SLIDES */
+        .visual-content .micro-title::before {
+            content: "Visualisierung: ";
+            color: var(--text-color-secondary);
+            font-weight: normal;
+        }
+
+        /* VISUAL CONTAINER - FILL VISUAL CONTENT PROPERLY */
+        .visual-placeholder {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }        /* VISUAL CONTAINER - RESPONSIVE 1024x768 DIMENSIONS */
+        .visual-container {
+            /* Base dimensions: 1024x768 (4:3 ratio) */
+            width: 1024px;
+            height: 768px;
+            background-color: transparent;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+            padding: 0;
+            display: block;
+            
+            /* Responsive scaling for smaller screens */
+            max-width: 90vw;
+            max-height: 60vh;
+            
+            /* Maintain aspect ratio during scaling */
+            aspect-ratio: 4 / 3;
+            
+            /* Scale uniformly when container is smaller than base size */
+            transform-origin: center center;
+        }
+        
+        /* Desktop - Full size when screen is large enough */
+        @media (min-width: 1200px) and (min-height: 900px) {
+            .visual-container {
+                width: 1024px;
+                height: 768px;
+                max-width: 1024px;
+                max-height: 768px;
+            }
+        }
+        
+        /* Tablet - Scale down proportionally */
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .visual-container {
+                width: min(80vw, 1024px);
+                height: auto; /* Let aspect-ratio control height */
+                max-width: 80vw;
+                max-height: 50vh;
+            }
+        }
+        
+        /* Mobile - Smaller and more constrained */
+        @media (max-width: 768px) {
+            .visual-container {
+                width: min(95vw, 600px);
+                height: auto; /* Let aspect-ratio control height */
+                max-width: 95vw;
+                max-height: 40vh;
+            }
+        }        /* VISUAL IFRAME - RESPONSIVE 1024x768 DIMENSIONS */
+        .visual-iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            border-radius: var(--border-radius) !important;
+            display: block !important;
+            background-color: transparent !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            /* Responsive scaling - iframe fills container */
+            object-fit: contain !important;
+            position: absolute;
+            top: 0;
+            left: 0;        }
+
+        /* MERMAID IMAGE STYLING - OPTIMIERT FÜR 4:3 FORMAT PNG BILDER */
+        .mermaid-image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .mermaid-generated-image {
+            width: auto !important;
+            height: auto !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background-color: transparent;
+        }
+        
+        /* Legacy Mermaid container styling (kept for fallback compatibility) */
+        .mermaid-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            position: relative;
+            overflow: visible;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .mermaid {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 960px !important; /* 4:3 optimiert für 1024px breite Container */
+            max-height: 680px !important; /* Raum für Padding in 768px hohem Container */
+            font-family: 'Poppins', sans-serif !important;
+            text-align: center;
+            background-color: transparent !important;
+            overflow: visible !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            visibility: visible !important;
+        }
+        
+        .mermaid svg {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            background-color: transparent !important;
+            display: block;
+            margin: 0 auto;
+            transform-origin: center center !important;
+            overflow: visible !important;
+            /* Bessere Skalierung für 4:3 Format */
+            object-fit: contain !important;
+        }
+        
+        /* Mermaid Dark Mode Optimierung */
+        .mermaid .node rect,
+        .mermaid .node circle,
+        .mermaid .node ellipse,
+        .mermaid .node polygon {
+            fill: var(--card-bg) !important;
+            stroke: var(--button-primary-bg) !important;
+            stroke-width: 2px !important;
+        }
+        
+        .mermaid .edgeLabel {
+            background-color: var(--card-bg) !important;
+            color: var(--text-color-primary) !important;
+            border-radius: 4px !important;
+            padding: 2px 6px !important;
+        }
+        
+        .mermaid .edgePath {
+            stroke: var(--button-primary-bg) !important;
+            stroke-width: 2px !important;
+        }
+        
+        .mermaid text {
+            fill: var(--text-color-primary) !important;
+            font-family: 'Poppins', sans-serif !important;
+        }/* FOOTER AND BUTTON - ALWAYS VISIBLE LIKE DESIGN */
+        .micro-footer {
+            position: fixed; /* Fixed position to always be visible */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-md);
+            background-color: var(--header-bg);
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .continue-button {
+            background-color: var(--button-primary-bg);
+            color: var(--button-primary-text);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: var(--button-primary-shadow);
+            transition: all 0.2s ease;
+            min-width: 120px;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .continue-button:hover {
+            background-color: #4c3690;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #4c3690, 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .continue-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 #4aa500;
+        }        .continue-button:disabled {
+            background-color: var(--button-disabled-bg);
+            color: var(--button-disabled-text);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .continue-button:disabled:hover {
+            background-color: var(--button-disabled-bg);
+            color: var(--button-disabled-text);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }        /* MOBILE RESPONSIVE - MATCH DESIGN TEMPLATE WITH EQUAL MARGINS AND REDUCED PADDING */        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                margin: 0;
+                /* REMOVED: Excessive padding-bottom - handled by container */
+                overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+            }            .main-app-container {
+                width: 100%;
+                height: 100vh; /* FIXED: Exact viewport height on mobile */
+                max-height: 100vh; /* CRITICAL: Prevent expanding beyond viewport */
+                overflow-x: hidden; /* Prevent horizontal scrolling */
+                overflow-y: auto; /* FIXED: Use auto for proper scrolling behavior */
+                border-radius: 0;
+            }
+            
+            .micro-header {
+                padding: var(--spacing-sm);
+                height: 60px;
+                flex-shrink: 0;            }            .content-area-wrapper {
+                flex-grow: 0; /* FIXED: Don't expand - prevents artificial scrolling */
+                height: fit-content; /* FIXED: Dynamic height only */
+                min-height: auto; /* FIXED: No minimum height constraint */
+                overflow-x: hidden; /* Prevent horizontal scrolling */
+                overflow-y: hidden; /* FIXED: Prevent internal scrolling */
+                padding-bottom: 120px; /* CRITICAL: More space for mobile footer (80px + extra) */
+            }.slides-container {
+                height: fit-content; /* FIXED: Dynamic height only */
+                min-height: auto; /* FIXED: No minimum height constraint */
+                padding: 0;
+                overflow-x: hidden; /* Prevent horizontal scrolling */
+                overflow-y: hidden; /* FIXED: Prevent internal scrolling */
+                position: relative; /* For slide navigation */
+            }.micro-slide {
+                /* KEEP JAVASCRIPT NAVIGATION WORKING: Don't override opacity and position */
+                height: fit-content; /* Dynamic height based on content */
+                min-height: auto; /* FIXED: Remove excessive min-height */
+                overflow-y: visible; /* Allow content to scroll naturally */
+                overflow-x: hidden; /* Prevent horizontal scrolling */
+                padding-bottom: 1.5rem; /* FIXED: Reduced padding */
+            }            .micro-container-slide-content {
+                height: fit-content; /* Dynamic height on mobile */
+                min-height: auto; /* FIXED: Remove excessive min-height */
+                padding-left: calc(var(--spacing-md) * 1.4); /* Equal left padding */
+                padding-right: calc(var(--spacing-md) * 1.4); /* Equal right padding */
+                padding-top: calc(var(--spacing-lg) * 0.8); /* 20% reduced top spacing */
+                padding-bottom: 0; 
+                max-width: 100%;
+            }
+            
+            .micro-title {
+                font-size: 1.3rem; /* Smaller on mobile */
+                margin-bottom: calc(var(--spacing-md) * 0.8); /* 20% reduced spacing */
+                margin-left: 0; /* No additional margin - container handles spacing */
+                margin-right: 0; /* No additional margin - container handles spacing */
+            }            .knowledge-content,
+            .visual-content,
+            .question-block {
+                height: fit-content; /* Dynamic height on mobile */
+                min-height: fit-content; /* Minimum height fits content */
+                max-height: none; /* Remove height restrictions */
+                margin-bottom: var(--spacing-sm);
+                margin-left: 0; /* No side margins - container handles equal spacing */
+                margin-right: 0; /* No side margins - container handles equal spacing */
+                padding: calc(var(--spacing-lg) * 0.65); /* 35% reduced internal padding (1 - 0.35 = 0.65) */
+            }
+            
+            .knowledge-content p,
+            .visual-content p,
+            .question-text {
+                font-size: 0.95rem; /* Smaller text on mobile */
+            }        }/* DESKTOP RESPONSIVE - MATCH DESIGN TEMPLATE */
+        @media (min-width: 769px) {
+            body {
+                overflow-x: hidden; /* Prevent horizontal scrolling on desktop too */
+            }
+            
+            .main-app-container {
+                max-width: 800px;
+                margin: 0 auto;
+                border-radius: var(--border-radius);
+                box-shadow: var(--card-shadow);
+                overflow-x: hidden; /* Prevent horizontal scrolling */
+            }
+            
+            .micro-title {
+                font-size: 1.5rem;
+            }
+            
+            .knowledge-content p,
+            .visual-content p,
+            .question-text {
+                font-size: 1rem;
+            }
+        }/* VISUAL CONTAINER STYLING */
+        .visual-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-iframe {            max-width: 100%;
+            max-height: 100%;
+            border-radius: calc(var(--border-radius) - 4px);
+        }        /* OPTION STYLING FOR QUIZZES */
+        /* Mini-Quiz Button Styles - CRITICAL MISSING STYLES */
+        .duo-word-choice,
+        .mini-quiz-option {
+            background-color: var(--word-choice-bg);
+            border: 2px solid var(--word-choice-border);
+            color: var(--word-choice-text);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin: var(--spacing-xs) 0;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: block;
+            width: 100%;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .duo-word-choice:hover,
+        .mini-quiz-option:hover {
+            background-color: #3a3a3a;
+            border-color: var(--button-primary-bg);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .duo-word-choice.selected,
+        .mini-quiz-option.selected {
+            background-color: var(--button-primary-bg);
+            border-color: var(--button-primary-bg);
+            color: var(--button-primary-text);
+            box-shadow: var(--button-primary-shadow);
+        }
+
+        .duo-word-choice.correct,
+        .mini-quiz-option.correct {
+            background-color: #4caf50;
+            border-color: #4caf50;
+            color: white;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .duo-word-choice.incorrect,
+        .mini-quiz-option.incorrect {
+            background-color: #f44336;
+            border-color: #f44336;
+            color: white;
+            animation: incorrectShake 0.6s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }        /* MINI-QUIZ STYLES - Duolingo-inspired design für embedded quizzes - COPIED FROM REFERENCE */
+        /* Embedded mini-quiz within text slides */
+        .micro-slide[data-has-quiz="true"] .micro-container-slide-content {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 200px); /* Proper minimum height */
+            height: fit-content; /* Allow content to expand */
+            overflow: visible; /* No internal overflow - let slide handle scrolling */
+        }
+        
+        .micro-slide[data-has-quiz="true"] .knowledge-content {
+            /* Text content box at top */
+            flex: 0 0 auto;
+            margin-bottom: var(--spacing-sm); /* Reduced gap between text box and quiz */
+            height: fit-content; /* Dynamic height based on content */
+            min-height: fit-content; /* Remove height restriction for better content display */
+            max-height: none; /* Remove height restriction for better content display */
+            overflow-y: visible; /* No scrolling within content box itself */
+        }
+        
+        /* Quiz area styling - follows newdesignexample4.html structure */
+        .duo-instruction-area {
+            margin-bottom: var(--spacing-sm); /* Reduced gap between header and question */
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .duo-instruction-area h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-color-primary);
+            margin: 0;
+        }
+        
+        .mini-quiz-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .mini-quiz-icon {
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+          .quiz-question-text {
+            font-size: 1.1rem;
+            font-weight: normal;
+            color: var(--text-color-secondary);
+            margin-bottom: var(--spacing-sm); /* Reduced gap between question and options */
+            text-align: center;
+        }
+        
+        /* Ensure all mini-quiz title variants are visible */
+        .mini-quiz-header h2,
+        .mini-quiz-header .mini-quiz-title,
+        h2.mini-quiz-title,
+        .duo-instruction-area h2.mini-quiz-title {
+            font-size: 1.5rem !important;
+            font-weight: bold !important;
+            color: var(--text-color-primary) !important;
+            margin: 0 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .duo-interactive-area {
+            margin-top: 0; /* Remove auto margin */
+            margin-bottom: var(--spacing-md);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+            justify-content: center;
+        }
+        
+        .duo-word-choice {
+            background-color: var(--word-choice-bg);
+            border: 2px solid var(--word-choice-border);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--word-choice-text);
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            text-align: center;
+            width: 100%;
+            font-size: 1rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .duo-word-choice:hover {
+            background-color: #3a3a3a;
+            border-color: #5e5e5e;
+        }
+        
+        .duo-word-choice.selected {
+            border-color: var(--button-primary-bg);
+            background-color: rgba(127, 90, 240, 0.1);
+        }
+        
+        .duo-word-choice.correct-answer {
+            background-color: rgba(127, 90, 240, 0.2);
+            border-color: var(--button-primary-bg);
+            color: #ffffff;
+        }
+        
+        .duo-word-choice.incorrect-answer {
+            background-color: rgba(255, 59, 48, 0.2);
+            border-color: #ff3b30;
+            color: #ffffff;
+        }
+
+        .mini-quiz-content {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .mini-quiz-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .mini-quiz-icon {
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .mini-quiz-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-color-primary);
+            margin: 0;
+        }
+
+        .mini-quiz-question {
+            font-size: 1.2rem;
+            font-weight: normal;
+            color: var(--text-color-secondary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.5;
+        }
+
+        .mini-quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .mini-quiz-option {
+            background-color: var(--word-choice-bg);
+            border: 2px solid var(--word-choice-border);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--word-choice-text);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 1rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mini-quiz-option:hover:not(:disabled) {
+            background-color: #3a3a3a;
+            border-color: #5e5e5e;
+            transform: translateY(-2px);
+        }
+
+        .mini-quiz-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .mini-quiz-option.selected {
+            border-color: var(--button-primary-bg);
+            background-color: rgba(127, 90, 240, 0.1);
+        }
+
+        .mini-quiz-option.correct-answer {
+            background-color: rgba(127, 90, 240, 0.2);
+            border-color: var(--button-primary-bg);
+            color: #ffffff;
+        }
+
+        .mini-quiz-option.incorrect-answer {
+            background-color: rgba(255, 59, 48, 0.2);
+            border-color: #ff3b30;
+            color: #ffffff;
+        }        .mini-quiz-feedback {
+            display: none;
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            animation: slideIn 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        
+        .mini-quiz-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mini-quiz-feedback.correct-feedback {
+            background-color: rgba(127, 90, 240, 0.1);
+            border: 2px solid var(--button-primary-bg);
+        }
+
+        .mini-quiz-feedback.incorrect-feedback {
+            background-color: rgba(255, 59, 48, 0.1);
+            border: 2px solid #ff3b30;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-content {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            text-align: left;
+        }
+
+        .feedback-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feedback-text {
+            flex: 1;
+        }
+
+        .feedback-status {
+            font-weight: bold;
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.1rem;
+        }
+
+        .feedback-answer {
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-color-secondary);
+        }
+
+        .feedback-explanation {
+            color: var(--text-color-secondary);
+            line-height: 1.5;
+        }
+
+        .mini-quiz-continue {
+            background-color: var(--button-primary-bg);
+            color: var(--button-primary-text);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: var(--button-primary-shadow);
+            transition: all 0.2s ease;
+            margin: var(--spacing-md) auto 0;
+            display: none;
+        }
+
+        .mini-quiz-continue:hover {
+            background-color: #6A48D0;
+            transform: translateY(-2px);
+        }
+
+        .mini-quiz-continue:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #6A48D0;
+        }        /* Mobile optimizations for mini-quiz */
+        @media (max-width: 768px) {
+            .mini-quiz-options {
+                grid-template-columns: repeat(2, 1fr); /* Keep 2x2 grid on mobile */
+                gap: var(--spacing-xs); /* Smaller gap for mobile */
+            }
+            
+            .duo-interactive-area {
+                grid-template-columns: repeat(2, 1fr); /* Keep 2x2 grid on mobile */
+            }
+            
+            .mini-quiz-question {
+                font-size: 1.1rem;
+            }
+            
+            .quiz-question-text {
+                font-size: 1rem;
+            }
+            
+            .mini-quiz-title {
+                font-size: 1.3rem;
+            }
+        }
+        /* Spezielle Behandlung für Visual-Component-Root */
+        .visual-container .visual-component-root {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            /* Gleichmäßige Skalierung des Inhalts */
+            transform-origin: center center;
+            /* Container scaling - fit content uniformly */
+            scale: 1;
+            overflow: visible; /* Allow slight overflow for better fit */
+        }
+        
+        /* Responsive scaling basierend auf Container-Größe */
+        .visual-container .visual-component-root > * {
+            /* Auto-scale to fit available space uniformly */
+            transform-origin: center center;
+            max-width: 100%;
+            max-height: 100%;
+            /* Preserve aspect ratio */
+            object-fit: contain;
+            width: auto;
+            height: auto;
+        }
+          /* Ensure SVG content maintains proportions and scales uniformly */
+        .visual-container svg {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+            /* Uniform scaling without distortion */
+            transform-origin: center center;
+        }
+        
+        /* Ensure canvas content maintains proportions and scales uniformly */
+        .visual-container canvas {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+            /* Uniform scaling without distortion */
+            transform-origin: center center;
+        }
+        
+        /* Maintain circle/shape proportions during scaling */
+        .visual-container .shape-circle,
+        .visual-container [style*="border-radius: 50%"],
+        .visual-container .visual-element {
+            /* Maintain aspect ratio for shapes during scaling */
+            aspect-ratio: 1 / 1; /* Force square aspect for circles */
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .visual-placeholder > * {
+            /* Make generated visual content fill the placeholder */
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ensure SVG and canvas elements scale properly */
+        .visual-placeholder svg,
+        .visual-placeholder canvas {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .visual-placeholder::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 120px;
+            height: 120px;
+            background-color: rgba(94, 67, 181, 0.1); /* Translucent primary color (#5e43b5) */
+            border-radius: 50%;
+        }
+
+        .visual-placeholder::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: -30px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 167, 38, 0.1); /* Kept translucent secondary color, adjusted opacity slightly if needed */
+            border-radius: 50%;
+        }
+
+        .visual-placeholder h2 {
+            color: var(--text-color);
+            margin-bottom: var(--spacing-md);
+            font-size: 1.5rem;
+        }        /* Modified Visual Element Styles for 3:4 Portrait Format */
+        .visual-aspect-ratio-container {
+            width: 100%;
+            background-color: var(--card-bg); /* Match card background */
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            padding-top: 133.33%; /* 3:4 Portrait format (4/3 = 1.33, so 3/4 = 0.75 = 75% but inverted for container) */
+            overflow: hidden; /* Ensures content stays within rounded borders */
+        }
+
+        .visual-content-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-sm); /* Optional padding inside the wrapper */
+        }
+        
+        .visual-content-wrapper > * { /* Ensure direct child fills the space if it's a single element */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* For images/videos if they are direct children */
+        }
+
+        .visual-content-wrapper .placeholder-text,
+        .visual-content-wrapper .error-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .visual-content-wrapper pre {
+            background-color: rgba(0,0,0,0.3);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-small, 4px);
+            max-height: 80%;
+            overflow: auto;
+            width: 90%;
+            text-align: left;
+            font-size: 0.8em;        }        /* Text-Formatierungen - ENHANCED MARKDOWN-STYLE */
+        h2 {
+            color: var(--text-color);
+            margin: 0 0 1.5vh 0; /* Konsistente Abstände */
+            font-size: clamp(1.3rem, 4vw, 1.8rem); 
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        h3 {
+            color: var(--text-color);
+            margin: var(--spacing-md) 0 var(--spacing-sm) 0; /* Konsistente Abstände */
+            font-size: clamp(1.1rem, 3.5vw, 1.5rem); 
+            font-weight: 500;
+            line-height: 1.4;
+        }        p {
+            margin: var(--spacing-md) 0 0 0; /* Only bottom margin - prevent double line breaks */
+            color: var(--text-color-primary); /* Better readability */
+            max-width: 100%; 
+            display: block; 
+            opacity: 1; 
+            font-size: 1rem; /* Konsistente Schriftgröße */
+            line-height: 1.5; /* Bessere Lesbarkeit */
+            font-weight: 400;
+            text-align: left; /* Left aligned for better reading */
+        }
+
+        /* Micro title enhanced */
+        .micro-title {
+            color: var(--text-color-primary);
+            margin-bottom: var(--spacing-lg);
+            font-size: clamp(1.4rem, 5vw, 2rem); 
+            font-weight: 700;
+            line-height: 1;
+            text-align: left; /* LEFT ALIGNED */
+        }
+
+        ul, ol {
+            margin: var(--spacing-md) 0;
+            padding-left: var(--spacing-lg);
+            color: var(--text-color-primary);
+        }
+
+        li {
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.8; /* Bessere Lesbarkeit */
+        }
+
+        /* Code Blocks */
+        pre, code {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+            padding: 0.2em 0.4em;
+            color: var(--secondary-color);
+        }
+
+        pre {
+            padding: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+            overflow-x: auto;
+        }
+
+        /* Tabellen */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Links */
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        a:hover {
+            color: #ffb74d;
+            text-decoration: underline;
+        }
+
+        /* Blockquote */
+        blockquote {
+            border-left: 4px solid var(--secondary-color);
+            padding-left: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            font-style: italic;
+            background-color: rgba(255, 167, 38, 0.05);
+        }
+
+        /* Strong and em */
+        strong {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        /* Images */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: var(--spacing-md) auto;
+            border-radius: var(--border-radius);
+        }        /* Responsive Design - Duolingo Style */
+        
+        /* MOBILE FIRST (Standard) */        @media (max-width: 768px) {
+            .main-app-container {
+                /* min-height: 100vh; ist schon Standard */
+                border-radius: 0; /* Keine abgerundeten Ecken auf Mobilgeräten für volle Breite */
+            }
+              .knowledge-content {
+                height: fit-content !important; /* FIXED: Dynamic height for content-based sizing */
+                min-height: fit-content !important; /* FIXED: Content-based sizing */
+                max-height: none !important; /* FIXED: Remove height restrictions */
+                margin-left: 0; /* No side margins - equal spacing handled by container */
+                margin-right: 0; /* No side margins - equal spacing handled by container */
+                padding:calc(var(--spacing-lg) * 0.65); 
+            }
+        }       
+
+        
+        /* MOBILE FIRST (Standard) */        @media (max-width: 768px) {
+.visual-content {
+                height: fit-content !important; /* FIXED: Dynamic height for content-based sizing */
+                min-height: fit-content !important; /* FIXED: Content-based sizing */
+                max-height: none !important; /* FIXED: Remove height restrictions */
+                margin-left: 0; /* No side margins - equal spacing handled by container */
+                margin-right: 0; /* No side margins - equal spacing handled by container */
+                padding:0; 
+            }
+        }       
+         /* DESKTOP DESIGN - FULL WIDTH NO BLACK BORDERS */
+        @media (min-width: 769px) {            body {
+                padding: 0;
+                margin: 0;
+                justify-content: flex-start;
+                background-color: var(--dark-bg);
+                overflow: hidden; /* CRITICAL: Prevent any body scrolling on desktop */
+            }
+              .main-app-container {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+                height: 100vh; /* CRITICAL: Exact viewport height - no more, no less */
+                max-height: 100vh; /* CRITICAL: Prevent expanding beyond viewport */
+                overflow: hidden; /* CRITICAL: Prevent ALL scrolling on desktop */
+                background-image:
+                    linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+                background-size: 40px 40px;
+            }
+            
+            .micro-header {
+                width: 100%;
+                padding: var(--spacing-sm) var(--spacing-lg);
+            }
+            
+            .progress-bar-container {
+                margin: 0 var(--spacing-lg);
+                max-width: none;
+            }            .content-area-wrapper {
+                max-width: 800px; 
+                margin: 0 auto; 
+                padding: 0 var(--spacing-md);
+                height: calc(100vh - 140px); /* CRITICAL: Exact height to fit viewport */
+                max-height: calc(100vh - 140px); /* CRITICAL: Prevent exceeding available space */
+                overflow: hidden; /* CRITICAL: Prevent scrolling in content wrapper */
+            }
+            
+            .slides-container {
+                height: calc(100vh - 140px); /* CRITICAL: Exact height to fit available space */
+                max-height: calc(100vh - 140px); /* CRITICAL: Limit to available space */
+                overflow: hidden; /* CRITICAL: Prevent scrolling on desktop */
+            }.micro-slide {
+                height: fit-content;
+                min-height: auto; /* FIXED: Remove excessive min-height */
+                padding-bottom: 1.5rem; /* FIXED: Reduced padding */
+            }
+            
+            .micro-container-slide-content {
+                max-width: 700px;
+                margin: 0 auto;
+                height: fit-content;
+                min-height: auto; /* FIXED: Remove excessive min-height */
+            }
+            
+            .knowledge-content,
+            .visual-content,
+            .question-block {
+                height: fit-content; /* Dynamic height based on content */
+                min-height: fit-content; /* Minimum fits content */
+                max-height: none; /* Remove height restrictions */
+                padding: 0;
+            }
+              .visual-content {
+                /* REMOVED: aspect-ratio: 4/3 - was causing excessive height and scrolling */
+                height: fit-content;
+                min-height: fit-content;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+            
+            .option label {
+                font-size: 1rem;
+            }
+            
+            .option {
+                min-height: 44px;
+                padding: var(--spacing-sm) var(--spacing-md);
+            }
+            
+            .continue-button {
+                max-width: 400px;
+            }
+        }
+        
+        /* RESPONSIVE BREAKPOINTS FOR FIXED VISUAL DIMENSIONS */
+        
+        /* Tablets und kleinere Laptops */
+        @media (max-width: 1200px) {
+            .visual-content,
+            .visual-container,
+            .visual-iframe {
+                width: 85vw !important;
+                height: calc(85vw * 0.75) !important; /* Maintain 4:3 aspect ratio */
+                max-width: 900px !important;
+                max-height: 675px !important;
+            }
+            
+            .visual-title-container,
+            .visual-description-container {
+                max-width: 85vw;
+            }
+        }
+        
+        /* Mobile Querformat */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .visual-content,
+            .visual-container,
+            .visual-iframe {
+                width: 80vw !important;
+                height: calc(80vw * 0.75) !important; /* Maintain 4:3 aspect ratio */
+                max-width: 640px !important;
+                max-height: 480px !important;
+            }
+            
+            .visual-title {
+                font-size: clamp(1.2rem, 3vw, 1.8rem);
+            }
+            
+            .visual-description {
+                font-size: clamp(0.9rem, 2vw, 1.1rem);
+                padding: var(--spacing-sm);
+            }
+        }
+        
+        /* Mobile Hochformat */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .visual-content,
+            .visual-container,
+            .visual-iframe {
+                width: 90vw !important;
+                height: calc(90vw * 0.75) !important; /* Maintain 4:3 aspect ratio */
+                max-width: 600px !important;
+                max-height: 450px !important;
+            }
+            
+            .visual-title-container,
+            .visual-description-container {
+                max-width: 90vw;
+            }
+            
+            .visual-title {
+                font-size: clamp(1.1rem, 4vw, 1.6rem);
+            }
+            
+            .visual-description {
+                font-size: clamp(0.85rem, 2.5vw, 1rem);
+                padding: var(--spacing-sm);
+            }
+        }
+    </style>    <!-- MathJax für LaTeX Rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Note: Mermaid.js not needed anymore - using Kroki PNG generation instead -->
+</head>
+<body>
+    <div class="main-app-container">        <div class="micro-header">
+            <button class="nav-button-close" title="Schließen">&times;</button>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill"></div>
+            </div>
+        </div>
+
+        <div class="content-area-wrapper">            
+            <div class="slides-container">            
+                <div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_1_text" data-has-quiz="false">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>DeepSeek-V3: Ein MoE-Modell</h1>
+Hast du schon von den neuesten KI-Modellen gehört? 🤔<br><br>DeepSeek-V3 ist ein riesiges &quot;Mixture-of-Experts&quot; (MoE) Sprachmodell mit 671 Milliarden Parametern. Für jede Anfrage werden aber nur 37 Milliarden Parameter aktiv genutzt.<br><br>Stell dir ein Team von 671 Experten vor, aber nur 37 davon arbeiten gleichzeitig an deiner Aufgabe – das spart Ressourcen!
+                        </div>
+                        
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="visual" data-slide-id="ch1_micro_1_visual">
+                    <div class="micro-container-slide-content visual-only">
+                        <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                        <div class="visual-title-container">
+                            <h2 class="visual-title">MoE-Architektur: DeepSeek-V3</h2>
+                        </div>
+                        
+                        <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                        <div class="visual-content">
+                            <div class="visual-placeholder" data-has-html="true">
+                                <div class="mermaid-image-container">
+                <img src="images/prepared_graph_fe9bb684cc6c.png" 
+                     alt="Prepared Visual" 
+                     class="mermaid-generated-image"
+                     loading="lazy">
+            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                        <div class="visual-description-container">
+                            <p class="visual-description">Klicke auf die Experten-Knoten, um zu sehen, wie nur ein Teil davon für eine Anfrage aktiviert wird.</p>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_2_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Effiziente Architektur: MLA &amp; DeepSeekMoE</h1>
+Wie erreicht DeepSeek-V3 seine beeindruckende Effizienz? 🚀<br><br>Es nutzt Multi-head Latent Attention (MLA) für schnelle Inferenz und DeepSeekMoE für kostengünstiges Training. Diese Architekturen wurden schon in DeepSeek-V2 erfolgreich eingesetzt.<br><br>Stell dir MLA als einen &quot;Turbo&quot; für die Denkgeschwindigkeit vor und DeepSeekMoE als ein &quot;Smart-Budget-System&quot; fürs Lernen.<br><br>Welche Vorteile siehst du in der Wiederverwendung bewährter Architekturen?
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Wofür wird MLA in DeepSeek-V3 hauptsächlich genutzt?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_2_mini_quiz_opt0" data-option="0">
+                Inferenz
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_2_mini_quiz_opt1" data-option="1">
+                Training
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_2_mini_quiz_opt2" data-option="2">
+                Datenbank
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_2_mini_quiz_opt3" data-option="3">
+                Speicherung
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_ch1_micro_2_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Multi-head Latent Attention (MLA) ist speziell für eine effiziente Inferenz in DeepSeek-V3 optimiert.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['ch1_micro_2_mini_quiz'] = {
+            'correctAnswer': 0,
+            'explanation': "Multi-head Latent Attention (MLA) ist speziell f\u00fcr eine effiziente Inferenz in DeepSeek-V3 optimiert.",
+            'options': ["Inferenz", "Training", "Datenbank", "Speicherung"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_3_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Innovative Trainingsstrategien</h1>
+Wie macht DeepSeek-V3 sein Training noch besser? ✨<br><br>DeepSeek-V3 nutzt eine neuartige, hilfsverlustfreie Strategie für Lastverteilung, die Performance-Einbußen minimiert. Zudem kommt ein Multi-Token Prediction (MTP) Trainingsziel zum Einsatz, das die Gesamtleistung verbessert.<br><br>Stell dir vor, Lastverteilung ist wie ein Dirigent, der das Orchester ohne Zusatznoten perfekt synchronisiert, und MTP ist wie ein Blick in die Zukunft, der das Modell vorausschauender macht.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist ein Vorteil der hilfsverlustfreien Lastverteilung?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_3_mini_quiz_opt0" data-option="0">
+                Mehr Daten
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_3_mini_quiz_opt1" data-option="1">
+                Längere Trainingszeit
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_3_mini_quiz_opt2" data-option="2">
+                Keine Performance-Einbußen
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_3_mini_quiz_opt3" data-option="3">
+                Zusätzlicher Verlust
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_ch1_micro_3_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Die hilfsverlustfreie Strategie minimiert negative Auswirkungen auf die Modellleistung, die sonst durch Lastverteilung entstehen könnten.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['ch1_micro_3_mini_quiz'] = {
+            'correctAnswer': 2,
+            'explanation': "Die hilfsverlustfreie Strategie minimiert negative Auswirkungen auf die Modellleistung, die sonst durch Lastverteilung entstehen k\u00f6nnten.",
+            'options': ["Mehr Daten", "L\u00e4ngere Trainingszeit", "Keine Performance-Einbu\u00dfen", "Zus\u00e4tzlicher Verlust"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="tester" data-slide-id="ch1_tester_1">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <div class='tester-questions-wrapper'><h1 class='micro-title'>Wissens-Check! 🧠</h1>
+<div class='question-block' id='ch1_tester_1_q2_block'><h3 class='question-text'>Welche der folgenden Aussagen beschreibt den primären Vorteil der Multi-Token Prediction (MTP) Trainingsstrategie im Vergleich zur hilfsverlustfreien Lastverteilung bei DeepSeek-V3? ✨</h3><div class='options-container'>
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_1_q2_opt0' name='ch1_tester_1_q2' value='MTP minimiert Performance-Einbußen durch gleichmäßige Verteilung der Rechenlast, während Lastverteilung die Gesamtleistung verbessert.' onclick='checkAnswer_ch1_tester_1_q2(this)'>
+                                    <label for='ch1_tester_1_q2_opt0'>MTP minimiert Performance-Einbußen durch gleichmäßige Verteilung der Rechenlast, während Lastverteilung die Gesamtleistung verbessert.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_1_q2_opt1' name='ch1_tester_1_q2' value='MTP zielt darauf ab, die Gesamtleistung des Modells zu verbessern, wohingegen die hilfsverlustfreie Lastverteilung Performance-Einbußen minimiert.' onclick='checkAnswer_ch1_tester_1_q2(this)'>
+                                    <label for='ch1_tester_1_q2_opt1'>MTP zielt darauf ab, die Gesamtleistung des Modells zu verbessern, wohingegen die hilfsverlustfreie Lastverteilung Performance-Einbußen minimiert.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_1_q2_opt2' name='ch1_tester_1_q2' value='Beide Strategien dienen ausschließlich der Reduzierung der Trainingskosten, aber auf unterschiedliche Weisen.' onclick='checkAnswer_ch1_tester_1_q2(this)'>
+                                    <label for='ch1_tester_1_q2_opt2'>Beide Strategien dienen ausschließlich der Reduzierung der Trainingskosten, aber auf unterschiedliche Weisen.</label>
+                                </div>
+                            </div><div id='feedback_ch1_tester_1_q2' class='feedback' style='display:none;'></div>
+                        <script>
+                        // Ensure function is not redefined if slides are reloaded/re-parsed in some SPA contexts
+                        if (typeof window.checkAnswer_ch1_tester_1_q2 !== 'function') {
+                            window.checkAnswer_ch1_tester_1_q2 = function(selectedOption) {
+                                const feedbackDiv = document.getElementById('feedback_ch1_tester_1_q2');
+                                const correctAnswer = "MTP zielt darauf ab, die Gesamtleistung des Modells zu verbessern, wohingegen die hilfsverlustfreie Lastverteilung Performance-Einbu\u00dfen minimiert.";
+                                const explanation = "Die Multi-Token Prediction (MTP) Trainingsstrategie ist darauf ausgelegt, die allgemeine Leistungsf\u00e4higkeit des Modells zu steigern. Die hilfsverlustfreie Lastverteilung hingegen konzentriert sich darauf, Leistungsverluste w\u00e4hrend des Trainings zu verhindern, indem die Rechenlast effizient verteilt wird.";
+                                const allOptionsInGroup = document.querySelectorAll('input[name="ch1_tester_1_q2"]');
+                                
+                                allOptionsInGroup.forEach(opt => {
+                                    opt.disabled = true; // Disable all options in this group
+                                    // Style the selected and correct/incorrect options
+                                    if (opt.value === correctAnswer) {
+                                        opt.parentElement.classList.add('correct-answer-highlight');
+                                    }
+                                    if (opt.checked && opt.value !== correctAnswer) {
+                                        opt.parentElement.classList.add('incorrect-answer-highlight');
+                                    }
+                                });
+
+                                if (selectedOption.value === correctAnswer) {
+                                    feedbackDiv.innerHTML = `<p class='feedback-status correct'>Richtig! 👍</p><p class='feedback-explanation'>${explanation}</p>`;
+                                    feedbackDiv.className = 'feedback correct-feedback visible-feedback';
+                                } else {
+                                    feedbackDiv.innerHTML = `<p class='feedback-status incorrect'>Leider falsch. 😟 Die richtige Antwort ist: <strong>${correctAnswer}</strong></p><p class='feedback-explanation'>${explanation}</p>`;
+                                    feedbackDiv.className = 'feedback incorrect-feedback visible-feedback';
+                                }
+                                feedbackDiv.style.display = 'block'; // Ensure it's visible
+                            };
+                        }
+                        </script>
+                    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_4_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>FP8 Mixed Precision Training</h1>
+Möchtest du wissen, wie DeepSeek-V3 so schnell trainiert wird? ⚡<br><br>DeepSeek-V3 nutzt FP8 Mixed Precision Training. Das bedeutet, es verwendet Gleitkommazahlen mit geringerer Genauigkeit (8-Bit) für Berechnungen, was das Training beschleunigt und den GPU-Speicherbedarf reduziert.<br><br>Stell dir vor, du rechnest nicht mehr mit 10 Nachkommastellen, sondern nur mit 2 – das geht viel schneller, ohne dass das Endergebnis stark leidet!
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist ein Vorteil von FP8 Mixed Precision Training?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_4_mini_quiz_opt0" data-option="0">
+                Höhere Genauigkeit
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_4_mini_quiz_opt1" data-option="1">
+                Weniger GPU-Speicher
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_4_mini_quiz_opt2" data-option="2">
+                Langsamer
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_4_mini_quiz_opt3" data-option="3">
+                Mehr Rechenleistung
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_ch1_micro_4_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">FP8 Mixed Precision Training reduziert den benötigten GPU-Speicher, indem es Gleitkommazahlen mit geringerer Genauigkeit verwendet.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['ch1_micro_4_mini_quiz'] = {
+            'correctAnswer': 1,
+            'explanation': "FP8 Mixed Precision Training reduziert den ben\u00f6tigten GPU-Speicher, indem es Gleitkommazahlen mit geringerer Genauigkeit verwendet.",
+            'options': ["H\u00f6here Genauigkeit", "Weniger GPU-Speicher", "Langsamer", "Mehr Rechenleistung"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="visual" data-slide-id="ch1_micro_4_visual">
+                    <div class="micro-container-slide-content visual-only">
+                        <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                        <div class="visual-title-container">
+                            <h2 class="visual-title">FP8 Training: Geschwindigkeit &amp; Speicher</h2>
+                        </div>
+                        
+                        <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                        <div class="visual-content">
+                            <div class="visual-placeholder" data-has-html="true">
+                                <div class="mermaid-image-container">
+                <img src="images/prepared_timeline_a30eebf1cba8.png" 
+                     alt="Prepared Visual" 
+                     class="mermaid-generated-image"
+                     loading="lazy">
+            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                        <div class="visual-description-container">
+                            <p class="visual-description">Ziehe den Slider, um den Unterschied zwischen FP32 und FP8 Präzision in Bezug auf Geschwindigkeit und Speicherverbrauch zu visualisieren.</p>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_5_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>DualPipe &amp; Kommunikationsoptimierung</h1>
+Wie überwindet DeepSeek-V3 Kommunikationsengpässe beim Training? 🌐<br><br>Es nutzt den DualPipe-Algorithmus für effiziente Pipeline-Parallelisierung, der &quot;Bubbles&quot; reduziert und Kommunikation durch Überlappung mit Berechnungen versteckt. Dazu kommen optimierte Cross-Node-Kommunikations-Kernels.<br><br>Stell dir DualPipe als eine optimierte Autobahn vor, auf der Daten und Berechnungen gleichzeitig fließen, ohne Stau.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist das Ziel des DualPipe-Algorithmus?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_5_mini_quiz_opt0" data-option="0">
+                Daten speichern
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_5_mini_quiz_opt1" data-option="1">
+                Modell verkleinern
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_5_mini_quiz_opt2" data-option="2">
+                Kommunikation verstecken
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_5_mini_quiz_opt3" data-option="3">
+                Neue Parameter
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_ch1_micro_5_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Der DualPipe-Algorithmus versteckt Kommunikationszeiten durch Überlappung mit Berechnungen, um die Effizienz zu steigern.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['ch1_micro_5_mini_quiz'] = {
+            'correctAnswer': 2,
+            'explanation': "Der DualPipe-Algorithmus versteckt Kommunikationszeiten durch \u00dcberlappung mit Berechnungen, um die Effizienz zu steigern.",
+            'options': ["Daten speichern", "Modell verkleinern", "Kommunikation verstecken", "Neue Parameter"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="visual" data-slide-id="ch1_micro_5_visual">
+                    <div class="micro-container-slide-content visual-only">
+                        <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                        <div class="visual-title-container">
+                            <h2 class="visual-title">DualPipe: Effiziente Parallelisierung</h2>
+                        </div>
+                        
+                        <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                        <div class="visual-content">
+                            <div class="visual-placeholder" data-has-html="true">
+                                <div class="mermaid-image-container">
+                <img src="images/prepared_timeline_a30eebf1cba8.png" 
+                     alt="Prepared Visual" 
+                     class="mermaid-generated-image"
+                     loading="lazy">
+            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                        <div class="visual-description-container">
+                            <p class="visual-description">Beobachte die animierten Datenpakete, die durch die DualPipe-Struktur fließen, um die Überlappung von Kommunikation und Berechnung zu verstehen.</p>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_6_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>DeepSeek-V3 Pre-Training</h1>
+Wie wird DeepSeek-V3 &quot;vorgebildet&quot;? 📚<br><br>DeepSeek-V3 wurde auf 14.8 Billionen hochwertigen und vielfältigen Tokens vortrainiert. Der Prozess war extrem stabil, ohne Rückschläge. Danach wurde die Kontextlänge schrittweise von 32K auf 128K erweitert.<br><br>Stell dir vor, das Modell liest eine Bibliothek von 14.8 Billionen Büchern und merkt sich dabei, wie die Sätze aufgebaut sind und welche Wörter zusammenpassen.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Wie viele Tokens wurden für das Pre-Training verwendet?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_6_mini_quiz_opt0" data-option="0">
+                14.8 Billionen
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_6_mini_quiz_opt1" data-option="1">
+                32 Tausend
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_6_mini_quiz_opt2" data-option="2">
+                128 Tausend
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_6_mini_quiz_opt3" data-option="3">
+                5 Millionen
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_ch1_micro_6_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">DeepSeek-V3 wurde auf beeindruckenden 14.8 Billionen hochwertigen Tokens vortrainiert.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['ch1_micro_6_mini_quiz'] = {
+            'correctAnswer': 0,
+            'explanation': "DeepSeek-V3 wurde auf beeindruckenden 14.8 Billionen hochwertigen Tokens vortrainiert.",
+            'options': ["14.8 Billionen", "32 Tausend", "128 Tausend", "5 Millionen"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_7_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Post-Training &amp; Wissensdestillation</h1>
+Wie lernt DeepSeek-V3 menschliche Vorlieben? 🧠<br><br>Nach dem Pre-Training durchläuft DeepSeek-V3 ein Post-Training mit Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL). Dabei wird auch Denkfähigkeit von DeepSeek-R1-Modellen destilliert, um die Genauigkeit zu verbessern.<br><br>Stell dir vor, SFT ist wie ein Lehrer, der dem Modell gute Manieren beibringt, und RL ist wie ein Coach, der es durch Belohnungen optimiert.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist das Ziel der Wissensdestillation?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_7_mini_quiz_opt0" data-option="0">
+                Daten löschen
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_7_mini_quiz_opt1" data-option="1">
+                Modell verkleinern
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_7_mini_quiz_opt2" data-option="2">
+                Kosten senken
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="ch1_micro_7_mini_quiz_opt3" data-option="3">
+                Denkfähigkeit verbessern
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_ch1_micro_7_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Wissensdestillation überträgt Denkfähigkeiten von einem leistungsstärkeren Modell, um die Genauigkeit zu verbessern.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['ch1_micro_7_mini_quiz'] = {
+            'correctAnswer': 3,
+            'explanation': "Wissensdestillation \u00fcbertr\u00e4gt Denkf\u00e4higkeiten von einem leistungsst\u00e4rkeren Modell, um die Genauigkeit zu verbessern.",
+            'options': ["Daten l\u00f6schen", "Modell verkleinern", "Kosten senken", "Denkf\u00e4higkeit verbessern"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="tester" data-slide-id="ch1_tester_2">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <div class='tester-questions-wrapper'><h1 class='micro-title'>Wissens-Check! 🧠</h1>
+<div class='question-block' id='ch1_tester_2_q2_block'><h3 class='question-text'>Was ist der Hauptunterschied in den Zielen zwischen dem Pre-Training und dem Post-Training (SFT/RL) von DeepSeek-V3? 📚🧠</h3><div class='options-container'>
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_2_q2_opt0' name='ch1_tester_2_q2' value='Pre-Training konzentriert sich auf die Reduzierung von Kommunikationsengpässen, während Post-Training die Rechengenauigkeit optimiert.' onclick='checkAnswer_ch1_tester_2_q2(this)'>
+                                    <label for='ch1_tester_2_q2_opt0'>Pre-Training konzentriert sich auf die Reduzierung von Kommunikationsengpässen, während Post-Training die Rechengenauigkeit optimiert.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_2_q2_opt1' name='ch1_tester_2_q2' value='Pre-Training zielt darauf ab, ein breites Verständnis von Sprache und Mustern aus riesigen Datenmengen zu erlangen, während Post-Training das Modell an menschliche Vorlieben und spezifische Aufgaben anpasst.' onclick='checkAnswer_ch1_tester_2_q2(this)'>
+                                    <label for='ch1_tester_2_q2_opt1'>Pre-Training zielt darauf ab, ein breites Verständnis von Sprache und Mustern aus riesigen Datenmengen zu erlangen, während Post-Training das Modell an menschliche Vorlieben und spezifische Aufgaben anpasst.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_2_q2_opt2' name='ch1_tester_2_q2' value='Pre-Training verbessert die Speichereffizienz, während Post-Training die Modellgröße reduziert.' onclick='checkAnswer_ch1_tester_2_q2(this)'>
+                                    <label for='ch1_tester_2_q2_opt2'>Pre-Training verbessert die Speichereffizienz, während Post-Training die Modellgröße reduziert.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_2_q2_opt3' name='ch1_tester_2_q2' value='Pre-Training ist der Prozess der Wissensdestillation, während Post-Training die Kontextlänge erweitert.' onclick='checkAnswer_ch1_tester_2_q2(this)'>
+                                    <label for='ch1_tester_2_q2_opt3'>Pre-Training ist der Prozess der Wissensdestillation, während Post-Training die Kontextlänge erweitert.</label>
+                                </div>
+                            </div><div id='feedback_ch1_tester_2_q2' class='feedback' style='display:none;'></div>
+                        <script>
+                        // Ensure function is not redefined if slides are reloaded/re-parsed in some SPA contexts
+                        if (typeof window.checkAnswer_ch1_tester_2_q2 !== 'function') {
+                            window.checkAnswer_ch1_tester_2_q2 = function(selectedOption) {
+                                const feedbackDiv = document.getElementById('feedback_ch1_tester_2_q2');
+                                const correctAnswer = "Pre-Training zielt darauf ab, ein breites Verst\u00e4ndnis von Sprache und Mustern aus riesigen Datenmengen zu erlangen, w\u00e4hrend Post-Training das Modell an menschliche Vorlieben und spezifische Aufgaben anpasst.";
+                                const explanation = "Pre-Training etabliert ein breites Sprachverst\u00e4ndnis durch das Verarbeiten gro\u00dfer Datenmengen, w\u00e4hrend Post-Training das Modell durch SFT und RL an menschliche Pr\u00e4ferenzen und Aufgaben anpasst.";
+                                const allOptionsInGroup = document.querySelectorAll('input[name="ch1_tester_2_q2"]');
+                                
+                                allOptionsInGroup.forEach(opt => {
+                                    opt.disabled = true; // Disable all options in this group
+                                    // Style the selected and correct/incorrect options
+                                    if (opt.value === correctAnswer) {
+                                        opt.parentElement.classList.add('correct-answer-highlight');
+                                    }
+                                    if (opt.checked && opt.value !== correctAnswer) {
+                                        opt.parentElement.classList.add('incorrect-answer-highlight');
+                                    }
+                                });
+
+                                if (selectedOption.value === correctAnswer) {
+                                    feedbackDiv.innerHTML = `<p class='feedback-status correct'>Richtig! 👍</p><p class='feedback-explanation'>${explanation}</p>`;
+                                    feedbackDiv.className = 'feedback correct-feedback visible-feedback';
+                                } else {
+                                    feedbackDiv.innerHTML = `<p class='feedback-status incorrect'>Leider falsch. 😟 Die richtige Antwort ist: <strong>${correctAnswer}</strong></p><p class='feedback-explanation'>${explanation}</p>`;
+                                    feedbackDiv.className = 'feedback incorrect-feedback visible-feedback';
+                                }
+                                feedbackDiv.style.display = 'block'; // Ensure it's visible
+                            };
+                        }
+                        </script>
+                    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_8_text" data-has-quiz="false">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Benchmark-Ergebnisse &amp; Leistung</h1>
+Wie gut schneidet DeepSeek-V3 im Vergleich ab? 🏆<br><br>DeepSeek-V3-Base ist das stärkste verfügbare Open-Source-Basismodell, besonders in Code und Mathematik. Die Chat-Version ist vergleichbar mit Top-Modellen wie GPT-4o und Claude-3.5-Sonnet.<br><br>Stell dir vor, DeepSeek-V3 gewinnt Goldmedaillen in den Disziplinen Programmieren und Rechnen bei den KI-Olympiaden!
+                        </div>
+                        
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="visual" data-slide-id="ch1_micro_8_visual">
+                    <div class="micro-container-slide-content visual-only">
+                        <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                        <div class="visual-title-container">
+                            <h2 class="visual-title">DeepSeek-V3 Benchmark-Leistung</h2>
+                        </div>
+                        
+                        <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                        <div class="visual-content">
+                            <div class="visual-placeholder" data-has-html="true">
+                                <div class="mermaid-image-container">
+                <img src="images/prepared_pie_a6aa6604a675.png" 
+                     alt="Prepared Visual" 
+                     class="mermaid-generated-image"
+                     loading="lazy">
+            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                        <div class="visual-description-container">
+                            <p class="visual-description">Vergleiche die Balken der verschiedenen Modelle in den Kategorien Code und Mathematik, um die Stärke von DeepSeek-V3 zu erkennen.</p>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="ch1_micro_9_text" data-has-quiz="false">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Kosteneffizienz von DeepSeek-V3</h1>
+Wie viel kostet es, ein Top-KI-Modell wie DeepSeek-V3 zu trainieren? 💰<br><br>DeepSeek-V3 wurde für nur 2.788 Millionen H800 GPU-Stunden vollständig trainiert, was etwa 5.576 Millionen US-Dollar entspricht. Das Vortraining allein kostet 180K H800 GPU-Stunden pro Billion Tokens.<br><br>Das ist, als würde man einen Supersportwagen bauen, der die Leistung eines Formel-1-Wagens hat, aber nur einen Bruchteil der üblichen Kosten verursacht.
+                        </div>
+                        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="tester" data-slide-id="ch1_tester_3">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <div class='tester-questions-wrapper'><h1 class='micro-title'>Wissens-Check! 🧠</h1>
+<div class='question-block' id='ch1_tester_3_q2_block'><h3 class='question-text'>Was ist der Hauptunterschied in der Leistungsbeschreibung zwischen DeepSeek-V3-Base und DeepSeek-V3-Chat, wie er in den Micro-Lerneinheiten dargestellt wird? 🤔</h3><div class='options-container'>
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_3_q2_opt0' name='ch1_tester_3_q2' value='DeepSeek-V3-Base ist für den persönlichen Gebrauch gedacht, während DeepSeek-V3-Chat ausschließlich für kommerzielle Anwendungen lizenziert ist.' onclick='checkAnswer_ch1_tester_3_q2(this)'>
+                                    <label for='ch1_tester_3_q2_opt0'>DeepSeek-V3-Base ist für den persönlichen Gebrauch gedacht, während DeepSeek-V3-Chat ausschließlich für kommerzielle Anwendungen lizenziert ist.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_3_q2_opt1' name='ch1_tester_3_q2' value='DeepSeek-V3-Base ist das stärkste Open-Source-Basismodell, während DeepSeek-V3-Chat in seiner Leistungsfähigkeit mit Top-Modellen wie GPT-4o und Claude-3.5-Sonnet vergleichbar ist.' onclick='checkAnswer_ch1_tester_3_q2(this)'>
+                                    <label for='ch1_tester_3_q2_opt1'>DeepSeek-V3-Base ist das stärkste Open-Source-Basismodell, während DeepSeek-V3-Chat in seiner Leistungsfähigkeit mit Top-Modellen wie GPT-4o und Claude-3.5-Sonnet vergleichbar ist.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_3_q2_opt2' name='ch1_tester_3_q2' value='DeepSeek-V3-Base ist auf Bilderkennung spezialisiert, während DeepSeek-V3-Chat für die Generierung von Musik optimiert wurde.' onclick='checkAnswer_ch1_tester_3_q2(this)'>
+                                    <label for='ch1_tester_3_q2_opt2'>DeepSeek-V3-Base ist auf Bilderkennung spezialisiert, während DeepSeek-V3-Chat für die Generierung von Musik optimiert wurde.</label>
+                                </div>
+                            
+                                <div class='option radio-option'>
+                                    <input type='radio' id='ch1_tester_3_q2_opt3' name='ch1_tester_3_q2' value='DeepSeek-V3-Base wurde in weniger GPU-Stunden trainiert als DeepSeek-V3-Chat, was es kostengünstiger macht.' onclick='checkAnswer_ch1_tester_3_q2(this)'>
+                                    <label for='ch1_tester_3_q2_opt3'>DeepSeek-V3-Base wurde in weniger GPU-Stunden trainiert als DeepSeek-V3-Chat, was es kostengünstiger macht.</label>
+                                </div>
+                            </div><div id='feedback_ch1_tester_3_q2' class='feedback' style='display:none;'></div>
+                        <script>
+                        // Ensure function is not redefined if slides are reloaded/re-parsed in some SPA contexts
+                        if (typeof window.checkAnswer_ch1_tester_3_q2 !== 'function') {
+                            window.checkAnswer_ch1_tester_3_q2 = function(selectedOption) {
+                                const feedbackDiv = document.getElementById('feedback_ch1_tester_3_q2');
+                                const correctAnswer = "DeepSeek-V3-Base ist das st\u00e4rkste Open-Source-Basismodell, w\u00e4hrend DeepSeek-V3-Chat in seiner Leistungsf\u00e4higkeit mit Top-Modellen wie GPT-4o und Claude-3.5-Sonnet vergleichbar ist.";
+                                const explanation = "Die Informationen beschreiben DeepSeek-V3-Base als das f\u00fchrende Open-Source-Basismodell in bestimmten Disziplinen, w\u00e4hrend DeepSeek-V3-Chat in seiner Leistungsf\u00e4higkeit direkt mit etablierten propriet\u00e4ren Spitzenmodellen verglichen wird.";
+                                const allOptionsInGroup = document.querySelectorAll('input[name="ch1_tester_3_q2"]');
+                                
+                                allOptionsInGroup.forEach(opt => {
+                                    opt.disabled = true; // Disable all options in this group
+                                    // Style the selected and correct/incorrect options
+                                    if (opt.value === correctAnswer) {
+                                        opt.parentElement.classList.add('correct-answer-highlight');
+                                    }
+                                    if (opt.checked && opt.value !== correctAnswer) {
+                                        opt.parentElement.classList.add('incorrect-answer-highlight');
+                                    }
+                                });
+
+                                if (selectedOption.value === correctAnswer) {
+                                    feedbackDiv.innerHTML = `<p class='feedback-status correct'>Richtig! 👍</p><p class='feedback-explanation'>${explanation}</p>`;
+                                    feedbackDiv.className = 'feedback correct-feedback visible-feedback';
+                                } else {
+                                    feedbackDiv.innerHTML = `<p class='feedback-status incorrect'>Leider falsch. 😟 Die richtige Antwort ist: <strong>${correctAnswer}</strong></p><p class='feedback-explanation'>${explanation}</p>`;
+                                    feedbackDiv.className = 'feedback incorrect-feedback visible-feedback';
+                                }
+                                feedbackDiv.style.display = 'block'; // Ensure it's visible
+                            };
+                        }
+                        </script>
+                    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
+            <!-- 
+            PYTHON GENERATES THIS STRUCTURE:
+            
+            TEXT SLIDE:
+            <div class="micro-slide" data-slide-type="text" data-slide-id="slide_id">
+                <div class="micro-container-slide-content text-only">
+                    <div class="knowledge-content">
+                        <p>Content goes here...</p>
+                    </div>
+                </div>
+            </div>
+              VISUAL SLIDE WITH EXTERNAL TITLE & DESCRIPTION:
+            <div class="micro-slide" data-slide-type="visual" data-slide-id="slide_id">
+                <div class="micro-container-slide-content visual-only">
+                    <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                    <div class="visual-title-container">
+                        <h2 class="visual-title">Visual Title Here</h2>
+                    </div>
+                    
+                    <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                    <div class="visual-content">
+                        <div class="visual-placeholder">
+                            <div class="visual-container">
+                                <iframe class="visual-iframe" src="..."></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                    <div class="visual-description-container">
+                        <p class="visual-description">Visual description and instructions here...</p>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="micro-slide" data-slide-type="tester" data-slide-id="slide_id">
+                <div class="micro-container-slide-content text-only">
+                    <div class="knowledge-content">
+                        <!-- tester content -->
+                    </div>
+                </div>            </div>            </div>
+            
+            <!-- ADD FOOTER FOR CONTINUE BUTTON -->
+            <div class="micro-footer">
+                <button class="continue-button" id="continueButton">Weiter</button>
+            </div>
+        </div>
+    </div><script>
+        let currentSlideIndex = 0;
+        let slides = [];
+        let totalSlides = 0;        const progressBar = document.querySelector('.progress-bar-fill');
+        const closeButton = document.querySelector('.nav-button-close');
+        const continueButton = document.getElementById('continueButton');        function initializeSlides() {
+            slides = document.querySelectorAll('.slides-container .micro-slide');
+            totalSlides = slides.length;
+            
+            // Initialize quiz states for all slides
+            slides.forEach((slide, index) => {
+                const hasQuiz = slide.getAttribute('data-has-quiz') === 'true';
+                if (hasQuiz) {
+                    // Initialize quiz state
+                    quizStates[index] = {
+                        hasSelectedAnswer: false,
+                        hasCheckedAnswer: false,
+                        isCorrect: false
+                    };
+                    
+                    // Add event listeners to quiz options
+                    const options = slide.querySelectorAll('.duo-word-choice');
+                    options.forEach(option => {
+                        option.onclick = function() {
+                            selectQuizOption(index, option);
+                        };
+                    });
+                }
+            });
+              // Add main continue button event listener
+            // Note: We don't add a static event listener here since the button function changes dynamically
+            // The onclick is set dynamically in updateContinueButtonForSlide()
+
+            // Add close button event listener
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    showSlide(0);
+                });
+            }
+            
+            if (totalSlides > 0) {
+                showSlide(0); // Show the first slide initially
+            } else {
+                console.error("Keine Slides gefunden zum Initialisieren.");
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                showSlide(currentSlideIndex + 1);
+            } else {
+                showSlide(0); // Loop back to first slide
+            }
+        }        
+        // Enhanced Mini-Quiz State Management
+        let quizStates = {}; // Track quiz states per slide
+        
+        // Update continue button state based on current slide type
+        function updateContinueButtonForSlide(slideIndex) {
+            const continueBtn = document.querySelector('.continue-button');
+            if (!continueBtn) return;
+            
+            const currentSlide = slides[slideIndex];
+            if (!currentSlide) return;
+            
+            // Check if this slide has a mini-quiz
+            const hasQuiz = currentSlide.getAttribute('data-has-quiz') === 'true';
+            
+            if (hasQuiz) {
+                // Initialize quiz state if not exists
+                if (!quizStates[slideIndex]) {
+                    quizStates[slideIndex] = {
+                        hasSelectedAnswer: false,
+                        hasCheckedAnswer: false,
+                        isCorrect: false
+                    };
+                }
+                
+                const quizState = quizStates[slideIndex];
+                
+                if (!quizState.hasSelectedAnswer) {
+                    // No answer selected yet
+                    continueBtn.disabled = true;
+                    continueBtn.textContent = 'Antwort wählen';
+                    continueBtn.onclick = null;
+                } else if (!quizState.hasCheckedAnswer) {
+                    // Answer selected, ready to check
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = 'Überprüfen';
+                    continueBtn.onclick = function() {
+                        checkQuizAnswer(slideIndex);
+                    };
+                } else {
+                    // Answer checked, ready to proceed
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = 'Weiter';
+                    continueBtn.onclick = function() {
+                        nextSlide();
+                    };
+                }
+            } else {
+                // For regular slides, enable continue button
+                continueBtn.disabled = false;
+                continueBtn.textContent = 'Weiter';
+                continueBtn.onclick = function() {
+                    nextSlide();
+                };
+            }
+        }
+          // Function to handle quiz answer checking
+        function checkQuizAnswer(slideIndex) {
+            const currentSlide = slides[slideIndex];
+            const quizState = quizStates[slideIndex];
+            
+            if (!currentSlide || !quizState) return;
+            
+            // Find selected option
+            const selectedOption = currentSlide.querySelector('.duo-word-choice.selected');
+            if (!selectedOption) return;
+            
+            // Get quiz ID from the slide
+            const quizId = currentSlide.getAttribute('data-slide-id') ? 
+                currentSlide.getAttribute('data-slide-id').replace('_text', '_mini_quiz') : null;
+            
+            // Check if answer is correct using quiz data or data-correct attribute
+            let isCorrect = false;
+            if (quizId && window.quizData && window.quizData[quizId]) {
+                const selectedIndex = parseInt(selectedOption.dataset.option);
+                const correctIndex = window.quizData[quizId].correctAnswer;
+                isCorrect = selectedIndex === correctIndex;
+            } else {
+                // Fallback to data-correct attribute
+                isCorrect = selectedOption.dataset.correct === 'true';
+            }
+            
+            quizState.isCorrect = isCorrect;
+            quizState.hasCheckedAnswer = true;
+              // Play feedback sound
+            if (isCorrect) {
+                playSound('goodAnswer');
+                selectedOption.classList.add('correct-answer');
+            } else {
+                playSound('badAnswer');
+                selectedOption.classList.add('incorrect-answer');
+                // Also highlight the correct answer
+                let correctOption = null;
+                if (quizId && window.quizData && window.quizData[quizId]) {
+                    const correctIndex = window.quizData[quizId].correctAnswer;
+                    correctOption = currentSlide.querySelector(`.duo-word-choice[data-option="${correctIndex}"]`);
+                } else {
+                    correctOption = currentSlide.querySelector('.duo-word-choice[data-correct="true"]');
+                }
+                if (correctOption) {
+                    correctOption.classList.add('correct-answer');
+                }
+            }
+            
+            // Disable all options
+            const allOptions = currentSlide.querySelectorAll('.duo-word-choice');
+            allOptions.forEach(option => {
+                option.disabled = true;
+            });
+            
+            // Show feedback
+            showQuizFeedback(currentSlide, isCorrect);
+            
+            // Update continue button
+            updateContinueButtonForSlide(slideIndex);
+            
+            // Auto-scroll to feedback area after short delay
+            setTimeout(() => {
+                scrollToQuizFeedback(currentSlide);
+            }, 300);
+        }
+          // Function to show quiz feedback
+        function showQuizFeedback(slideElement, isCorrect) {
+            const feedback = slideElement.querySelector('.mini-quiz-feedback');
+            if (!feedback) return;
+            
+            feedback.style.display = 'block';
+            feedback.classList.remove('correct-feedback', 'incorrect-feedback');
+            
+            if (isCorrect) {
+                feedback.classList.add('correct-feedback');
+            } else {
+                feedback.classList.add('incorrect-feedback');
+            }
+            
+            // Get quiz data and populate feedback content
+            const quizId = slideElement.getAttribute('data-slide-id') ? 
+                slideElement.getAttribute('data-slide-id').replace('_text', '_mini_quiz') : null;
+            
+            if (quizId && window.quizData && window.quizData[quizId]) {
+                const quizData = window.quizData[quizId];
+                const feedbackContent = feedback.querySelector('.feedback-content');
+                if (feedbackContent) {
+                    feedbackContent.innerHTML = `
+                        <div class="feedback-icon">${isCorrect ? '✅' : '❌'}</div>
+                        <div class="feedback-text">
+                            <div class="feedback-status">${isCorrect ? 'Richtig!' : 'Falsch!'}</div>
+                            <div class="feedback-explanation">${quizData.explanation}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Trigger animation
+            setTimeout(() => {
+                feedback.classList.add('show');
+            }, 50);
+        }        // Function to scroll to quiz feedback
+        function scrollToQuizFeedback(slideElement) {
+            const feedback = slideElement.querySelector('.mini-quiz-feedback');
+            if (!feedback) return;
+            
+            // Get the main scrollable container
+            const scrollContainer = document.querySelector('.main-app-container');
+            if (!scrollContainer) return;
+            
+            // Calculate position to scroll to
+            const feedbackRect = feedback.getBoundingClientRect();
+            const containerRect = scrollContainer.getBoundingClientRect();
+            
+            // Get footer height for mobile adjustment
+            const footer = document.querySelector('.micro-footer');
+            const footerHeight = footer ? footer.offsetHeight : 80;
+            const isMobile = window.innerWidth <= 768;
+            
+            // Check if feedback is already visible on desktop
+            if (!isMobile) {
+                const viewportHeight = containerRect.height;
+                const feedbackTop = feedbackRect.top - containerRect.top;
+                const feedbackBottom = feedbackRect.bottom - containerRect.top;
+                
+                // If feedback is already fully visible with some margin, don't scroll
+                if (feedbackTop >= 20 && feedbackBottom <= viewportHeight - 20) {
+                    return; // Content fits, no scrolling needed
+                }
+                
+                // Only scroll if feedback is partially or completely out of view
+                let targetScrollTop = scrollContainer.scrollTop + feedbackTop - 100;
+                
+                // Ensure we don't scroll past the bottom of content unnecessarily
+                const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+                targetScrollTop = Math.min(targetScrollTop, maxScroll);
+                
+                scrollContainer.scrollTo({
+                    top: Math.max(0, targetScrollTop),
+                    behavior: 'smooth'
+                });
+            } else {
+                // Mobile: Always scroll to ensure feedback is visible above footer
+                let targetScrollTop = scrollContainer.scrollTop + feedbackRect.bottom - containerRect.bottom + footerHeight + 20;
+                
+                scrollContainer.scrollTo({
+                    top: Math.max(0, targetScrollTop),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Function to handle quiz option selection
+        function selectQuizOption(slideIndex, optionElement) {
+            const currentSlide = slides[slideIndex];
+            const quizState = quizStates[slideIndex];
+            
+            if (!currentSlide || !quizState || quizState.hasCheckedAnswer) return;
+            
+            // Remove previous selection
+            const allOptions = currentSlide.querySelectorAll('.duo-word-choice');
+            allOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select current option
+            optionElement.classList.add('selected');
+            quizState.hasSelectedAnswer = true;
+            
+            // Update continue button
+            updateContinueButtonForSlide(slideIndex);
+        }// Global function for mini-quiz continue buttons
+        function proceedToNext() {
+            nextSlide();
+        }        // Reset mini-quiz state when navigating to a slide
+        function resetMiniQuizState(slideElement) {
+            if (!slideElement) return;
+            
+            // Check if this slide has a mini-quiz
+            const hasQuiz = slideElement.getAttribute('data-has-quiz') === 'true';
+            if (!hasQuiz) return;
+            
+            // Find slide index to reset quiz state
+            const slideIndex = Array.from(slides).indexOf(slideElement);
+            if (slideIndex !== -1) {
+                quizStates[slideIndex] = {
+                    hasSelectedAnswer: false,
+                    hasCheckedAnswer: false,
+                    isCorrect: false
+                };
+            }
+            
+            // Reset all quiz options to unselected state
+            const options = slideElement.querySelectorAll('.duo-word-choice');
+            options.forEach((option, index) => {
+                option.classList.remove('correct-answer', 'incorrect-answer', 'selected');
+                option.disabled = false;
+                // Reset styling
+                option.style.backgroundColor = '';
+                option.style.color = '';
+                option.style.borderColor = '';
+                
+                // Add click event listener for new quiz system
+                option.onclick = function() {
+                    selectQuizOption(slideIndex, option);
+                };
+            });
+            
+            // Hide feedback area
+            const feedback = slideElement.querySelector('.mini-quiz-feedback');
+            if (feedback) {
+                feedback.style.display = 'none';
+                feedback.classList.remove('show', 'correct-feedback', 'incorrect-feedback');
+            }
+            
+            // Reset any continue button that might be part of the quiz
+            const miniQuizContinue = slideElement.querySelector('.mini-quiz-continue');
+            if (miniQuizContinue) {
+                miniQuizContinue.style.display = 'none';
+            }
+            
+            // Reset the global quiz state variables if they exist
+            // This will reset any JavaScript state for the quiz
+            const quizId = slideElement.querySelector('[id*="_mini_quiz"]');
+            if (quizId) {
+                const idParts = quizId.id.split('_');
+                const baseQuizId = idParts.slice(0, -1).join('_'); // Remove the "opt0" part
+                
+                // Reset global variables that might exist for this quiz
+                if (window[`selectedOption_${baseQuizId}`] !== undefined) {
+                    window[`selectedOption_${baseQuizId}`] = -1;
+                }
+                if (window[`quizAnswered_${baseQuizId}`] !== undefined) {
+                    window[`quizAnswered_${baseQuizId}`] = false;
+                }
+            }
+        }
+
+        function updateProgressBar() {
+            if (totalSlides > 0) {
+                const progressPercentage = ((currentSlideIndex + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+            } else {
+                progressBar.style.width = '0%';
+            }
+        }        // Sound System - Preload audio files and create sound functions
+        let audioFiles = {};
+        function preloadAudio() {
+            const sounds = {
+                goodAnswer: 'assets/sounds/goodawnser2.mp3',
+                badAnswer: 'assets/sounds/badawnser1.mp3',
+                pageTransition: 'assets/sounds/pg_warm3.mp3'
+            };
+            
+            for (const [key, path] of Object.entries(sounds)) {
+                audioFiles[key] = new Audio(path);
+                audioFiles[key].preload = 'auto';
+                audioFiles[key].volume = 0.3; // Set moderate volume
+            }
+        }
+        
+        function playSound(soundKey) {
+            try {
+                if (audioFiles[soundKey]) {
+                    audioFiles[soundKey].currentTime = 0; // Reset to beginning
+                    audioFiles[soundKey].play().catch(e => console.log('Sound play failed:', e));
+                }
+            } catch (error) {
+                console.log('Sound playback error:', error);
+            }
+        }
+
+        // Create click sound effect using Web Audio API
+        function createClickSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Create a satisfying click sound (short pop)
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.05);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (error) {
+                // Fallback: silent if Web Audio API not supported
+                console.log('Web Audio API not supported for click sound');
+            }
+        }
+
+        function showSlide(index) {
+            if (index < 0 || index >= totalSlides) {
+                console.warn("Slide index out of bounds:", index);
+                return;
+            }            // Play page transition sound effect
+            playSound('pageTransition');
+
+            const currentSlide = slides[currentSlideIndex];
+            const nextSlide = slides[index];
+            const isForward = index > currentSlideIndex;
+            
+            // Set up initial positions for push away animation
+            if (currentSlide) {
+                currentSlide.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease';
+                currentSlide.style.transform = isForward ? 'translateX(-100%)' : 'translateX(100%)';
+                currentSlide.style.opacity = '0';
+            }
+            
+            if (nextSlide) {
+                nextSlide.style.transition = 'none';
+                nextSlide.style.transform = isForward ? 'translateX(100%)' : 'translateX(-100%)';
+                nextSlide.style.opacity = '1';
+                nextSlide.classList.add('active');
+                
+                // Trigger reflow
+                nextSlide.offsetHeight;
+                
+                // Animate to center position
+                nextSlide.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                nextSlide.style.transform = 'translateX(0)';
+            }
+
+            // Clean up after animation
+            setTimeout(() => {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                    if (i === index) {
+                        slide.classList.add('active');
+                        slide.style.transform = 'translateX(0)';
+                        slide.style.opacity = '1';
+                        slide.style.transition = '';
+                    } else {
+                        slide.style.transform = '';
+                        slide.style.opacity = '';
+                        slide.style.transition = '';
+                    }
+                });                currentSlideIndex = index;
+                updateProgressBar(); // Update progress bar instead of page counter
+                
+                // Reset mini-quiz state for the new slide
+                resetMiniQuizState(slides[index]);
+                
+                // Handle continue button state for mini-quiz slides
+                updateContinueButtonForSlide(index);
+                  // Apply uniform scaling to visual content
+                applyScalingToActiveSlide();
+                
+                // Note: Mermaid re-initialization not needed anymore - using static PNG images
+                // Re-initialize MathJax for the current slide if present
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                    MathJax.typesetPromise([slides[currentSlideIndex]]);
+                }
+            }, 400); // Match animation duration
+        }// Smart Continue Button - Check scroll position
+        function checkScrollAndEnableButton() {
+            const continueButton = document.getElementById('continueButton');
+            if (!continueButton) return;
+            
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Check if scrolling is possible
+            const canScroll = documentHeight > windowHeight;
+            
+            if (!canScroll) {
+                // No scrolling needed - enable button immediately
+                continueButton.disabled = false;
+                continueButton.style.backgroundColor = 'var(--button-primary-bg)';
+                continueButton.style.color = 'var(--button-primary-text)';
+            } else {
+                // Check if scrolled to 90%
+                const scrollPercent = (scrollTop + windowHeight) / documentHeight;
+                
+                if (scrollPercent >= 0.9) {
+                    // Enable button
+                    continueButton.disabled = false;
+                    continueButton.style.backgroundColor = 'var(--button-primary-bg)';
+                    continueButton.style.color = 'var(--button-primary-text)';
+                } else {
+                    // Disable button
+                    continueButton.disabled = true;
+                    continueButton.style.backgroundColor = 'var(--progress-bar-bg)';
+                    continueButton.style.color = 'var(--text-color-secondary)';
+                }
+            }
+        }
+
+        // Navigate to next slide (for continue button)
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                showSlide(currentSlideIndex + 1);
+                // Reset scroll position and check button for new slide
+                window.scrollTo(0, 0);
+                setTimeout(checkScrollAndEnableButton, 100);
+            } else {
+                // End of slides - could close or restart
+                alert('Micro-Learning abgeschlossen!');
+            }
+        }
+
+        // Keyboard navigation for slide control
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentSlideIndex > 0) {
+                showSlide(currentSlideIndex - 1);
+            } else if (e.key === 'ArrowRight' && currentSlideIndex < totalSlides - 1) {
+                showSlide(currentSlideIndex + 1);
+            } else if (e.key === ' ' || e.key === 'Enter') { // Space or Enter for next slide
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'Escape') {
+                // Handle close action - could close the micro-learning session
+                console.log('Escape pressed - close functionality can be implemented here');
+            }
+        });        // Close button functionality
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                // Handle close action - could close the micro-learning session
+                console.log('Close button clicked - close functionality can be implemented here');
+                // Example: window.close() or redirect to main page
+            });
+        }
+
+        // Scroll event listener for smart button
+        window.addEventListener('scroll', checkScrollAndEnableButton);
+        window.addEventListener('resize', checkScrollAndEnableButton);
+
+        // Optional: Click on progress bar to jump to specific slide
+        if (progressBar && progressBar.parentElement) {
+            progressBar.parentElement.addEventListener('click', (e) => {
+                const rect = progressBar.parentElement.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickPercentage = clickX / rect.width;
+                const targetSlide = Math.floor(clickPercentage * totalSlides);
+                
+                if (targetSlide >= 0 && targetSlide < totalSlides) {
+                    showSlide(targetSlide);
+                }
+            });        }
+        
+        // Initialize all components when DOM is loaded (no Mermaid.js needed anymore - using PNG images)
+        document.addEventListener('DOMContentLoaded', function() {
+            // UNIVERSAL VISUAL TOOLKIT JAVASCRIPT
+            // Initialize all visual configurations when DOM is loaded
+            initializeVisualConfigurations();
+            // Initialize audio system
+            preloadAudio();
+            initializeSlides(); // Initialize slides after DOM is loaded
+        });// Universal Visual Toolkit Functions
+        function initializeVisualConfigurations() {
+            console.log('Initializing visual configurations...');
+            
+            // Find all visual placeholders that have configuration data
+            const visualPlaceholders = document.querySelectorAll('.visual-placeholder[data-has-config="true"]');
+            console.log(`Found ${visualPlaceholders.length} visual placeholders with configuration`);
+              visualPlaceholders.forEach((placeholder, index) => {
+                try {
+                    console.log(`Processing placeholder ${index + 1}:`, placeholder);
+                    const configScript = placeholder.querySelector('script.visual-config');
+                    console.log(`Found config script:`, configScript);
+                    
+                    if (configScript) {
+                        // Execute the script to set window.visualConfig
+                        eval(configScript.textContent);
+                        const config = window.visualConfig;
+                        console.log(`Loaded config:`, config);
+                        
+                        if (config) {
+                            renderVisualConfig(placeholder, config);
+                            // Clear the global variable for next use
+                            window.visualConfig = null;
+                        } else {
+                            console.warn(`No config loaded from script in placeholder ${index + 1}`);
+                            renderFallbackVisual(placeholder);
+                        }
+                    } else {
+                        console.warn(`No config script found in placeholder ${index + 1}`);
+                        renderFallbackVisual(placeholder);
+                    }
+                } catch (error) {
+                    console.error(`Error rendering visual configuration ${index + 1}:`, error);
+                    renderFallbackVisual(placeholder);
+                }
+            });
+        }        
+            function renderVisualConfig(container, config) {
+            // Store config globally for interaction callbacks
+            window.currentVisualConfig = config;
+            
+            // Clear existing content
+            container.innerHTML = '';
+            
+            // Create the visual container
+            const visualContainer = document.createElement('div');
+            visualContainer.className = 'visual-component-root';
+            visualContainer.innerHTML = `<div class="visual-container" style="--accent-primary: ${config.colors?.primary || '#0af'}; --accent-secondary: ${config.colors?.secondary || '#f06'}; --transition-speed: ${config.timing?.speed || '0.3s'}"></div>`;
+            
+            const canvasContainer = visualContainer.querySelector('.visual-container');
+            
+            // Render elements
+            if (config.elements && Array.isArray(config.elements)) {
+                config.elements.forEach((element, index) => {
+                    const visualElement = createVisualElement(element, index);
+                    if (visualElement) {
+                        canvasContainer.appendChild(visualElement);
+                    }
+                });
+            }
+            
+            // Apply animations
+            if (config.animations && Array.isArray(config.animations)) {
+                setTimeout(() => {
+                    config.animations.forEach(animation => {
+                        applyAnimation(canvasContainer, animation);
+                    });
+                }, 100);
+            }
+            
+            // Setup interactions
+            if (config.interactions && Array.isArray(config.interactions)) {
+                config.interactions.forEach(interaction => {
+                    setupInteraction(canvasContainer, interaction);
+                });
+            }
+            
+            container.appendChild(visualContainer);
+        }        function createVisualElement(element, index) {
+            const el = document.createElement('div');
+            el.className = 'visual-element';
+            el.id = element.id || `element-${index}`;            // Set position with responsive coordinate system
+            if (element.position) {
+                el.style.position = 'absolute';
+                
+                // Use percentage-based positioning for fixed 400x300 container
+                // Convert coordinate system: LLM uses -200 to +200 for X, -150 to +150 for Y
+                const normalizedX = (element.position.x + 200) / 400; // Convert to 0-1 range
+                const normalizedY = (element.position.y + 150) / 300; // Convert to 0-1 range
+                
+                // Apply as percentages for responsive positioning
+                el.style.left = (normalizedX * 100) + '%';
+                el.style.top = (normalizedY * 100) + '%';
+                
+                // Center the element at its position
+                el.style.transform = 'translate(-50%, -50%)';
+            }
+            
+            // Set size from options with fixed container scaling
+            if (element.options) {
+                if (element.options.width) {
+                    // Scale width as percentage of container width (400px base)
+                    const widthPercent = (element.options.width / 400) * 100;
+                    el.style.width = Math.min(widthPercent, 90) + '%'; // Max 90% of container
+                }
+                if (element.options.height) {
+                    // Scale height as percentage of container height (300px base)
+                    const heightPercent = (element.options.height / 300) * 100;
+                    el.style.height = Math.min(heightPercent, 90) + '%'; // Max 90% of container
+                }
+                if (element.options.opacity !== undefined) el.style.opacity = element.options.opacity;
+            }
+            
+            // Legacy size support with fixed container scaling
+            if (element.size) {
+                const widthPercent = (element.size.width / 400) * 100;
+                const heightPercent = (element.size.height / 300) * 100;
+                el.style.width = Math.min(widthPercent, 90) + '%';
+                el.style.height = Math.min(heightPercent, 90) + '%';
+            }
+            
+            // Enhanced styling with design rules
+            el.style.borderRadius = '4px';
+            el.style.transition = 'all 0.3s ease';
+            
+            // Set colors from style
+            if (element.style) {
+                if (element.style.backgroundColor) el.style.backgroundColor = element.style.backgroundColor;
+                if (element.style.color) el.style.color = element.style.color;
+                if (element.style.border) el.style.border = element.style.border;
+                if (element.style.borderRadius) el.style.borderRadius = element.style.borderRadius;
+                if (element.style.fontSize) el.style.fontSize = element.style.fontSize;
+                if (element.style.fontWeight) el.style.fontWeight = element.style.fontWeight;
+            }
+            
+            // Apply color theme from color field (LLM uses color: "Primary", "Secondary", etc.)
+            if (element.color) {
+                const colorMap = {
+                    'Primary': '#0af',     // Use design rules colors
+                    'Secondary': '#f06', 
+                    'Success': '#0f8',
+                    'Warning': '#fc0',
+                    'Error': '#f03',
+                    'Info': '#06f'
+                };
+                const bgColor = colorMap[element.color] || element.color;
+                el.style.backgroundColor = bgColor;
+                el.style.border = `2px solid ${bgColor}`;
+                el.style.boxShadow = `0 0 10px ${bgColor}40`; // Add glow effect
+            }
+            
+            // Apply shape class for rectangle type
+            if (element.type === 'rectangle') {
+                el.classList.add('shape-rectangle');
+                if (!element.style && !element.color) {
+                    el.style.backgroundColor = '#0af';
+                    el.style.border = '2px solid #0af';
+                    el.style.boxShadow = '0 0 10px #0af40';
+                }
+            }
+            
+            // Apply shape class
+            if (element.shape) {
+                el.classList.add(`shape-${element.shape}`);
+            }
+            
+            // Apply color class
+            if (element.colorClass) {
+                el.classList.add(`color-${element.colorClass}`);
+            }
+            
+            // Set content based on type
+            switch (element.type) {
+                case 'text':
+                    el.classList.add('text-element');
+                    // LLM uses options.text
+                    el.textContent = (element.options && element.options.text) || element.content || '';
+                    el.style.color = element.style?.color || '#ffffff';
+                    el.style.fontSize = element.style?.fontSize || '14px';
+                    el.style.fontWeight = element.style?.fontWeight || 'bold';
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.justifyContent = 'center';
+                    el.style.textAlign = 'center';
+                    el.style.textShadow = '0 0 5px rgba(0, 170, 255, 0.5)'; // Add text glow
+                    el.style.fontFamily = 'Arial, sans-serif';
+                    break;
+                case 'rectangle':
+                    // Rectangle styling is handled above
+                    break;
+                case 'circle':
+                    el.style.borderRadius = '50%';
+                    if (!element.style && !element.color) {
+                        el.style.backgroundColor = '#0af';
+                        el.style.border = '2px solid #0af';
+                        el.style.boxShadow = '0 0 15px #0af';
+                    }
+                    break;
+                case 'shape':
+                    // Shape styling is handled by CSS classes
+                    break;
+                case 'button':
+                    el.classList.add('visual-button');
+                    el.textContent = (element.options && element.options.text) || element.content || 'Button';
+                    el.style.cursor = 'pointer';
+                    el.style.backgroundColor = '#222';
+                    el.style.color = '#0af';
+                    el.style.border = '1px solid #0af';
+                    el.style.padding = '8px 16px';
+                    el.style.borderRadius = '4px';
+                    el.style.fontWeight = 'bold';
+                    break;
+                case 'line':
+                    el.style.height = '2px';
+                    el.style.backgroundColor = element.style?.backgroundColor || '#0af';
+                    el.style.transformOrigin = 'left center';
+                    el.style.boxShadow = `0 0 5px ${element.style?.backgroundColor || '#0af'}`;
+                    if (element.angle) {
+                        el.style.transform = `rotate(${element.angle}deg)`;
+                    }
+                    break;
+                default:
+                    el.textContent = (element.options && element.options.text) || element.content || '';
+            }
+            
+            return el;
+        }function applyAnimation(container, animation) {
+            // Support both legacy target and LLM's elementId
+            const selector = animation.elementId || animation.target;
+            const targetElements = selector === 'all' 
+                ? container.querySelectorAll('.visual-element')
+                : container.querySelectorAll(`#${selector}`);
+            
+            // Extract timing and parameters
+            const timing = animation.timing || {};
+            const parameter = animation.parameter || {};
+            const duration = timing.duration ? `${timing.duration}ms` : (animation.duration || '1s');
+            const delay = timing.delay || animation.delay || 0;
+            const easing = timing.easing || 'ease';
+            
+            targetElements.forEach(element => {
+                setTimeout(() => {
+                    switch (animation.type) {
+                        case 'pulse':
+                            element.classList.add('pulsing');
+                            break;
+                        case 'rotate':
+                            element.classList.add('rotating');
+                            break;
+                        case 'fadeIn':
+                            element.style.animation = `fadeIn ${duration} ${easing}`;
+                            break;
+                        case 'fade':
+                            // LLM uses fade type with opacity in parameter
+                            element.style.transition = `opacity ${duration} ${easing}`;
+                            if (parameter.opacity !== undefined) {
+                                element.style.opacity = parameter.opacity;
+                            }
+                            break;
+                        case 'slideIn':
+                            element.style.animation = `slideIn ${duration} ${easing}`;
+                            break;
+                        case 'bounce':
+                            element.style.animation = `bounce ${duration} ${easing}`;
+                            break;
+                        case 'move':
+                            // LLM uses parameter object with x, y coordinates
+                            const targetX = parameter.x !== undefined ? parameter.x : (animation.to && animation.to.x);
+                            const targetY = parameter.y !== undefined ? parameter.y : (animation.to && animation.to.y);
+                            
+                            if (targetX !== undefined || targetY !== undefined) {
+                                element.style.transition = `all ${duration} ${easing}`;
+                                if (targetX !== undefined) element.style.left = targetX + 'px';
+                                if (targetY !== undefined) element.style.top = targetY + 'px';
+                            }
+                            break;
+                        case 'scale':
+                            element.style.transition = `transform ${duration} ${easing}`;
+                            const scaleValue = parameter.scale || animation.scale || 1.2;
+                            element.style.transform = `scale(${scaleValue})`;
+                            break;
+                        case 'sequence':
+                            if (animation.steps && Array.isArray(animation.steps)) {
+                                animation.steps.forEach((step, index) => {
+                                    setTimeout(() => {
+                                        applyAnimation(container, {...step, elementId: selector});
+                                    }, (animation.stepDelay || 500) * index);
+                                });
+                            }
+                            break;
+                    }
+                }, delay);
+            });
+        }        
+            function setupInteraction(container, interaction) {
+            // Support both legacy target and LLM's elementId
+            const selector = interaction.elementId || interaction.target;
+            const targetElements = selector === 'all'
+                ? container.querySelectorAll('.visual-element')
+                : container.querySelectorAll(`#${selector}`);
+            
+            targetElements.forEach(element => {
+                element.classList.add('interactive');
+                element.style.cursor = 'pointer';
+                
+                switch (interaction.type) {
+                    case 'click':
+                        element.addEventListener('click', () => {
+                            // Handle LLM's callbacks array
+                            if (interaction.callbacks && Array.isArray(interaction.callbacks)) {
+                                interaction.callbacks.forEach(callback => {
+                                    handleInteractionCallback(container, callback);
+                                });
+                            }
+                            // Handle legacy single action
+                            else if (interaction.action) {
+                                handleInteractionAction(container, interaction.action);
+                            }
+                        });
+                        break;
+                    case 'hover':
+                        element.addEventListener('mouseenter', () => {
+                            if (interaction.callbacks && Array.isArray(interaction.callbacks)) {
+                                interaction.callbacks.forEach(callback => {
+                                    if (callback.trigger === 'hover' || callback.trigger === 'enter') {
+                                        handleInteractionCallback(container, callback);
+                                    }
+                                });
+                            }
+                            else if (interaction.action && interaction.action.onHover) {
+                                handleInteractionAction(container, interaction.action.onHover);
+                            }
+                        });
+                        element.addEventListener('mouseleave', () => {
+                            if (interaction.callbacks && Array.isArray(interaction.callbacks)) {
+                                interaction.callbacks.forEach(callback => {
+                                    if (callback.trigger === 'leave') {
+                                        handleInteractionCallback(container, callback);
+                                    }
+                                });
+                            }
+                            else if (interaction.action && interaction.action.onLeave) {
+                                handleInteractionAction(container, interaction.action.onLeave);
+                            }
+                        });
+                        break;
+                    case 'drag':
+                        makeDraggable(element);
+                        break;
+                }
+            });
+        }
+
+        function handleInteractionCallback(container, callback) {
+            switch (callback.action) {
+                case 'triggerAnimation':
+                    // Find the animation by ID and trigger it
+                    if (window.currentVisualConfig && window.currentVisualConfig.animations) {
+                        const animation = window.currentVisualConfig.animations.find(anim => anim.id === callback.animationId);
+                        if (animation) {
+                            applyAnimation(container, animation);
+                        } else {
+                            console.warn(`Animation with ID '${callback.animationId}' not found`);
+                        }
+                    }
+                    break;
+                case 'highlight':
+                    const highlightTargets = callback.elementId === 'all'
+                        ? container.querySelectorAll('.visual-element')
+                        : container.querySelectorAll(`#${callback.elementId}`);
+                    highlightTargets.forEach(el => {
+                        el.classList.add('glowing');
+                        if (callback.duration) {
+                            setTimeout(() => el.classList.remove('glowing'), callback.duration);
+                        }
+                    });
+                    break;
+                case 'animate':
+                    applyAnimation(container, callback);
+                    break;
+                default:
+                    console.warn(`Unknown callback action: ${callback.action}`);
+            }
+        }
+
+        function handleInteractionAction(container, action) {
+            switch (action.type) {
+                case 'highlight':
+                    const highlightTargets = action.target === 'all'
+                        ? container.querySelectorAll('.visual-element')
+                        : container.querySelectorAll(`#${action.target}`);
+                    highlightTargets.forEach(el => {
+                        el.classList.add('glowing');
+                        if (action.duration) {
+                            setTimeout(() => el.classList.remove('glowing'), action.duration);
+                        }
+                    });
+                    break;
+                case 'animate':
+                    applyAnimation(container, action);
+                    break;
+                case 'show':
+                    const showTargets = action.target === 'all'
+                        ? container.querySelectorAll('.visual-element')
+                        : container.querySelectorAll(`#${action.target}`);
+                    showTargets.forEach(el => {
+                        el.style.opacity = '1';
+                        el.style.visibility = 'visible';
+                    });
+                    break;
+                case 'hide':
+                    const hideTargets = action.target === 'all'
+                        ? container.querySelectorAll('.visual-element')
+                        : container.querySelectorAll(`#${action.target}`);
+                    hideTargets.forEach(el => {
+                        el.style.opacity = '0';
+                        el.style.visibility = 'hidden';
+                    });
+                    break;
+            }
+        }
+
+        function makeDraggable(element) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            
+            element.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = parseInt(element.style.left) || 0;
+                initialY = parseInt(element.style.top) || 0;
+                element.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                element.style.left = (initialX + deltaX) + 'px';
+                element.style.top = (initialY + deltaY) + 'px';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    element.style.cursor = 'grab';
+                }
+            });
+        }        function renderFallbackVisual(container) {
+            container.innerHTML = `
+                <div class="visual-component-root">
+                    <div class="visual-container">
+                        <div class="visual-element text-element" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            color: var(--text-secondary);
+                            font-style: italic;
+                        ">Visual content placeholder</div>
+                    </div>
+                </div>
+            `;
+        }        // IMPROVED UNIFORM SCALING SYSTEM: Fill body space without stretching
+        function applyUniformScaling() {
+            const visualContainers = document.querySelectorAll('.visual-container');
+            
+            visualContainers.forEach(container => {
+                const visualRoot = container.querySelector('.visual-component-root');
+                if (!visualRoot) return;
+                
+                // Get container dimensions (body space available)
+                const containerRect = container.getBoundingClientRect();
+                const containerWidth = containerRect.width;
+                const containerHeight = containerRect.height;
+                
+                // Get content dimensions
+                const contentRect = visualRoot.getBoundingClientRect();
+                const contentWidth = contentRect.width;
+                const contentHeight = contentRect.height;
+                
+                if (contentWidth === 0 || contentHeight === 0) return;
+                
+                // Calculate scale factors for both dimensions
+                const scaleX = containerWidth / contentWidth;
+                const scaleY = containerHeight / contentHeight;
+                
+                // Use the smaller scale to ensure uniform scaling (no stretching)
+                // This ensures 2 sides fill to container edge, 2 sides may have gaps
+                const scale = Math.min(scaleX, scaleY);
+                
+                // Apply uniform scaling transformation
+                visualRoot.style.transform = `scale(${scale})`;
+                visualRoot.style.transformOrigin = 'center center';
+                
+                // Ensure container allows overflow for edges that extend beyond
+                container.style.overflow = 'hidden';
+            });
+        }
+
+        // Apply scaling on load and resize
+        window.addEventListener('load', () => {
+            setTimeout(applyUniformScaling, 100); // Small delay to ensure elements are rendered
+        });
+        
+        window.addEventListener('resize', () => {
+            setTimeout(applyUniformScaling, 50);
+        });
+          // Apply scaling when slides change
+        function applyScalingToActiveSlide() {
+            setTimeout(applyUniformScaling, 50);
+        }        // Initialize slides when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSlides();
+            
+            // Note: Mermaid initialization not needed anymore - using static PNG images generated by Kroki
+            console.log('Micro Learning Platform - Loaded successfully with PNG-based diagrams');
+        });
+    </script>
+</body>
+</html>
