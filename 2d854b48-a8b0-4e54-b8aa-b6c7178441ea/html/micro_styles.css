@@ -1,0 +1,1756 @@
+/* ========================================
+   PulseLern Micro Learning - Styles
+   Dark Mode Theme with Responsive Design
+   ======================================== */
+
+/* ===========================================
+   CSS VARIABLES & THEME CONFIGURATION
+   =========================================== */
+:root {
+    --primary-color: #5e43b5; /* Beibehalten für Akzente, falls benötigt */
+    --secondary-color: #ffa726; /* Beibehalten für Akzente */
+    
+    /* Haupt-Dark-Theme Farben */
+    --dark-bg: #121212; /* Äußerster Hintergrund (Body) */
+    --app-bg: #1E1E1E; /* Hintergrund des Haupt-App-Containers mit Grid */
+    --card-bg: #242424; /* Hintergrund für Inhaltskarten, etwas heller */
+    --header-bg: #1A1A1A; /* Hintergrund für den Header */
+    
+    --text-color-primary: #f0f0f0; /* Primäre helle Textfarbe */
+    --text-color-secondary: #b0b0b0; /* Sekundäre helle Textfarbe */
+    --text-color: #f0f0f0; /* Kompatibilität mit bestehendem Code */
+    --text-secondary: #b0b0b0; /* Kompatibilität mit bestehendem Code */
+    
+    /* Mobile-sichere Viewport-Höhen */
+    --full-height: 100vh; /* Fallback für ältere Browser */
+    --full-height: 100dvh; /* Moderne Browser: Dynamic Viewport Height */
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
+    
+    --border-radius: 16px;
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 24px;
+    --spacing-lg: 40px;
+    --spacing-xl: 52px; /* 120% größer als --spacing-lg für Textbox-Inhalte */
+    --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); /* Angepasster Schatten für Dark Mode */
+    --grid-line-color: rgba(255, 255, 255, 0.05); /* Sehr dezente Gitterlinien */
+    --border-color: #383838; /* Allgemeine Randfarbe für dunkle Elemente */
+    
+    /* Design-UI-Elemente (angepasst für Dark Mode) */
+    --progress-bar-bg: #383838;
+    --progress-bar-fill: #7F5AF0; /* CHANGED: Lila für Fortschrittsbalken */
+    --button-primary-bg: #7F5AF0; /* CHANGED: Lila für primäre Buttons */
+    --button-primary-text: #ffffff;
+    --button-primary-shadow: 0 4px 0 #6A48D0; /* CHANGED: Dunkellila für Button-Schatten */
+    --button-disabled-bg: #444444;
+    --button-disabled-text: #888888;
+    --word-choice-bg: #2c2c2c;
+    --word-choice-border: #4a4a4a;
+    --word-choice-text: var(--text-color-primary);
+    --header-border: var(--border-color);
+}
+
+/* ===========================================
+   BASE STYLING & RESET
+   =========================================== */
+/* ===========================================
+   GLOBAL RESET & ROOT CONFIGURATION
+   =========================================== */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+}
+
+html {
+    height: var(--full-height);
+    overflow-x: hidden; /* Verhindert horizontales Scrollen */
+    overflow-y: auto; /* Erlaubt vertikales Scrollen */
+    -webkit-text-size-adjust: 100%; /* Verhindert automatische Textvergrößerung */
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    background-color: var(--dark-bg); /* Dunkelster Hintergrund */
+    color: var(--text-color-primary); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Oben starten, da main-app-container ggf. margin hat */
+    height: var(--full-height); /* Mobile-sichere Höhe */
+    min-height: var(--full-height); /* Fallback für bessere Kompatibilität */
+    overflow-x: hidden; /* Verhindert horizontales Scrollen */
+    overflow-y: auto; /* Erlaubt vertikales Scrollen */
+    line-height: 1.6;
+    margin: 0;
+    padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
+    position: relative; /* Kontext für fixed-positionierte Elemente */
+    /* Touch-Optimierungen */
+    touch-action: manipulation; /* Verhindert doppeltes Tippen zum Zoomen */
+    -webkit-overflow-scrolling: touch; /* Smooth Scrolling auf iOS */
+}
+
+/* ===========================================
+   MAIN CONTAINER & LAYOUT
+   =========================================== */
+.main-app-container {
+    width: 100%;
+    max-width: 100vw; /* Verhindert Überlauf über Viewport-Breite */
+    /* Hintergrund und Gitter für den App-Container */
+    background-color: var(--app-bg); 
+    background-image:
+        linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    /* Mobile-spezifische Background-Fixes */
+    background-attachment: local; /* Wichtig für iOS Safari */
+    
+    display: flex;
+    flex-direction: column;
+    height: var(--full-height); /* Mobile-sichere Höhe */
+    min-height: var(--full-height); /* Fallback */
+    overflow-y: auto; /* Vertikales Scrollen erlaubt */
+    overflow-x: hidden; /* Verhindert horizontales Scrollen */
+    max-height: var(--full-height); /* Verhindert Expansion über Viewport hinaus */
+    
+    /* Hide scrollbars while keeping scroll functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    
+    /* Mobile Touch-Optimierungen */
+    -webkit-overflow-scrolling: touch; /* Smooth Scrolling auf iOS */
+    overscroll-behavior: contain; /* Verhindert bounce-scrolling */
+}
+
+/* Hide scrollbars for WebKit browsers (Chrome, Safari, Edge) */
+.main-app-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===========================================
+   HEADER & NAVIGATION
+   =========================================== */
+.micro-header {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--header-border);
+    background-color: var(--header-bg); /* Eigener Hintergrund für Header */
+    height: 3.75rem; /* RESPONSIVE: Use rem instead of px (60px = 3.75rem) */
+    flex-shrink: 0;
+    width: 100%; /* Header immer volle Breite */
+}
+
+.nav-button-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-color-secondary);
+    cursor: pointer;
+    padding: 0 var(--spacing-sm);
+}
+
+.nav-button-close:hover {
+    color: var(--text-color-primary);
+}
+
+.progress-bar-container {
+    flex-grow: 1;
+    height: 1rem; /* RESPONSIVE: Use rem instead of px (16px = 1rem) */
+    background-color: var(--progress-bar-bg);
+    border-radius: 0.5rem; /* RESPONSIVE: Use rem (8px = 0.5rem) */
+    overflow: hidden;
+    margin: 0 var(--spacing-md);
+}
+
+.progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background-color: var(--progress-bar-fill);
+    border-radius: 0.5rem; /* RESPONSIVE: Use rem (8px = 0.5rem) */
+    transition: width 0.3s ease-in-out;
+}
+
+/* ===========================================
+   CONTENT AREA & SLIDES
+   =========================================== */
+.content-area-wrapper {
+    width: 100%;
+    flex-grow: 1; /* Ermöglicht dem Wrapper, für Inhalt zu expandieren */
+    flex-shrink: 0; /* Verhindert Schrumpfen */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Inhalt startet oben */
+    height: auto; /* Automatische Höhe für dynamischen Inhalt */
+    min-height: 0; /* Ermöglicht Schrumpfen unter flex-basis */
+    overflow-y: auto; /* Desktop: Ermöglicht vertikales Scrollen */
+    overflow-x: hidden; /* Verhindert horizontales Scrollen */
+    padding-bottom: 100px; /* Platz für sticky Footer (80px Footer + 20px Buffer) */
+}
+
+.slides-container {
+    flex-grow: 1; /* FIXED: Allow container to grow to accommodate content */
+    flex-shrink: 0; /* Don't shrink */
+    position: relative;
+    display: flex;
+    overflow: visible; /* FIXED: Allow scrolling when needed */
+    height: auto; /* FIXED: Auto height instead of fit-content */
+    min-height: fit-content; /* FIXED: Height based on active slide content */
+}
+
+.micro-slide {
+    min-width: 100%;
+    height: fit-content; /* Dynamic height based on content */
+    min-height: auto; /* FIXED: Remove excessive min-height */
+    display: flex; /* Always flex, controlled by opacity and transform */
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(100%); /* Start off-screen to the right */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+    overflow-y: visible; /* FIXED: Allow natural scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding-bottom: 1.5rem; /* FIXED: Reduced padding to 1.5rem */
+}
+
+.micro-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 1;
+    position: relative !important; /* FIXED: Active slide determines container height */
+}
+
+.micro-container-slide-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    height: fit-content !important; /* FIXED: Dynamic height based on content */
+    min-height: auto; /* FIXED: Remove excessive min-height */
+    padding: var(--spacing-md);
+    overflow: visible; /* Allow content to extend */
+}
+
+.micro-container-slide-content .knowledge-content,
+.micro-container-slide-content .visual-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+/* ===========================================
+   TITLES & HEADINGS
+   =========================================== */
+.micro-container-slide-content .micro-title {
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-color-primary);
+    text-align: left;
+    flex-shrink: 0;
+    order: -1; /* Put title first, OUTSIDE the content box */
+    background: none !important; /* No background */
+    border: none !important; /* No border */
+    box-shadow: none !important; /* No shadow */
+    padding: 0 !important; /* No padding */
+}
+
+.knowledge-content .micro-title,
+.visual-content .micro-title {
+    position: absolute;
+    top: calc(-1.75rem - var(--spacing-md)); /* Position above the content box with smaller gap */
+    left: 0;
+    right: 0;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.micro-title {
+    margin-bottom: calc(var(--spacing-lg) * 3); /* 50% größerer Abstand vom Titel zum Text */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-color-primary);
+    text-align: left;
+    width: 100%;
+    line-height: 1.3; /* Definierte Zeilenhöhe für Berechenbarkeit */
+    /* Dynamisches margin-bottom basierend auf geschätzter Zeilenzahl */
+}
+
+/* Enhanced spacing calculation for potentially long titles */
+.micro-title {
+    /* Base spacing increased if title might wrap */
+    margin-bottom: calc(var(--spacing-lg) * 3 + (var(--spacing-sm) * var(--title-line-factor, 0)));
+}
+
+/* JavaScript will set --title-line-factor based on title length */
+.micro-title[data-long-title="true"] {
+    margin-bottom: calc(var(--spacing-lg) * 3.5); /* Zusätzlicher Abstand für lange Titel */
+}
+
+/* Mobile version with responsive spacing */
+@media (max-width: 768px) {
+    .micro-title[data-long-title="true"] {
+        margin-bottom: calc(var(--spacing-md) * 2.8); /* Proportional größerer Abstand für Mobile */
+    }
+}
+
+/* ===========================================
+   CONTENT BOXES & CARDS
+   =========================================== */
+.knowledge-content {
+    background-color: var(--card-bg); 
+    border: 1px solid var(--border-color); 
+    border-radius: var(--border-radius); 
+    padding: var(--spacing-xl); /* 120% größeres padding für bessere Textabstände */
+    box-shadow: var(--card-shadow); 
+    color: var(--text-color-primary);
+    width: 100%;
+    min-height: fit-content; /* Minimum height fits content */
+    height: fit-content; /* Dynamic height based on actual content */
+    max-height: none; /* Remove any height restrictions */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Text content aligned to top */
+    overflow: visible; /* No internal scrolling */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    margin-bottom: var(--spacing-md);
+    margin-top: calc(0.75rem + var(--spacing-md)); /* 50% smaller gap between title and box */
+    position: relative; /* For absolute positioned title */
+}
+
+.visual-content {
+    background-color: var(--card-bg); 
+    border: 1px solid var(--border-color); 
+    border-radius: var(--border-radius); 
+    box-shadow: var(--card-shadow); 
+    color: var(--text-color-primary);
+    
+    /* Base dimensions: 1024x768 (4:3) - Responsive scaling */
+    width: 1024px;
+    height: 768px;
+    aspect-ratio: 4 / 3; /* Maintain 4:3 ratio */
+    
+    /* Responsive constraints */
+    max-width: 90vw;
+    max-height: 60vh;
+    
+    /* Maintain aspect ratio and center content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    /* No padding - iframe fills entire visual area */
+    padding: 0;
+    overflow: hidden; /* Clip content to exact dimensions */
+    margin: 0 auto; /* Center horizontally */
+    position: relative;
+    flex-shrink: 0;
+    
+    /* Scale down uniformly when needed */
+    transform-origin: center center;
+}
+
+/* Hide scrollbars for WebKit browsers */
+.knowledge-content::-webkit-scrollbar,
+.visual-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===========================================
+   VISUAL CONTENT STYLING
+   =========================================== */
+.visual-content .micro-title::before {
+    content: "Visualisierung: ";
+    color: var(--text-color-secondary);
+    font-weight: normal;
+}
+
+.visual-placeholder {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.visual-container {
+    /* Base dimensions: 1024x768 (4:3 ratio) */
+    width: 1024px;
+    height: 768px;
+    background-color: transparent;
+    border-radius: var(--border-radius);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    padding: 0;
+    display: block;
+    
+    /* Responsive scaling for smaller screens */
+    max-width: 90vw;
+    max-height: 60vh;
+    
+    /* Maintain aspect ratio during scaling */
+    aspect-ratio: 4 / 3;
+    
+    /* Scale uniformly when container is smaller than base size */
+    transform-origin: center center;
+}
+
+.visual-iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    border-radius: var(--border-radius) !important;
+    display: block !important;
+    background-color: transparent !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Responsive scaling - iframe fills container */
+    object-fit: contain !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* ===========================================
+   MERMAID DIAGRAM STYLING
+   =========================================== */
+.mermaid-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    position: relative;
+    overflow: visible;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.mermaid {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 960px !important; /* 4:3 optimiert für 1024px breite Container */
+    max-height: 680px !important; /* Raum für Padding in 768px hohem Container */
+    font-family: 'Poppins', sans-serif !important;
+    text-align: center;
+    background-color: transparent !important;
+    overflow: visible !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    visibility: visible !important;
+}
+
+.mermaid svg {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    background-color: transparent !important;
+    display: block;
+    margin: 0 auto;
+    transform-origin: center center !important;
+    overflow: visible !important;
+    /* Bessere Skalierung für 4:3 Format */
+    object-fit: contain !important;
+}
+
+/* Mermaid Dark Mode Optimierung */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon {
+    fill: var(--card-bg) !important;
+    stroke: var(--button-primary-bg) !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .edgeLabel {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color-primary) !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+}
+
+.mermaid .edgePath {
+    stroke: var(--button-primary-bg) !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid text {
+    fill: var(--text-color-primary) !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* ===========================================
+   FOOTER & NAVIGATION BUTTONS
+   =========================================== */
+.micro-footer {
+    /* Mobile-sicheres Footer-System statt position: fixed */
+    position: sticky; /* Sticky statt fixed für bessere mobile Unterstützung */
+    position: -webkit-sticky; /* Safari-Support */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 80px; /* Feste Höhe für konsistente Darstellung */
+    margin-top: auto; /* Automatisches Positionieren am Ende des Containers */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Gleichmäßiges Padding: 24px oben/unten, 24px links/rechts */
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-bottom: calc(var(--spacing-sm) + var(--safe-area-inset-bottom)); /* Safe Area berücksichtigen */
+    background-color: var(--header-bg);
+    border-top: 1px solid var(--border-color);
+    z-index: 1000;
+    flex-shrink: 0;
+    
+    /* Mobile-spezifische Optimierungen */
+    -webkit-transform: translateZ(0); /* GPU-Beschleunigung für iOS */
+    transform: translateZ(0);
+    backface-visibility: hidden; /* Rendering-Optimierung */
+    
+    /* Fallback für ältere Browser ohne sticky support */
+    @supports not (position: sticky) {
+        position: fixed;
+        bottom: var(--safe-area-inset-bottom);
+    }
+}
+
+.continue-button {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: var(--button-primary-shadow);
+    transition: all 0.2s ease;
+    min-width: 120px;
+    max-width: 300px;
+    width: 90%; /* Etwas schmaler auf Mobile */
+    max-width: 280px; /* Maximale Breite begrenzen */
+    font-size: 1rem; /* Etwas kleinere Schrift für Mobile */
+    padding: var(--spacing-sm) var(--spacing-md); /* Kompakteres Padding */
+    min-height: 48px; /* Touch-freundliche Mindesthöhe */
+}
+
+.continue-button:hover {
+    background-color: #4c3690;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #4c3690, 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.continue-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 0 #4aa500;
+}
+
+.continue-button:disabled {
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-text);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.continue-button:disabled:hover {
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-text);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===========================================
+   TEXT FORMATTING & TYPOGRAPHY
+   =========================================== */
+.knowledge-content .micro-title {
+    color: var(--text-color-primary);
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: bold;
+    padding: 0;
+    text-align: left; /* LEFT ALIGNED */
+    flex-shrink: 0;
+}
+
+.visual-content .micro-title {
+    display: none !important; /* Hide any internal titles in visual content */
+}
+
+.knowledge-content p,
+.knowledge-content div:not(.micro-title):not(.mini-quiz-header):not(.duo-instruction-area):not(.duo-interactive-area),
+.visual-content p,
+.visual-content div:not(.micro-title):not(.mini-quiz-header):not(.duo-instruction-area):not(.duo-interactive-area) {
+    margin: 0 0 var(--spacing-md) 0; /* Better bottom margin for paragraph separation */
+    text-align: left;
+    line-height: 1.6; /* Better readability */
+    color: var(--text-color-primary);
+    font-size: 1rem;
+    font-weight: normal;
+    word-wrap: break-word; /* Handle long words */
+}
+
+/* Ensure the last paragraph doesn't have excessive bottom margin */
+.knowledge-content p:last-child,
+.knowledge-content div:last-child,
+.visual-content p:last-child,
+.visual-content div:last-child {
+    margin-bottom: 0;
+}
+
+/* Heading specific styling */
+.knowledge-content h1,
+.knowledge-content h2,
+.knowledge-content h3,
+.visual-content h1,
+.visual-content h2,
+.visual-content h3 {
+    margin: var(--spacing-md) 0 var(--spacing-sm) 0; /* Consistent spacing for headings */
+    text-align: left;
+    line-height: 1.3;
+    color: var(--text-color-primary);
+    font-weight: bold;
+}
+
+.knowledge-content h1,
+.visual-content h1 {
+    font-size: 1.5rem;
+}
+
+.knowledge-content h2,
+.visual-content h2 {
+    font-size: 1.3rem;
+}
+
+.knowledge-content h3,
+.visual-content h3 {
+    font-size: 1.1rem;
+}
+
+/* List specific styling */
+.knowledge-content ul,
+.knowledge-content ol,
+.visual-content ul,
+.visual-content ol {
+    margin: var(--spacing-sm) 0;
+    padding-left: var(--spacing-lg); /* Better indentation for lists */
+    text-align: left;
+    line-height: 1.6;
+    color: var(--text-color-primary);
+}
+
+.knowledge-content li,
+.visual-content li {
+    margin-bottom: var(--spacing-xs); /* Smaller spacing between list items */
+    line-height: 1.6;
+}
+
+/* Ensure proper spacing between paragraphs */
+.knowledge-content p + p,
+.visual-content p + p {
+    margin-top: var(--spacing-md); /* Proper spacing between consecutive paragraphs */
+}
+
+/* Ensure proper spacing after headings */
+.knowledge-content h1 + p,
+.knowledge-content h2 + p,
+.knowledge-content h3 + p,
+.visual-content h1 + p,
+.visual-content h2 + p,
+.visual-content h3 + p {
+     margin-top: var(--spacing-sm); /* Smaller spacing after headings since headings have their own bottom margin */
+}
+
+/* Code blocks and inline code */
+.knowledge-content code,
+.visual-content code {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.knowledge-content pre,
+.visual-content pre {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    margin: var(--spacing-md) 0;
+    overflow-x: auto;
+    line-height: 1.6;
+}
+
+/* Enhanced Typography */
+h2 {
+    color: var(--text-color);
+    margin: var(--spacing-lg) 0 var(--spacing-md) 0; /* Konsistente Abstände */
+    font-size: clamp(1.3rem, 4vw, 1.8rem); 
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h3 {
+    color: var(--text-color);
+    margin: var(--spacing-md) 0 var(--spacing-sm) 0; /* Konsistente Abstände */
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem); 
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+p {
+    margin: var(--spacing-md) 0 0 0; /* Only bottom margin - prevent double line breaks */
+    color: var(--text-color-primary); /* Better readability */
+    max-width: 100%; 
+    display: block; 
+    opacity: 1; 
+    font-size: 1rem; /* Konsistente Schriftgröße */
+    line-height: 1.5; /* Bessere Lesbarkeit */
+    font-weight: 400;
+    text-align: left; /* Left aligned for better reading */
+}
+
+ul, ol {
+    margin: var(--spacing-md) 0;
+    padding-left: var(--spacing-lg);
+    color: var(--text-color-primary);
+}
+
+li {
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.8; /* Bessere Lesbarkeit */
+}
+
+/* Code Blocks */
+pre, code {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.9em;
+    padding: 0.2em 0.4em;
+    color: var(--secondary-color);
+}
+
+pre {
+    padding: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    overflow-x: auto;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--spacing-md) 0;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Links */
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+a:hover {
+    color: #ffb74d;
+    text-decoration: underline;
+}
+
+/* Blockquote */
+blockquote {
+    border-left: 4px solid var(--secondary-color);
+    padding-left: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+    font-style: italic;
+    background-color: rgba(255, 167, 38, 0.05);
+}
+
+/* Strong and em */
+strong {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+em {
+    font-style: italic;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: var(--spacing-md) auto;
+    border-radius: var(--border-radius);
+}
+
+/* ===========================================
+   QUIZ SYSTEM STYLING
+   =========================================== */
+.micro-slide[data-slide-type="tester"] .micro-container-slide-content {
+    height: fit-content !important; /* FIXED: Dynamic height */
+}
+
+.question-block {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl); /* 120% größeres padding für Tester-Fragen */
+    box-shadow: var(--card-shadow);
+    width: 100%;
+    height: fit-content !important; /* FIXED: Dynamic height based on content */
+    overflow: visible; /* No internal scrolling */
+    flex-shrink: 0;
+    margin-bottom: var(--spacing-md);
+    margin-top: calc(0.75rem + var(--spacing-md)); /* 50% smaller gap between title and box */
+    position: relative; /* For absolute positioned title */
+}
+
+.question-text {
+    font-size: 1rem; /* Match other content font size */
+    color: var(--text-color-primary);
+    margin-bottom: var(--spacing-md);
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Mini-Quiz Button Styles */
+.duo-word-choice,
+.mini-quiz-option {
+    background-color: var(--word-choice-bg);
+    border: 2px solid var(--word-choice-border);
+    color: var(--word-choice-text);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin: var(--spacing-xs) 0;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    user-select: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    min-height: 60px; /* Mindesthöhe für Gleichmäßigkeit */
+    /* Entfernt: height und max-height für dynamische Anpassung */
+    line-height: 1.4;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+.duo-word-choice:hover,
+.mini-quiz-option:hover {
+    background-color: #3a3a3a;
+    border-color: var(--button-primary-bg);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.duo-word-choice.selected,
+.mini-quiz-option.selected {
+    background-color: var(--button-primary-bg); /* Konsistentes Lila */
+    border-color: var(--button-primary-bg);
+    color: white;
+    box-shadow: 0 4px 8px rgba(127, 90, 240, 0.3);
+}
+
+.duo-word-choice.correct,
+.mini-quiz-option.correct {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: white;
+    animation: correctPulse 0.6s ease;
+}
+
+.duo-word-choice.incorrect,
+.mini-quiz-option.incorrect {
+    background-color: var(--button-primary-bg); /* Konsistentes Lila für falsch ausgewählte Antworten */
+    border-color: var(--button-primary-bg);
+    color: white;
+    animation: incorrectShake 0.6s ease;
+}
+
+/* Enhanced Grid Layout for Quiz Options */
+.duo-interactive-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-sm);
+    width: 100%;
+    align-items: stretch; /* Macht alle Items in einer Reihe gleich hoch */
+}
+
+/* Ensure options expand to fill available space equally */
+.duo-interactive-area .duo-word-choice,
+.duo-interactive-area .mini-quiz-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    min-height: 60px;
+    max-height: none; /* Entfernt Höhenbeschränkung */
+}
+
+/* Quiz Animationen */
+@keyframes correctPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(76, 175, 80, 0.5); }
+    100% { transform: scale(1); }
+}
+
+@keyframes incorrectShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* Hover-Effekte für Quiz-Optionen */
+.duo-word-choice:not(.correct):not(.incorrect):hover,
+.mini-quiz-option:not(.correct):not(.incorrect):hover {
+    background-color: var(--button-primary-bg);
+    border-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(127, 90, 240, 0.3);
+}
+
+/* Mini-Quiz Embedded Styles */
+.micro-slide[data-has-quiz="true"] .micro-container-slide-content {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 200px); /* Proper minimum height */
+    height: fit-content; /* Allow content to expand */
+    overflow: visible; /* No internal overflow - let slide handle scrolling */
+}
+
+.micro-slide[data-has-quiz="true"] {
+    padding-bottom: 140px; /* Extra Platz für Quiz-Lösungen + Footer */
+    min-height: auto; /* Entfernt Höhenbegrenzungen */
+    overflow-y: visible; /* Erlaubt volles Scrollen */
+}
+
+.micro-slide[data-has-quiz="true"] .micro-container-slide-content {
+    min-height: auto; /* Entfernt feste Mindesthöhe */
+    height: auto; /* Vollständig dynamische Höhe */
+    padding-bottom: 0; /* Entfernt doppeltes Padding */
+}
+
+/* Quiz-Antworten und Erklärungen bekommen mehr Platz */
+.duo-interactive-area {
+    /* 2x2 Grid Layout für Quiz-Optionen */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    margin-top: calc(var(--spacing-md) * 0.5); /* 50% kleinerer Abstand von Frage zu Optionen */
+    margin-bottom: calc(var(--spacing-lg) * 0.16); /* 60% weniger Abstand zu Lösung (von 0.4 auf 0.16) */
+    padding-bottom: var(--spacing-md); /* Zusätzlicher Innenabstand */
+}
+
+/* Quiz-Feedback und Erklärungen */
+.quiz-feedback,
+.quiz-explanation,
+.mini-quiz-feedback {
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius); /* Konsistenter Border-Radius */
+    border: 2px solid transparent;
+    background-color: var(--card-bg);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Feedback Content Structure */
+.mini-quiz-feedback .feedback-content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.mini-quiz-feedback .feedback-icon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.mini-quiz-feedback .feedback-text {
+    flex: 1;
+}
+
+.mini-quiz-feedback .feedback-status {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.mini-quiz-feedback .feedback-explanation {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-color-secondary);
+}
+
+/* Grüne Box für richtige Antwort */
+.quiz-feedback.correct,
+.quiz-explanation.correct,
+.mini-quiz-feedback.correct {
+    background-color: rgba(76, 175, 80, 0.15); /* Stärkerer grüner Hintergrund */
+    border-color: #4caf50; /* Grüner Rand */
+    color: var(--text-color-primary);
+}
+
+.mini-quiz-feedback.correct .feedback-icon::before {
+    content: "✓";
+    color: #4caf50;
+}
+
+.mini-quiz-feedback.correct .feedback-status {
+    color: #4caf50;
+}
+
+/* Lila/Rote Box für falsche Antwort */
+.quiz-feedback.incorrect,
+.quiz-explanation.incorrect,
+.mini-quiz-feedback.incorrect {
+    background-color: rgba(127, 90, 240, 0.15); /* Konsistentes Lila mit Transparenz */
+    border-color: var(--button-primary-bg); /* Konsistentes Lila */
+    color: var(--text-color-primary);
+}
+
+.mini-quiz-feedback.incorrect .feedback-icon::before {
+    content: "✗";
+    color: var(--button-primary-bg); /* Konsistentes Lila */
+}
+
+.mini-quiz-feedback.incorrect .feedback-status {
+    color: var(--button-primary-bg); /* Konsistentes Lila */
+}
+
+/* ===========================================
+   ANIMATIONS & TRANSITIONS
+   =========================================== */
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================================
+   VISUAL COMPONENT STYLING
+   =========================================== */
+.visual-container .visual-component-root {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    /* Gleichmäßige Skalierung des Inhalts */
+    transform-origin: center center;
+    /* Container scaling - fit content uniformly */
+    scale: 1;
+    overflow: visible; /* Allow slight overflow for better fit */
+}
+
+.visual-container .visual-component-root > * {
+    /* Auto-scale to fit available space uniformly */
+    transform-origin: center center;
+    max-width: 100%;
+    max-height: 100%;
+    /* Preserve aspect ratio */
+    object-fit: contain;
+    width: auto;
+    height: auto;
+}
+
+.visual-container svg {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    /* Uniform scaling without distortion */
+    transform-origin: center center;
+}
+
+.visual-container canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    /* Uniform scaling without distortion */
+    transform-origin: center center;
+}
+
+.visual-container .shape-circle,
+.visual-container [style*="border-radius: 50%"],
+.visual-container .visual-element {
+    /* Maintain aspect ratio for shapes during scaling */
+    aspect-ratio: 1 / 1; /* Force square aspect for circles */
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.visual-placeholder > * {
+    /* Make generated visual content fill the placeholder */
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visual-placeholder svg,
+.visual-placeholder canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.visual-placeholder::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 120px;
+    height: 120px;
+    background-color: rgba(94, 67, 181, 0.1); /* Translucent primary color (#5e43b5) */
+    border-radius: 50%;
+}
+
+.visual-placeholder::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: -30px;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 167, 38, 0.1); /* Kept translucent secondary color, adjusted opacity slightly if needed */
+    border-radius: 50%;
+}
+
+.visual-placeholder h2 {
+    color: var(--text-color);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.5rem;
+}
+
+/* Modified Visual Element Styles for 3:4 Portrait Format */
+.visual-aspect-ratio-container {
+    width: 100%;
+    background-color: var(--card-bg); /* Match card background */
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    position: relative;
+    padding-top: 133.33%; /* 3:4 Portrait format (4/3 = 1.33, so 3/4 = 0.75 = 75% but inverted for container) */
+    overflow: hidden; /* Ensures content stays within rounded borders */
+}
+
+.visual-content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-sm); /* Optional padding inside the wrapper */
+}
+
+.visual-content-wrapper > * { /* Ensure direct child fills the space if it's a single element */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* For images/videos if they are direct children */
+}
+
+.visual-content-wrapper .placeholder-text,
+.visual-content-wrapper .error-placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.visual-content-wrapper pre {
+    background-color: rgba(0,0,0,0.3);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-small, 4px);
+    max-height: 80%;
+    overflow: auto;
+    width: 90%;
+    text-align: left;
+    font-size: 0.8em;
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN - MOBILE
+   =========================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden; /* Prevent horizontal scrolling on mobile */
+    }    .main-app-container {
+        width: 100%;
+        max-width: 100vw; /* Verhindert Überlauf über Viewport-Breite */
+        height: var(--full-height); /* Mobile-sichere Höhe */
+        max-height: var(--full-height); /* Verhindert Expansion über Viewport hinaus */
+        overflow-x: hidden; /* Verhindert horizontales Scrollen */
+        overflow-y: auto; /* Ermöglicht korrektes Scroll-Verhalten */
+        border-radius: 0;
+        
+        /* Verstärkte mobile Background-Fixes */
+        background-attachment: local; /* Wichtig für iOS Safari Grid-Background */
+        -webkit-background-attachment: local; /* Safari-spezifisch */
+    }
+    
+    .micro-header {
+        padding: var(--spacing-sm);
+        height: 60px;
+        flex-shrink: 0;
+    }    .content-area-wrapper {
+        flex-grow: 1; /* Ermöglicht Expansion für sticky footer */
+        height: auto; /* Automatische Höhe für dynamischen Inhalt */
+        min-height: 0; /* Ermöglicht Schrumpfen */
+        overflow-x: hidden; /* Verhindert horizontales Scrollen */
+        overflow-y: auto; /* Mobile: Ermöglicht vertikales Scrollen */
+        padding-bottom: 120px; /* Mehr Platz für Mobile Footer (80px + 40px Buffer) */
+    }
+
+    .slides-container {
+        height: fit-content; /* FIXED: Dynamic height only */
+        min-height: auto; /* FIXED: No minimum height constraint */
+        padding: 0;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+        overflow-y: hidden; /* FIXED: Prevent internal scrolling */
+        position: relative; /* For slide navigation */
+    }
+
+    .micro-slide {
+        /* KEEP JAVASCRIPT NAVIGATION WORKING: Don't override opacity and position */
+        height: fit-content; /* Dynamic height based on content */
+        min-height: auto; /* FIXED: Remove excessive min-height */
+        overflow-y: visible; /* Allow content to scroll naturally */
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+        padding-bottom: 1.5rem; /* FIXED: Reduced padding */
+    }
+
+    .micro-container-slide-content {
+        height: fit-content; /* Dynamic height on mobile */
+        min-height: auto; /* FIXED: Remove excessive min-height */
+        padding-left: calc(var(--spacing-md) * 1.4); /* Equal left padding */
+        padding-right: calc(var(--spacing-md) * 1.4); /* Equal right padding */
+        padding-top: calc(var(--spacing-lg) * 0.8); /* 20% reduced top spacing */
+        padding-bottom: 0; 
+        max-width: 100%;
+    }    .micro-title {
+        font-size: 1.3rem; /* Smaller on mobile */
+        margin-bottom: calc(var(--spacing-md) * 2.4); /* 50% größerer Abstand, proportional für Mobile */
+        margin-left: 0; /* No additional margin - container handles spacing */
+        margin-right: 0; /* No additional margin - container handles spacing */
+    }
+
+    .knowledge-content,
+    .visual-content,
+    .question-block {
+        height: fit-content; /* Dynamic height on mobile */
+        min-height: fit-content; /* Minimum height fits content */
+        max-height: none; /* Remove height restrictions */
+        margin-bottom: var(--spacing-sm);
+        margin-left: 0; /* No side margins - container handles equal spacing */
+        margin-right: 0; /* No side margins - container handles equal spacing */
+        padding: calc(var(--spacing-lg) * 0.65); /* 35% reduced internal padding (1 - 0.35 = 0.65) */
+    }
+    
+    .knowledge-content p,
+    .visual-content p,
+    .question-text {
+        font-size: 0.95rem; /* Smaller text on mobile */
+    }
+
+    .knowledge-content,
+    .visual-content {
+        height: fit-content !important; /* FIXED: Dynamic height for content-based sizing */
+        min-height: fit-content !important; /* FIXED: Content-based sizing */
+        max-height: none !important; /* FIXED: Remove height restrictions */
+        margin-left: 0; /* No side margins - equal spacing handled by container */
+        margin-right: 0; /* No side margins - equal spacing handled by container */
+        padding:1rem; /* No padding on mobile - full width */
+    }
+
+    /* Mobile optimizations for mini-quiz */
+    .mini-quiz-options {
+        grid-template-columns: repeat(2, 1fr); /* Keep 2x2 grid on mobile */
+        gap: var(--spacing-xs); /* Smaller gap for mobile */
+    }
+    
+    .duo-interactive-area {
+        grid-template-columns: repeat(2, 1fr); /* Keep 2x2 grid on mobile */
+    }
+    
+    .mini-quiz-question {
+        font-size: 1.1rem;
+    }
+    
+    .quiz-question-text {
+        font-size: 1rem;
+    }
+    
+    .mini-quiz-title {
+        font-size: 1.3rem;
+    }
+
+    /* Visual Content Mobile */
+    .visual-content {
+        width: min(95vw, 600px);
+        height: auto; /* Let aspect-ratio control height */
+        max-width: 95vw;
+        max-height: 40vh;
+    }
+
+    .visual-container {
+        width: min(95vw, 600px);
+        height: auto; /* Let aspect-ratio control height */
+        max-width: 95vw;
+        max-height: 40vh;
+    }
+    
+    /* Mobile Footer Centering */
+    .micro-footer {
+        padding-left: var(--spacing-md);
+        padding-right: var(--spacing-md);
+        justify-content: center; /* Zentriert den Button gleichmäßig */
+    }
+    
+    .continue-button {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN - DESKTOP
+   =========================================== */
+@media (min-width: 769px) {
+    body {
+        padding: 0;
+        margin: 0;
+        justify-content: flex-start;
+        background-color: var(--dark-bg);
+        overflow: hidden; /* CRITICAL: Prevent any body scrolling on desktop */
+        overflow-x: hidden; /* Prevent horizontal scrolling on desktop too */
+    }
+
+    .main-app-container {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        height: 100vh; /* CRITICAL: Exact viewport height - no more, no less */
+        max-height: 100vh; /* CRITICAL: Prevent expanding beyond viewport */
+        overflow: hidden; /* CRITICAL: Prevent ALL scrolling on desktop */
+        background-image:
+            linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+    
+    .micro-header {
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-lg);
+    }
+    
+    .progress-bar-container {
+        margin: 0 var(--spacing-lg);
+        max-width: none;
+    }
+
+    .content-area-wrapper {
+        max-width: 800px; 
+        margin: 0 auto; 
+        padding: 0 var(--spacing-md);
+        height: calc(100vh - 140px); /* CRITICAL: Exact height to fit viewport */
+        max-height: calc(100vh - 140px); /* CRITICAL: Prevent exceeding available space */
+        overflow: hidden; /* CRITICAL: Prevent scrolling in content wrapper */
+    }
+    
+    .slides-container {
+        height: calc(100vh - 140px); /* CRITICAL: Exact height to fit available space */
+        max-height: calc(100vh - 140px); /* CRITICAL: Limit to available space */
+        overflow: hidden; /* CRITICAL: Prevent scrolling on desktop */
+    }
+
+    .micro-slide {
+        height: fit-content;
+        min-height: auto; /* FIXED: Remove excessive min-height */
+        padding-bottom: 1.5rem; /* FIXED: Reduced padding */
+    }
+    
+    .micro-container-slide-content {
+        max-width: 700px;
+        margin: 0 auto;
+        height: fit-content;
+        min-height: auto; /* FIXED: Remove excessive min-height */
+    }
+    
+    .knowledge-content,
+    .visual-content,
+    .question-block {
+        height: fit-content; /* Dynamic height based on content */
+        min-height: fit-content; /* Minimum fits content */
+        max-height: none; /* Remove height restrictions */
+        padding: 0;
+    }
+
+    .visual-content {
+        /* REMOVED: aspect-ratio: 4/3 - was causing excessive height and scrolling */
+        height: fit-content;
+        min-height: fit-content;
+    }
+    
+    .question-text {
+        font-size: 1.2rem;
+    }
+    
+    .option label {
+        font-size: 1rem;
+    }
+    
+    .option {
+        min-height: 44px;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .continue-button {
+        max-width: 400px;
+    }
+
+    .micro-title {
+        font-size: 1.5rem;
+    }
+    
+    .knowledge-content p,
+    .visual-content p,
+    .question-text {
+        font-size: 1rem;
+    }
+
+    /* Desktop - Full size when screen is large enough */
+    .visual-content {
+        width: 1024px;
+        height: 768px;
+        max-width: 1024px;
+        max-height: 768px;
+    }
+
+    .visual-container {
+        width: 1024px;
+        height: 768px;
+        max-width: 1024px;
+        max-height: 768px;
+    }
+}
+
+/* ===========================================
+   RESPONSIVE VISUAL BREAKPOINTS
+   =========================================== */
+
+/* Desktop - Full size when screen is groß genug */
+@media (min-width: 1200px) and (min-height: 900px) {
+    .visual-content {
+        width: 1024px;
+        height: 768px;
+        max-width: 1024px;
+        max-height: 768px;
+    }
+
+    .visual-container {
+        width: 1024px;
+        height: 768px;
+        max-width: 1024px;
+        max-height: 768px;
+    }
+}
+
+/* Tablet - Scale down proportionally */
+@media (max-width: 1199px) and (min-width: 769px) {
+    .visual-content {
+        width: min(80vw, 1024px);
+        height: auto; /* Let aspect-ratio control height */
+        max-width: 80vw;
+        max-height: 50vh;
+    }
+
+    .visual-container {
+        width: min(80vw, 1024px);
+        height: auto; /* Let aspect-ratio control height */
+        max-width: 80vw;
+        max-height: 50vh;
+    }
+}
+
+/* Tablets und kleinere Laptops */
+@media (max-width: 1200px) {
+    .visual-content,
+    .visual-container,
+    .visual-iframe {
+        width: 85vw !important;
+        height: calc(85vw * 0.75) !important; /* Maintain 4:3 aspect ratio */
+        max-width: 900px !important;
+        max-height: 675px !important;
+    }
+    
+    .visual-title-container,
+    .visual-description-container {
+        max-width: 85vw;
+    }
+}
+
+/* Mobile Querformat */
+@media (max-width: 768px) and (orientation: landscape) {
+    .visual-content,
+    .visual-container,
+    .visual-iframe {
+        width: 80vw !important;
+        height: calc(80vw * 0.75) !important; /* Maintain 4:3 aspect ratio */
+        max-width: 640px !important;
+        max-height: 480px !important;
+    }
+    
+    .visual-title {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+    }
+    
+    .visual-description {
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Mobile Hochformat */
+@media (max-width: 768px) and (orientation: portrait) {
+    .visual-content,
+    .visual-container,
+    .visual-iframe {
+        width: 90vw !important;
+        height: calc(90vw * 0.75) !important; /* Maintain 4:3 aspect ratio */
+        max-width: 600px !important;
+        max-height: 450px !important;
+    }
+    
+    .visual-title-container,
+    .visual-description-container {
+        max-width: 90vw;
+    }
+    
+    .visual-title {
+        font-size: clamp(1.1rem, 4vw, 1.6rem);
+    }
+    
+    .visual-description {
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        padding: var(--spacing-sm);
+    }
+}
+
+/* ===========================================
+   MOBILE TOUCH OPTIMIZATIONS
+   =========================================== */
+
+/* Entfernt Tap-Highlight auf mobilen Geräten */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+/* Button Touch-Optimierungen */
+button, .continue-button, .nav-button {
+    touch-action: manipulation; /* Verhindert doppeltes Tippen zum Zoomen */
+    -webkit-touch-callout: none; /* Verhindert Kontext-Menü auf langen Tap */
+    -webkit-tap-highlight-color: transparent; /* Entfernt Standard-Tap-Highlight */
+}
+
+/* Scroll-Container Touch-Optimierungen */
+.main-app-container,
+.content-area-wrapper,
+.slides-container {
+    -webkit-overflow-scrolling: touch; /* Smooth Scrolling auf iOS */
+    overscroll-behavior: contain; /* Verhindert bounce-scrolling */
+}
+
+/* Text-Auswahl für bessere UX */
+.slide-content h1,
+.slide-content h2,
+.slide-content h3 {
+    -webkit-user-select: none; /* Verhindert versehentliche Text-Auswahl bei Titeln */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* ===========================================
+   END MOBILE TOUCH OPTIMIZATIONS
+   =========================================== */
+
+/* Quiz Header Styles - Inline Layout Without Boxes */
+.mini-quiz-header,
+.duo-instruction-area {
+    margin-top: calc(var(--spacing-md) * 0.7); /* 65% weniger Abstand zum Wissenstext oben */
+    margin-bottom: 4px; /* Sehr wenig Abstand nach Quiz-Header */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Zentriert ausrichten */
+    justify-content: center;
+    gap: 0;
+    /* Komplett transparentes Styling - keine visuelle Box */
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    text-align: center; /* Zentrierter Text */
+}
+
+.mini-quiz-header {
+    display: flex;
+    flex-direction: row; /* Horizontal layout für Icon + Text */
+    align-items: center;
+    justify-content: center; /* Zentriert das Icon + Text */
+    gap: var(--spacing-xs); /* Kleiner Gap zwischen Icon und Text */
+    margin-bottom: 3px; /* 60% weniger Abstand zur Frage */
+}
+
+.mini-quiz-icon {
+    font-size: 1.5rem;
+    display: inline;
+    margin: 0; /* Kein margin */
+}
+
+.mini-quiz-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color-primary);
+    margin: 0; /* Kein margin */
+    display: inline;
+}
+
+.quiz-question-text {
+    margin-top: 0; /* Kein zusätzlicher Abstand zur Frage */
+    margin-bottom: 5px; /* 60% weniger Abstand zu den Antwortoptionen */
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-color-primary);
+    padding: 0; /* Kein padding */
+    background-color: transparent; /* Keine Box */
+    border: none;
+    border-radius: 0;
+    text-align: left; /* Links ausrichten */
+}
+
+/* Ensure all mini-quiz title variants are inline with icon */
+.mini-quiz-header h2,
+.mini-quiz-header .mini-quiz-title,
+h2.mini-quiz-title,
+.quiz-question-text h2 {
+    color: var(--text-color-primary) !important;
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    margin: 0 !important;
+    display: inline !important; /* Inline statt flex für nebeneinander */
+    align-items: center !important;
+    gap: 0 !important;
+}
+
+/* Mobile Quiz-Button Optimierungen */
+    .duo-word-choice,
+    .mini-quiz-option {
+        min-height: 50px; /* Mindesthöhe für Mobile */
+        font-size: 0.9rem; /* Kleinere Schrift für Mobile */
+        padding: var(--spacing-sm);
+        line-height: 1.3;
+    }    /* Mobile Quiz-Header */
+    .mini-quiz-header,
+    .duo-instruction-area {
+        margin-top: calc(var(--spacing-md) * 0.7); /* 65% weniger Abstand zum Wissenstext oben - Mobile */
+        padding: 0; /* Kein padding für Mobile */
+        font-size: 1.2rem;
+    }
+    
+    .quiz-question-text {
+        font-size: 1rem;
+        padding: var(--spacing-sm);
+    }
+
+    /* Feedback Show Animation */
+.mini-quiz-feedback.show {
+    animation: slideIn 0.4s ease-out forwards;
+}
+
+/* Ensure Quiz Header Icon and Title are Properly Stacked */
+.mini-quiz-header {
+    text-align: center;
+}
+
+.mini-quiz-header .mini-quiz-icon {
+    display: block;
+    margin: 0 auto var(--spacing-xs) auto;
+}
+
+.mini-quiz-header .mini-quiz-title {
+    display: block;
+    text-align: center;
+    margin: 0;
+}
