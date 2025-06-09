@@ -1,0 +1,206 @@
+[
+  {
+    "method": "analyze_and_create_micros",
+    "status": "success",
+    "prompt": "WICHTIG: Deine GESAMTE Antwort MUSS ausschließlich ein valides JSON-Objekt sein, das mit { beginnt und mit } endet. KEIN zusätzlicher Text, keine Erklärungen, keine Markdown-Formatierungen wie ```json.\n\nDu bist ein Experte für wissenschaftlich fundiertes Microlearning-Design. Verwandle den folgenden ECHTEN Inhalt in konzentrierte Micro-Lerneinheiten.\n\n**WICHTIG: VERWENDE NUR DEN GEGEBENEN INHALT! ERFINDE NICHTS DAZU!**\n\n🎯 **KERNPRINZIP: EXTREME PRÄGNANZ**\n- Jedes Micro: 30-45 Sekunden Lesezeit (ca. 50-75 Wörter)\n- Ein Konzept pro Micro\n- Du-Ansprache, konversationell\n- Emojis als visuelle Anker\n\n🧠 **STRUKTUR PRO MICRO:**\n1. **Hook** (1 Satz): Interesse wecken\n2. **Kernkonzept** (2-3 Sätze): Klare Definition aus dem ECHTEN Inhalt\n3. **Praktisches Beispiel** (1-2 Sätze) - NUR aus dem gegebenen Inhalt!\n\n**AUSGABEFORMAT:**\n{\n  \"micros\": [\n    {\n      \"title\": \"Prägnanter Titel basierend auf echtem Inhalt\",\n      \"knowledge_md\": \"Text basierend auf dem ECHTEN Inhalt unten - NIEMALS erfinden!\",\n      \"visual_title\": \"Visueller Titel\",\n      \"visual_description_text\": \"Handlungsanweisung für Benutzer\",\n      \"visual_description\": {\n        \"concept\": \"Konzept Name\",\n        \"description\": \"Detaillierte Beschreibung der Visualisierung\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Lernziel basierend auf echtem Inhalt\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Quiz-Frage basierend auf dem ECHTEN Inhalt\",\n        \"options\": [\"Option A\", \"Option B\", \"Option C\", \"Option D\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"Erklärung basierend auf echtem Inhalt\"\n      }\n    }\n  ]\n}\n\n**ECHTER INHALT ZU ANALYSIEREN (VERWENDE NUR DIESEN!):**\nIn recent years, Large Language Models (LLMs) have been undergoing rapid iteration and\nevolution (Anthropic, 2024; Google, 2024; OpenAI, 2024a), progressively diminishing the gap to-\nwards Artificial General Intelligence (AGI). Beyond closed-source models, open-source models,\nincluding DeepSeek series (DeepSeek-AI, 2024a,b,c; Guo et al., 2024), LLaMA series (AI@Meta,\n2024a,b; Touvron et al., 2023a,b), Qwen series (Qwen, 2023, 2024a,b), and Mistral series (Jiang\net al., 2023; Mistral, 2024), are also making significant strides, endeavoring to close the gap with\ntheir closed-source counterparts. To further push the boundaries of open-source model capa-\nbilities, we scale up our models and introduce DeepSeek-V3, a large Mixture-of-Experts (MoE)\nmodel with 671B parameters, of which 37B are activated for each token.\nWith a forward-looking perspective, we consistently strive for strong model performance\nand economical costs. Therefore, in terms of architecture, DeepSeek-V3 still adopts Multi-head\nLatent Attention (MLA) (DeepSeek-AI, 2024c) for efficient inference and DeepSeekMoE (Dai\net al., 2024) for cost-effective training. These two architectures have been validated in DeepSeek-\nV2 (DeepSeek-AI, 2024c), demonstrating their capability to maintain robust model performance\nwhile achieving efficient training and inference. Beyond the basic architecture, we implement\ntwo additional strategies to further enhance the model capabilities. Firstly, DeepSeek-V3 pi-\noneers an auxiliary-loss-free strategy (Wang et al., 2024a) for load balancing, with the aim of\nminimizing the adverse impact on model performance that arises from the effort to encourage\nload balancing. Secondly, DeepSeek-V3 employs a multi-token prediction training objective,\nwhich we have observed to enhance the overall performance on evaluation benchmarks.\nIn order to achieve efficient training, we support the FP8 mixed precision training and\nimplement comprehensive optimizations for the training framework. Low-precision training\nhas emerged as a promising solution for efficient training (Dettmers et al., 2022; Kalamkar et al.,\n2019; Narang et al., 2017; Peng et al., 2023b), its evolution being closely tied to advancements in\nhardware capabilities (Luo et al., 2024; Micikevicius et al., 2022; Rouhani et al., 2023a). In this\nwork, we introduce an FP8 mixed precision training framework and, for the first time, validate\nits effectiveness on an extremely large-scale model. Through the support for FP8 computation\nand storage, we achieve both accelerated training and reduced GPU memory usage. As for\nthe training framework, we design the DualPipe algorithm for efficient pipeline parallelism,\nwhich has fewer pipeline bubbles and hides most of the communication during training through\ncomputation-communication overlap. This overlap ensures that, as the model further scales up,\nas long as we maintain a constant computation-to-communication ratio, we can still employ\nfine-grained experts across nodes while achieving a near-zero all-to-all communication overhead.\nIn addition, we also develop efficient cross-node all-to-all communication kernels to fully utilize\nInfiniBand (IB) and NVLink bandwidths. Furthermore, we meticulously optimize the memory\nfootprint, making it possible to train DeepSeek-V3 without using costly tensor parallelism.\nCombining these efforts, we achieve high training efficiency.\nDuring pre-training, we train DeepSeek-V3 on 14.8T high-quality and diverse tokens. The\npre-training process is remarkably stable. Throughout the entire training process, we did not\nencounter any irrecoverable loss spikes or have to roll back. Next, we conduct a two-stage\ncontext length extension for DeepSeek-V3. In the first stage, the maximum context length is\nextended to 32K, and in the second stage, it is further extended to 128K. Following this, we\nconduct post-training, including Supervised Fine-Tuning (SFT) and Reinforcement Learning (RL)\non the base model of DeepSeek-V3, to align it with human preferences and further unlock its\npotential. During the post-training stage, we distill the reasoning capability from the DeepSeek-\nR1 series of models, and meanwhile carefully maintain the balance between model accuracy\n4\nTraining Costs Pre-Training Context Extension Post-Training Total\nin H800 GPU Hours 2664K 119K 5K 2788K\nin USD $5.328M $0.238M $0.01M $5.576M\nTable 1|Training costs of DeepSeek-V3, assuming the rental price of H800 is $2 per GPU hour.\nand generation length.\nWe evaluate DeepSeek-V3 on a comprehensive array of benchmarks. Despite its economical\ntraining costs, comprehensive evaluations reveal that DeepSeek-V3-Base has emerged as the\nstrongest open-source base model currently available, especially in code and math. Its chat\nversion also outperforms other open-source models and achieves performance comparable to\nleading closed-source models, including GPT-4o and Claude-3.5-Sonnet, on a series of standard\nand open-ended benchmarks.\nLastly, we emphasize again the economical training costs of DeepSeek-V3, summarized in\nTable 1, achieved through our optimized co-design of algorithms, frameworks, and hardware.\nDuring the pre-training stage, training DeepSeek-V3 on each trillion tokens requires only 180K\nH800 GPU hours, i.e., 3.7 days on our cluster with 2048 H800 GPUs. Consequently, our pre-\ntraining stage is completed in less than two months and costs 2664K GPU hours. Combined\nwith 119K GPU hours for the context length extension and 5K GPU hours for post-training,\nDeepSeek-V3 costs only 2.788M GPU hours for its full training. Assuming the rental price of\nthe H800 GPU is $2 per GPU hour, our total training costs amount to only $5.576M. Note that\nthe aforementioned costs include only the official training of DeepSeek-V3, excluding the costs\nassociated with prior research and ablation experiments on architectures, algorithms, or data.\nOur main contribution includes:\nArchitecture: Innovative Load Balancing Strategy and Training Objective\n•On top of the efficient architecture of DeepSeek-V2, we pioneer an auxiliary-loss-free\nstrategy for load balancing, which minimizes the performance degradation that arises\nfrom encouraging load balancing.\n•We investigate a Multi-Token Prediction (MTP) objective and prove it beneficial to model\nperformance. It can also be used for speculative decoding for inference acceleration.\nPre-Training: Towards Ultimate Training Efficiency\n•We design an FP8 mixed precision training framework and, for the first time, validate the\nfeasibility and effectiveness of FP8 training on an extremely large-scale model.\n•Through the co-design of algorithms, frameworks, and hardware, we overcome the\ncommunication bottleneck in cross-node MoE training, achieving near-full computation-\ncommunication overlap. This significantly enhances our training efficiency and reduces the\ntraining costs, enabling us to further scale up the model size without additional overhead.\n•At an economical cost of only 2.664M H800 GPU hours, we complete the pre-training of\nDeepSeek-V3 on 14.8T tokens, producing the currently strongest open-source base model.\nThe subsequent training stages after pre-training require only 0.1M GPU hours.\nPost-Training: Knowledge Distillation from DeepSeek-R1\n•We introduce an innovative methodology to distill reasoning capabilities from the long-\nChain-of-Thought (CoT) model, specifically from one of the DeepSeek R1 series models,\ninto standard LLMs, particularly DeepSeek-V3. Our pipeline elegantly incorporates the\n5\n\n**ANWEISUNG:** Analysiere den obigen ECHTEN Inhalt und erstelle daraus Micro-Lerneinheiten. VERWENDE NUR INFORMATIONEN AUS DIESEM INHALT! Erfinde nichts über KI, Machine Learning oder andere Themen, die nicht im Text stehen!",
+    "response": "{\n  \"micros\": [\n    {\n      \"title\": \"LLM Evolution & Open-Source-Modelle\",\n      \"knowledge_md\": \"Wusstest du, dass Large Language Models (LLMs) sich extrem schnell entwickeln? 🚀 Sie schließen die Lücke zur Künstlichen Allgemeinen Intelligenz (AGI). Auch Open-Source-Modelle wie DeepSeek, LLaMA, Qwen und Mistral machen große Fortschritte, um mit Closed-Source-Modellen gleichzuziehen. DeepSeek-V3 ist ein 671B-Parameter MoE-Modell, das diese Entwicklung vorantreibt.\",\n      \"visual_title\": \"LLM-Landschaft im Wandel\",\n      \"visual_description_text\": \"Erkunde die Entwicklung von LLMs und die Rolle von Open-Source-Modellen!\",\n      \"visual_description\": {\n        \"concept\": \"LLM Evolution\",\n        \"description\": \"Eine Zeitleiste, die die schnelle Entwicklung von LLMs darstellt, mit Hervorhebung von Closed-Source-Modellen (z.B. GPT-4o, Claude-3.5-Sonnet) und Open-Source-Modellen (z.B. DeepSeek, LLaMA, Qwen, Mistral). Interaktive Punkte auf der Zeitleiste zeigen die Annäherung an AGI und die Fortschritte von Open-Source-Modellen.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die rasante Entwicklung von LLMs und die zunehmende Bedeutung von Open-Source-Modellen verstehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welches Ziel verfolgen Open-Source LLMs wie DeepSeek, LLaMA, Qwen und Mistral laut Text?\",\n        \"options\": [\"Die Entwicklung von AGI stoppen.\", \"Die Lücke zu Closed-Source-Modellen schließen.\", \"Ausschließlich für wissenschaftliche Zwecke genutzt werden.\", \"Nur für den Einsatz in der Industrie entwickelt werden.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"Laut Text machen Open-Source-Modelle große Fortschritte, um die Lücke zu ihren Closed-Source-Pendants zu schließen.\"\n      }\n    },\n    {\n      \"title\": \"DeepSeek-V3: Effiziente Architektur\",\n      \"knowledge_md\": \"Fragst du dich, wie DeepSeek-V3 Leistung und Kosten vereint? 🤔 Es setzt auf Multi-head Latent Attention (MLA) für schnelle Inferenz und DeepSeekMoE für kosteneffizientes Training. Diese bewährten Architekturen aus DeepSeek-V2 ermöglichen es, starke Modellleistung zu erhalten und gleichzeitig effizient zu trainieren und zu inferieren. So bleibt DeepSeek-V3 leistungsstark und wirtschaftlich.\",\n      \"visual_title\": \"Architektur-Grundlagen\",\n      \"visual_description_text\": \"Entdecke die Schlüsselkomponenten der DeepSeek-V3 Architektur!\",\n      \"visual_description\": {\n        \"concept\": \"MLA & DeepSeekMoE\",\n        \"description\": \"Ein Diagramm, das DeepSeek-V3 als zentrales Element zeigt, verbunden mit 'Multi-head Latent Attention (MLA)' und 'DeepSeekMoE'. Beschreibungen zu jedem Element erklären ihre Funktion für effiziente Inferenz und kostengünstiges Training. Ein Pfeil zeigt die Validierung in DeepSeek-V2.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Rolle von MLA und DeepSeekMoE in der Architektur von DeepSeek-V3 für Leistung und Kosteneffizienz identifizieren.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welche zwei Architekturen wurden in DeepSeek-V3 für effiziente Inferenz und kostengünstiges Training eingesetzt?\",\n        \"options\": [\"Transformer und RNN\", \"Multi-head Latent Attention (MLA) und DeepSeekMoE\", \"LSTM und CNN\", \"GAN und Autoencoder\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"DeepSeek-V3 verwendet Multi-head Latent Attention (MLA) für effiziente Inferenz und DeepSeekMoE für kostengünstiges Training.\"\n      }\n    },\n    {\n      \"title\": \"DeepSeek-V3: Leistungssteigernde Strategien\",\n      \"knowledge_md\": \"Möchtest du wissen, wie DeepSeek-V3 seine Fähigkeiten weiter steigert? 💡 Es nutzt eine innovative auxiliary-loss-free Strategie für Lastausgleich, die Leistungseinbußen minimiert. Außerdem kommt ein Multi-Token Prediction (MTP) Trainingsziel zum Einsatz, das die Gesamtleistung auf Benchmarks verbessert. Diese Ansätze machen DeepSeek-V3 noch leistungsfähiger.\",\n      \"visual_title\": \"Strategien für mehr Power\",\n      \"visual_description_text\": \"Lerne die innovativen Strategien kennen, die DeepSeek-V3 noch leistungsfähiger machen!\",\n      \"visual_description\": {\n        \"concept\": \"Load Balancing & MTP\",\n        \"description\": \"Zwei Boxen, eine für 'Auxiliary-loss-free Load Balancing' und eine für 'Multi-Token Prediction (MTP)'. Jede Box enthält kurze Erklärungen zu ihrer Funktion (Minimierung von Leistungseinbußen, Verbesserung der Gesamtleistung). Pfeile zeigen, wie diese Strategien die Modellfähigkeiten verbessern.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die zwei zusätzlichen Strategien zur Leistungssteigerung von DeepSeek-V3 benennen und ihre Vorteile verstehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welche der folgenden Strategien wird in DeepSeek-V3 eingesetzt, um die Modellfähigkeiten zu verbessern?\",\n        \"options\": [\"Eine höhere Anzahl an Parametern\", \"Eine auxiliary-loss-free Strategie für Lastausgleich\", \"Die Verwendung von weniger Trainingsdaten\", \"Ausschließlich Closed-Source-Modelle\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"DeepSeek-V3 implementiert eine auxiliary-loss-free Strategie für Lastausgleich und ein Multi-Token Prediction (MTP) Trainingsziel zur Leistungssteigerung.\"\n      }\n    },\n    {\n      \"title\": \"FP8 Mixed Precision Training\",\n      \"knowledge_md\": \"Wie wird das Training von DeepSeek-V3 so effizient? ⚡️ Es nutzt FP8 Mixed Precision Training, eine fortschrittliche Methode, die das Training beschleunigt und den GPU-Speicherverbrauch reduziert. DeepSeek-V3 validiert diese Technik erstmals auf einem extrem großen Modell. Das ermöglicht sowohl schnellere Trainingszeiten als auch eine effizientere Ressourcennutzung.\",\n      \"visual_title\": \"Effizientes Training mit FP8\",\n      \"visual_description_text\": \"Erfahre, wie FP8 Mixed Precision Training die Effizienz steigert!\",\n      \"visual_description\": {\n        \"concept\": \"FP8 Training\",\n        \"description\": \"Ein Vergleichsdiagramm, das den Unterschied zwischen Standard-Präzision und FP8 Mixed Precision Training darstellt. Symbole für 'schnelleres Training' und 'reduzierter GPU-Speicher' sind prominent platziert. Ein Hinweis auf die erstmalige Validierung bei extrem großen Modellen.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Vorteile von FP8 Mixed Precision Training für die Effizienz des Modelltrainings verstehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welche Vorteile bietet FP8 Mixed Precision Training für DeepSeek-V3?\",\n        \"options\": [\"Es erhöht die Modellgröße ohne Leistungsverbesserung.\", \"Es beschleunigt das Training und reduziert den GPU-Speicherverbrauch.\", \"Es ist nur für kleine Modelle geeignet.\", \"Es macht das Training instabil.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"FP8 Mixed Precision Training beschleunigt das Training und reduziert den GPU-Speicherverbrauch, was erstmals bei einem extrem großen Modell wie DeepSeek-V3 validiert wurde.\"\n      }\n    },\n    {\n      \"title\": \"DualPipe: Kommunikations-Optimierung\",\n      \"knowledge_md\": \"Neugierig auf die Trainings-Innovationen von DeepSeek-V3? ⚙️ Das Framework nutzt den DualPipe-Algorithmus für effiziente Pipeline-Parallelisierung. Dieser reduziert 'Pipeline-Bubbles' und verbirgt den Großteil der Kommunikation durch Überlappung mit Berechnungen. Das ermöglicht es, auch bei weiterem Skalieren des Modells, Experten über Knoten hinweg zu nutzen, mit nahezu null Kommunikations-Overhead.\",\n      \"visual_title\": \"DualPipe in Aktion\",\n      \"visual_description_text\": \"Sieh, wie der DualPipe-Algorithmus die Kommunikation optimiert!\",\n      \"visual_description\": {\n        \"concept\": \"DualPipe Algorithm\",\n        \"description\": \"Ein Flussdiagramm oder eine Animation, die den DualPipe-Algorithmus visualisiert. Es zeigt, wie 'Pipeline Bubbles' minimiert und 'Kommunikation' durch 'Berechnung-Kommunikation-Überlappung' verborgen wird. Pfeile illustrieren den effizienten Datenfluss zwischen Knoten.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Funktionsweise des DualPipe-Algorithmus und seine Rolle bei der Reduzierung von Kommunikations-Overhead verstehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Was ist das Hauptziel des DualPipe-Algorithmus im Trainings-Framework von DeepSeek-V3?\",\n        \"options\": [\"Die Modellgröße zu reduzieren.\", \"Die Anzahl der Trainingsdaten zu erhöhen.\", \"Pipeline-Bubbles zu minimieren und Kommunikation zu überlappen.\", \"Die Inferenzzeit zu verlängern.\"],\n        \"correct_answer\": 2,\n        \"explanation\": \"Der DualPipe-Algorithmus wurde entwickelt, um Pipeline-Bubbles zu minimieren und den Großteil der Kommunikation während des Trainings durch Berechnung-Kommunikation-Überlappung zu verbergen.\"\n      }\n    },\n    {\n      \"title\": \"Stabiles Pre-Training & Kontext-Erweiterung\",\n      \"knowledge_md\": \"Wie stabil war das Pre-Training von DeepSeek-V3? 🧘‍♀️ Das Training auf 14.8 Billionen hochwertigen Tokens war extrem stabil, ohne jegliche Verlusteinbrüche oder Rollbacks. Danach wurde die maximale Kontextlänge schrittweise erweitert: zuerst auf 32K und dann auf beeindruckende 128K. Diese Stabilität und Skalierung sind ein Schlüssel zum Erfolg von DeepSeek-V3.\",\n      \"visual_title\": \"Pre-Training-Meilensteine\",\n      \"visual_description_text\": \"Verfolge die Stabilität und Kontext-Erweiterung im Pre-Training von DeepSeek-V3!\",\n      \"visual_description\": {\n        \"concept\": \"Pre-Training Stability & Context Extension\",\n        \"description\": \"Eine Grafik, die den stabilen Verlauf des Pre-Trainings von DeepSeek-V3 über 14.8T Tokens darstellt, ohne Verlusteinbrüche. Eine Zeitleiste zeigt die zwei Stufen der Kontextlängen-Erweiterung: von 32K auf 128K.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Stabilität des Pre-Trainings und die schrittweise Erweiterung der Kontextlänge von DeepSeek-V3 nachvollziehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Wie viele Tokens wurden im Pre-Training von DeepSeek-V3 verwendet und wie stabil war der Prozess?\",\n        \"options\": [\"1.48T Tokens, mit vielen Rollbacks.\", \"14.8T Tokens, bemerkenswert stabil ohne irrecoverable loss spikes.\", \"148T Tokens, mit häufigen Verlustspitzen.\", \"1.48T Tokens, aber mit vielen Fehlern.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"DeepSeek-V3 wurde auf 14.8T hochwertigen Tokens vortrainiert, und der Prozess war bemerkenswert stabil, ohne irrecoverable loss spikes oder Rollbacks.\"\n      }\n    },\n    {\n      \"title\": \"Post-Training: Feinschliff für DeepSeek-V3\",\n      \"knowledge_md\": \"Was passiert nach dem Pre-Training, um DeepSeek-V3 zu perfektionieren? 🧠 Es folgt ein Post-Training mit Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL). Dabei wird auch die Reasoning-Fähigkeit von DeepSeek-R1 Modellen destilliert. Das Ziel ist, DeepSeek-V3 an menschliche Präferenzen anzupassen und sein volles Potenzial zu entfalten, während Genauigkeit und Generierungslänge ausbalanciert werden.\",\n      \"visual_title\": \"Post-Training-Prozess\",\n      \"visual_description_text\": \"Entdecke die Schritte des Post-Trainings und der Wissensdestillation!\",\n      \"visual_description\": {\n        \"concept\": \"Post-Training & Knowledge Distillation\",\n        \"description\": \"Ein Prozessdiagramm, das die Phasen des Post-Trainings zeigt: 'Base Model' -> 'Supervised Fine-Tuning (SFT)' -> 'Reinforcement Learning (RL)'. Ein separater Pfeil zeigt die 'Wissensdestillation' von DeepSeek-R1 Modellen, die in den Prozess integriert wird, um Reasoning-Fähigkeiten zu übertragen.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Bedeutung von SFT, RL und Wissensdestillation im Post-Training von DeepSeek-V3 verstehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welche Methoden werden im Post-Training von DeepSeek-V3 angewendet, um es an menschliche Präferenzen anzupassen?\",\n        \"options\": [\"Nur Pre-Training.\", \"Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL).\", \"Ausschließlich Wissensdestillation.\", \"Das Modell wird nicht angepasst.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"Im Post-Training wird DeepSeek-V3 durch Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL) an menschliche Präferenzen angepasst, wobei auch Reasoning-Fähigkeiten destilliert werden.\"\n      }\n    },\n    {\n      \"title\": \"DeepSeek-V3: Kosten & Leistung\",\n      \"knowledge_md\": \"Wie wirtschaftlich war das Training von DeepSeek-V3? 💰 Durch optimiertes Co-Design von Algorithmen, Frameworks und Hardware waren die Kosten extrem niedrig. Das gesamte Training kostete nur 2.788 Millionen H800 GPU-Stunden, was etwa 5.576 Millionen USD entspricht. Trotz dieser Wirtschaftlichkeit ist DeepSeek-V3-Base das stärkste Open-Source-Basismodell, besonders in Code und Mathematik.\",\n      \"visual_title\": \"Kosten-Leistungs-Verhältnis\",\n      \"visual_description_text\": \"Vergleiche die beeindruckenden Kosten und die Leistung von DeepSeek-V3!\",\n      \"visual_description\": {\n        \"concept\": \"Training Costs & Performance\",\n        \"description\": \"Eine Infografik, die die Gesamtkosten des DeepSeek-V3 Trainings in H800 GPU Stunden und USD (2.788M GPU Stunden, $5.576M) darstellt. Daneben eine Leistungsübersicht, die DeepSeek-V3-Base als stärkstes Open-Source-Modell, besonders in Code und Mathematik, hervorhebt, und die Chat-Version mit führenden Closed-Source-Modellen vergleicht.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Wirtschaftlichkeit des Trainings von DeepSeek-V3 und seine Spitzenleistung als Open-Source-Modell erkennen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Wie hoch waren die gesamten Trainingskosten für DeepSeek-V3 (ohne Forschungskosten) und welche Leistung erzielt es?\",\n        \"options\": [\"$55.76M, schwach in Code und Mathematik.\", \"$5.576M, das stärkste Open-Source-Basismodell, besonders in Code und Mathematik.\", \"$0.557M, nur für Chat-Anwendungen geeignet.\", \"$557.6M, vergleichbar mit älteren Modellen.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"Die gesamten Trainingskosten von DeepSeek-V3 beliefen sich auf $5.576M. Es hat sich als das stärkste Open-Source-Basismodell etabliert, besonders in Code und Mathematik.\"\n      }\n    },\n    {\n      \"title\": \"Architektur-Innovationen von DeepSeek-V3\",\n      \"knowledge_md\": \"Was sind die architektonischen Highlights von DeepSeek-V3? 🏗️ Es führt eine bahnbrechende auxiliary-loss-free Strategie für Lastausgleich ein, die Leistungseinbußen minimiert. Zudem wird ein Multi-Token Prediction (MTP) Ziel untersucht, das die Modellleistung steigert und für spekulatives Decoding genutzt werden kann. Diese Innovationen bauen auf der effizienten DeepSeek-V2 Architektur auf.\",\n      \"visual_title\": \"Architektur-Highlights\",\n      \"visual_description_text\": \"Entdecke die architektonischen Neuerungen von DeepSeek-V3!\",\n      \"visual_description\": {\n        \"concept\": \"Architectural Contributions\",\n        \"description\": \"Zwei Icons, die die Hauptbeiträge zur Architektur repräsentieren: 1. 'Auxiliary-loss-free Load Balancing' (Symbol: Waage). 2. 'Multi-Token Prediction (MTP) Objective' (Symbol: Pfeile, die auf mehrere Token zeigen). Kurze Texte erklären die Vorteile jedes Beitrags.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die zwei Hauptinnovationen in der Architektur von DeepSeek-V3 benennen und ihre Auswirkungen verstehen.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welche architektonischen Innovationen werden in DeepSeek-V3 als Hauptbeiträge genannt?\",\n        \"options\": [\"Nur die Erhöhung der Parameterzahl.\", \"Eine auxiliary-loss-free Strategie für Lastausgleich und ein Multi-Token Prediction (MTP) Ziel.\", \"Die Verwendung von mehr Schichten und weniger Head-Attention.\", \"Die Reduzierung der Modellgröße und der Trainingsdaten.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"Die Hauptbeiträge in der Architektur sind eine auxiliary-loss-free Strategie für Lastausgleich und die Untersuchung eines Multi-Token Prediction (MTP) Ziels.\"\n      }\n    },\n    {\n      \"title\": \"Pre-Training: Ultimative Effizienz\",\n      \"knowledge_md\": \"Wie erreicht DeepSeek-V3 ultimative Trainingseffizienz? 🚀 Es validiert erstmals FP8 Mixed Precision Training auf einem extrem großen Modell. Durch cleveres Co-Design von Algorithmen, Frameworks und Hardware wird der Kommunikationsengpass überwunden, mit nahezu vollständiger Überlappung von Berechnung und Kommunikation. Das steigert die Trainingseffizienz enorm und senkt die Kosten, was größere Modelle ermöglicht.\",\n      \"visual_title\": \"Effizienz-Booster im Pre-Training\",\n      \"visual_description_text\": \"Erfahre, wie DeepSeek-V3 ultimative Trainingseffizienz erreicht!\",\n      \"visual_description\": {\n        \"concept\": \"Pre-Training Efficiency\",\n        \"description\": \"Eine Darstellung, die die drei Säulen der Trainingseffizienz zeigt: 'FP8 Mixed Precision Training' (Symbol: Chip), 'Co-Design von Algorithmen, Frameworks, Hardware' (Symbol: Zahnräder), und 'Überwindung des Kommunikationsengpasses' (Symbol: überlappende Wellen). Ein Kostenpunkt von 2.664M H800 GPU Stunden für 14.8T Tokens wird hervorgehoben.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die Schlüsselstrategien zur Erzielung ultimativer Trainingseffizienz im Pre-Training von DeepSeek-V3 identifizieren.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Welche der folgenden Maßnahmen trägt zur ultimativen Trainingseffizienz von DeepSeek-V3 bei?\",\n        \"options\": [\"Ausschließlich die Verwendung von CPU-Training.\", \"Die Validierung von FP8 Mixed Precision Training auf extrem großen Modellen.\", \"Die Erhöhung des Kommunikations-Overheads.\", \"Die Reduzierung der Trainingsdaten.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"DeepSeek-V3 erreicht ultimative Trainingseffizienz durch die Validierung von FP8 Mixed Precision Training auf extrem großen Modellen und die Überwindung des Kommunikationsengpasses durch Co-Design.\"\n      }\n    },\n    {\n      \"title\": \"Post-Training: Wissensdestillation\",\n      \"knowledge_md\": \"Was ist das Besondere am Post-Training von DeepSeek-V3? 💡 Es nutzt eine innovative Methode, um Reasoning-Fähigkeiten aus Long-Chain-of-Thought (CoT) Modellen, wie der DeepSeek-R1 Serie, in DeepSeek-V3 zu destillieren. Dieser elegante Pipeline-Ansatz integriert komplexe Denkfähigkeiten in das Modell und erweitert so sein Potenzial erheblich.\",\n      \"visual_title\": \"Wissenstransfer im Post-Training\",\n      \"visual_description_text\": \"Verstehe, wie DeepSeek-V3 Reasoning-Fähigkeiten destilliert!\",\n      \"visual_description\": {\n        \"concept\": \"Knowledge Distillation\",\n        \"description\": \"Ein Diagramm, das den Prozess der Wissensdestillation visualisiert. Ein 'DeepSeek-R1 Series Model' (Symbol: Gehirn mit komplexen Verbindungen) überträgt seine 'Reasoning Capabilities' (Symbol: Denkblase) an 'DeepSeek-V3' (Symbol: Gehirn). Ein Pfeil zeigt die 'innovative Methodik' des Transfers.\",\n        \"interaction_type\": \"click_explore\",\n        \"learning_goal\": \"Die innovative Methodik der Wissensdestillation von Reasoning-Fähigkeiten im Post-Training von DeepSeek-V3 erklären können.\",\n        \"fixed_dimensions\": {\"width\": 1024, \"height\": 768}\n      },\n      \"mini_quiz\": {\n        \"question\": \"Was ist die innovative Methodik, die im Post-Training von DeepSeek-V3 angewendet wird?\",\n        \"options\": [\"Das Modell wird nur auf neuen Daten trainiert.\", \"Die Destillation von Reasoning-Fähigkeiten aus Long-Chain-of-Thought (CoT) Modellen.\", \"Die manuelle Anpassung jeder Antwort.\", \"Die Verwendung von weniger Trainingsdaten.\"],\n        \"correct_answer\": 1,\n        \"explanation\": \"DeepSeek-V3 führt eine innovative Methodik zur Destillation von Reasoning-Fähigkeiten aus Long-Chain-of-Thought (CoT) Modellen, wie der DeepSeek-R1 Serie, in Standard-LLMs ein.\"\n      }\n    }\n  ]\n}"
+  },
+  {
+    "timestamp": 1749472429.4161572,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1313,
+    "response_length": 173,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472429.9967277,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 200,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472437.7767117,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1313,
+    "response_length": 168,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472438.380232,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 200,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472445.4344347,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1321,
+    "response_length": 181,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472446.081024,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 208,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472456.31903,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1306,
+    "response_length": 164,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472456.918088,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 193,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472468.9401138,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1314,
+    "response_length": 170,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472469.5438895,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 201,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472470.0538535,
+    "type": "prepared_visual_render",
+    "visual_type": "timeline",
+    "mermaid_code_length": 27,
+    "success": true,
+    "attempts": 1
+  },
+  {
+    "timestamp": 1749472481.5486584,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1320,
+    "response_length": 177,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472482.2261221,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 207,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472488.1893706,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1308,
+    "response_length": 170,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472488.7764876,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 195,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472499.2580433,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1318,
+    "response_length": 175,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472499.9235787,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 205,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472510.4001765,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1312,
+    "response_length": 169,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472511.0636384,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 199,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  },
+  {
+    "timestamp": 1749472519.7267249,
+    "method": "mermaid_correction",
+    "model": "gemini-2.5-flash-preview-05-20",
+    "prompt_length": 1312,
+    "response_length": 174,
+    "success": true,
+    "original_error": "Kroki returned no data without raising exception"
+  },
+  {
+    "timestamp": 1749472520.3526719,
+    "type": "prepared_visual_render",
+    "visual_type": "flowchart",
+    "mermaid_code_length": 199,
+    "success": false,
+    "error": "KrokiError(silent_failure): Kroki returned no data without raising exception",
+    "attempts": 2,
+    "corrected": true
+  }
+]
