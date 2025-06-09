@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>{{PAGE_TITLE}}</title>
+    <link rel="stylesheet" href="micro_styles.css">
+
+    <!-- MathJax für LaTeX Rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Mermaid JS für Diagramme -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <div class="main-app-container">        <div class="micro-header">
+            <button class="nav-button-close" title="Schließen">&times;</button>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill"></div>
+            </div>
+        </div>
+
+        <div class="content-area-wrapper">            
+            <div class="slides-container">            
+                <div class="micro-slide" data-slide-type="text" data-slide-id="micro_1_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>DeepSeek-V3: Ein Open-Source LLM</h1>
+Wusstest du, dass sich Large Language Models (LLMs) rasant entwickeln? 🚀 DeepSeek-V3 ist ein großes Mixture-of-Experts (MoE) Modell mit beeindruckenden 671 Milliarden Parametern, von denen 37 Milliarden pro Token aktiviert werden. Es ist ein führendes Open-Source-Modell, das darauf abzielt, die Lücke zu Closed-Source-Modellen zu schließen.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist DeepSeek-V3 hauptsächlich?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_1_mini_quiz_opt0" data-option="0">
+                Ein kleines Sprachmodell
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_1_mini_quiz_opt1" data-option="1">
+                Ein Closed-Source-Modell
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_1_mini_quiz_opt2" data-option="2">
+                Ein großes Mixture-of-Experts (MoE) Modell
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_1_mini_quiz_opt3" data-option="3">
+                Ein reines Bilderkennungsmodell
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_1_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">DeepSeek-V3 ist ein großes Mixture-of-Experts (MoE) Modell mit 671B Parametern, das als Open-Source-Modell entwickelt wurde.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_1_mini_quiz'] = {
+            'correctAnswer': 2,
+            'explanation': "DeepSeek-V3 ist ein gro\u00dfes Mixture-of-Experts (MoE) Modell mit 671B Parametern, das als Open-Source-Modell entwickelt wurde.",
+            'options': ["Ein kleines Sprachmodell", "Ein Closed-Source-Modell", "Ein gro\u00dfes Mixture-of-Experts (MoE) Modell", "Ein reines Bilderkennungsmodell"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="visual" data-slide-id="micro_1_visual">
+                    <div class="micro-container-slide-content visual-only">
+                        <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                        <div class="visual-title-container">
+                            <h2 class="visual-title">LLM-Evolution</h2>
+                        </div>
+                        
+                        <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                        <div class="visual-content">
+                            <div class="visual-placeholder" data-has-html="true">
+                                <div class="mermaid-image-container">
+                <img src="assets/images/prepared_timeline_a30eebf1cba8.png" 
+                     alt="Prepared Visual" 
+                     class="mermaid-generated-image"
+                     loading="lazy">
+            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                        <div class="visual-description-container">
+                            <p class="visual-description">Erkunde die Entwicklung von LLMs und die Rolle von DeepSeek-V3.</p>
+                        </div>
+                    </div>
+                </div>
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_2_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Effiziente Architektur: MLA &amp; DeepSeekMoE</h1>
+Wie bleibt DeepSeek-V3 trotz seiner Größe so effizient? 🤔 Es nutzt Multi-head Latent Attention (MLA) für schnelle Inferenz und DeepSeekMoE für kostengünstiges Training. Diese bewährten Architekturen wurden bereits in DeepSeek-V2 erfolgreich eingesetzt.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Welche Architekturen sorgen für Effizienz in DeepSeek-V3?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_2_mini_quiz_opt0" data-option="0">
+                Transformer und RNNs
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_2_mini_quiz_opt1" data-option="1">
+                MLA und DeepSeekMoE
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_2_mini_quiz_opt2" data-option="2">
+                CNNs und GANs
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_2_mini_quiz_opt3" data-option="3">
+                LSTM und GRU
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_2_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">DeepSeek-V3 nutzt Multi-head Latent Attention (MLA) für effiziente Inferenz und DeepSeekMoE für kostengünstiges Training.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_2_mini_quiz'] = {
+            'correctAnswer': 1,
+            'explanation': "DeepSeek-V3 nutzt Multi-head Latent Attention (MLA) f\u00fcr effiziente Inferenz und DeepSeekMoE f\u00fcr kosteng\u00fcnstiges Training.",
+            'options': ["Transformer und RNNs", "MLA und DeepSeekMoE", "CNNs und GANs", "LSTM und GRU"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_3_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Innovatives Lastenbalancing: Ohne Hilfsverlust</h1>
+Stell dir vor, du könntest die Leistung deines Modells verbessern, ohne Kompromisse einzugehen! ✨ DeepSeek-V3 ist Vorreiter einer hilfsverlustfreien Strategie für das Lastenbalancing. Das Ziel ist es, die negativen Auswirkungen auf die Modellleistung zu minimieren, die sonst bei Lastenbalancing-Bemühungen entstehen können.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist das Ziel der hilfsverlustfreien Strategie für Lastenbalancing?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_3_mini_quiz_opt0" data-option="0">
+                Die Trainingszeit zu verlängern
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_3_mini_quiz_opt1" data-option="1">
+                Negative Auswirkungen auf die Modellleistung zu minimieren
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_3_mini_quiz_opt2" data-option="2">
+                Den Speicherverbrauch zu erhöhen
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_3_mini_quiz_opt3" data-option="3">
+                Die Modellgröße zu reduzieren
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_3_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Die hilfsverlustfreie Strategie für Lastenbalancing zielt darauf ab, die negativen Auswirkungen auf die Modellleistung zu minimieren.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_3_mini_quiz'] = {
+            'correctAnswer': 1,
+            'explanation': "Die hilfsverlustfreie Strategie f\u00fcr Lastenbalancing zielt darauf ab, die negativen Auswirkungen auf die Modellleistung zu minimieren.",
+            'options': ["Die Trainingszeit zu verl\u00e4ngern", "Negative Auswirkungen auf die Modellleistung zu minimieren", "Den Speicherverbrauch zu erh\u00f6hen", "Die Modellgr\u00f6\u00dfe zu reduzieren"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_4_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Multi-Token Prediction (MTP) Training</h1>
+Willst du wissen, wie DeepSeek-V3 seine Gesamtleistung steigert? 📈 Es setzt ein Multi-Token Prediction (MTP) Trainingsziel ein. Es wurde beobachtet, dass dies die Gesamtleistung auf Bewertungsbenchmarks erheblich verbessert. MTP kann zudem für spekulatives Decoding zur Inferenzbeschleunigung genutzt werden.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Wofür kann das Multi-Token Prediction (MTP) Ziel verwendet werden?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_4_mini_quiz_opt0" data-option="0">
+                Nur für die Datenvorbereitung
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_4_mini_quiz_opt1" data-option="1">
+                Zur Verbesserung der Gesamtleistung und für spekulatives Decoding
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_4_mini_quiz_opt2" data-option="2">
+                Ausschließlich zur Reduzierung der Modellgröße
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_4_mini_quiz_opt3" data-option="3">
+                Nur für die Visualisierung von Daten
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_4_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Das Multi-Token Prediction (MTP) Ziel verbessert die Gesamtleistung auf Benchmarks und kann für spekulatives Decoding zur Inferenzbeschleunigung genutzt werden.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_4_mini_quiz'] = {
+            'correctAnswer': 1,
+            'explanation': "Das Multi-Token Prediction (MTP) Ziel verbessert die Gesamtleistung auf Benchmarks und kann f\u00fcr spekulatives Decoding zur Inferenzbeschleunigung genutzt werden.",
+            'options': ["Nur f\u00fcr die Datenvorbereitung", "Zur Verbesserung der Gesamtleistung und f\u00fcr spekulatives Decoding", "Ausschlie\u00dflich zur Reduzierung der Modellgr\u00f6\u00dfe", "Nur f\u00fcr die Visualisierung von Daten"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_5_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Effizientes Training mit FP8 Mixed Precision</h1>
+Wie trainiert man riesige Modelle effizient? 💡 DeepSeek-V3 unterstützt FP8 Mixed Precision Training. Diese vielversprechende Lösung beschleunigt das Training und reduziert den GPU-Speicherverbrauch erheblich. Die Wirksamkeit von FP8-Training wurde hier erstmals an einem extrem großskaligen Modell validiert.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Welche Vorteile bietet FP8 Mixed Precision Training?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_5_mini_quiz_opt0" data-option="0">
+                Erhöhten GPU-Speicherverbrauch
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_5_mini_quiz_opt1" data-option="1">
+                Verlangsamtes Training
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_5_mini_quiz_opt2" data-option="2">
+                Beschleunigtes Training und reduzierten GPU-Speicherverbrauch
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_5_mini_quiz_opt3" data-option="3">
+                Nur für kleine Modelle geeignet
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_5_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">FP8 Mixed Precision Training beschleunigt das Training und reduziert den GPU-Speicherverbrauch.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_5_mini_quiz'] = {
+            'correctAnswer': 2,
+            'explanation': "FP8 Mixed Precision Training beschleunigt das Training und reduziert den GPU-Speicherverbrauch.",
+            'options': ["Erh\u00f6hten GPU-Speicherverbrauch", "Verlangsamtes Training", "Beschleunigtes Training und reduzierten GPU-Speicherverbrauch", "Nur f\u00fcr kleine Modelle geeignet"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_6_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>DualPipe Algorithmus &amp; Kommunikation</h1>
+Effizientes Training braucht clevere Algorithmen! ⚙️ DeepSeek-V3 nutzt den DualPipe-Algorithmus für effiziente Pipeline-Parallelisierung. Dieser Algorithmus reduziert Pipeline-Bubbles und verbirgt den Großteil der Kommunikation während des Trainings durch Computation-Communication Overlap. Das ermöglicht es, auch bei steigender Modellgröße feinkörnige Experten über Knoten hinweg zu nutzen, ohne nennenswerten Kommunikations-Overhead.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Was ist ein Vorteil des DualPipe-Algorithmus?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_6_mini_quiz_opt0" data-option="0">
+                Er erhöht die Pipeline-Bubbles
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_6_mini_quiz_opt1" data-option="1">
+                Er versteckt Kommunikation durch Computation-Communication Overlap
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_6_mini_quiz_opt2" data-option="2">
+                Er ist nur für kleine Modelle geeignet
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_6_mini_quiz_opt3" data-option="3">
+                Er benötigt keine Parallelisierung
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_6_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Der DualPipe-Algorithmus versteckt den Großteil der Kommunikation während des Trainings durch Computation-Communication Overlap.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_6_mini_quiz'] = {
+            'correctAnswer': 1,
+            'explanation': "Der DualPipe-Algorithmus versteckt den Gro\u00dfteil der Kommunikation w\u00e4hrend des Trainings durch Computation-Communication Overlap.",
+            'options': ["Er erh\u00f6ht die Pipeline-Bubbles", "Er versteckt Kommunikation durch Computation-Communication Overlap", "Er ist nur f\u00fcr kleine Modelle geeignet", "Er ben\u00f6tigt keine Parallelisierung"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_7_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Stabiles Vortraining &amp; Kontextlänge</h1>
+Ein stabiles Training ist Gold wert! ✨ Der Vortrainingsprozess von DeepSeek-V3 war bemerkenswert stabil. Es gab keine irreversiblen Verlustspitzen oder Rollbacks. Anschließend wurde die maximale Kontextlänge in zwei Stufen erweitert: zuerst auf 32K und dann weiter auf beeindruckende 128K.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Wie wurde die Kontextlänge von DeepSeek-V3 erweitert?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_7_mini_quiz_opt0" data-option="0">
+                In einer einzigen Stufe auf 128K
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_7_mini_quiz_opt1" data-option="1">
+                Gar nicht
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_7_mini_quiz_opt2" data-option="2">
+                In zwei Stufen, zuerst auf 32K, dann auf 128K
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_7_mini_quiz_opt3" data-option="3">
+                Nur auf 32K
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_7_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Die Kontextlänge wurde in zwei Stufen erweitert: zuerst auf 32K, dann auf 128K.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_7_mini_quiz'] = {
+            'correctAnswer': 2,
+            'explanation': "Die Kontextl\u00e4nge wurde in zwei Stufen erweitert: zuerst auf 32K, dann auf 128K.",
+            'options': ["In einer einzigen Stufe auf 128K", "Gar nicht", "In zwei Stufen, zuerst auf 32K, dann auf 128K", "Nur auf 32K"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_8_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Post-Training: SFT, RL &amp; Wissenstransfer</h1>
+Wie wird ein Modell menschlicher und leistungsfähiger? 🧠 Nach dem Vortraining durchläuft DeepSeek-V3 ein Post-Training mit Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL). Ziel ist die Ausrichtung an menschlichen Präferenzen und die Freisetzung seines vollen Potenzials. Dabei wird die Reasoning-Fähigkeit aus den DeepSeek-R1-Modellen destilliert, während Genauigkeit und Generierungslänge ausbalanciert werden.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Welche Methoden werden im Post-Training von DeepSeek-V3 angewendet?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_8_mini_quiz_opt0" data-option="0">
+                Nur Vortraining
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_8_mini_quiz_opt1" data-option="1">
+                Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL)
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_8_mini_quiz_opt2" data-option="2">
+                Ausschließlich manuelle Anpassung
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_8_mini_quiz_opt3" data-option="3">
+                Nur Datenbereinigung
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_8_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Im Post-Training werden Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL) angewendet.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_8_mini_quiz'] = {
+            'correctAnswer': 1,
+            'explanation': "Im Post-Training werden Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL) angewendet.",
+            'options': ["Nur Vortraining", "Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL)", "Ausschlie\u00dflich manuelle Anpassung", "Nur Datenbereinigung"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+<div class="micro-slide" data-slide-type="text" data-slide-id="micro_9_text" data-has-quiz="true">
+                    <div class="micro-container-slide-content text-only">
+                        <div class="knowledge-content">
+                            <h1 class='micro-title'>Wirtschaftliche Trainingskosten &amp; Leistung</h1>
+Hohe Leistung muss nicht teuer sein! 💰 DeepSeek-V3 zeichnet sich durch seine wirtschaftlichen Trainingskosten aus. Das Vortraining auf 14.8 Billionen Tokens kostete nur 2.664 Millionen H800 GPU-Stunden. Die Gesamtkosten für das volle Training belaufen sich auf 2.788 Millionen GPU-Stunden, was bei einem Mietpreis von 2 USD pro GPU-Stunde etwa 5.576 Millionen USD entspricht.
+                        </div>
+                        
+        <div class="duo-instruction-area">
+            <div class="mini-quiz-header">
+                <span class="mini-quiz-icon">🧠</span>
+                <h2 class="mini-quiz-title">Quick Check</h2>
+            </div>
+            <div class="quiz-question-text">Wie hoch waren die geschätzten Gesamttrainingskosten von DeepSeek-V3 in USD?</div>
+        </div>
+        
+        <div class="duo-interactive-area">
+        
+            <button class="duo-word-choice mini-quiz-option" id="micro_9_mini_quiz_opt0" data-option="0">
+                Über 10 Millionen USD
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_9_mini_quiz_opt1" data-option="1">
+                Unter 1 Million USD
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_9_mini_quiz_opt2" data-option="2">
+                Etwa 5.576 Millionen USD
+            </button>
+            
+            <button class="duo-word-choice mini-quiz-option" id="micro_9_mini_quiz_opt3" data-option="3">
+                Nicht im Text erwähnt
+            </button>
+            
+        </div>
+        
+        <div class="mini-quiz-feedback" id="feedback_micro_9_mini_quiz" style="display:none;">
+            <div class="feedback-content">
+                <div class="feedback-icon"></div>
+                <div class="feedback-text">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-explanation">Die geschätzten Gesamttrainingskosten von DeepSeek-V3 betragen etwa 5.576 Millionen USD.</div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Store quiz data for the unified system
+        if (typeof window.quizData === 'undefined') {
+            window.quizData = {};
+        }
+        window.quizData['micro_9_mini_quiz'] = {
+            'correctAnswer': 2,
+            'explanation': "Die gesch\u00e4tzten Gesamttrainingskosten von DeepSeek-V3 betragen etwa 5.576 Millionen USD.",
+            'options': ["\u00dcber 10 Millionen USD", "Unter 1 Million USD", "Etwa 5.576 Millionen USD", "Nicht im Text erw\u00e4hnt"]
+        };
+        </script>
+        
+                    </div>
+                </div>
+
+            <!-- 
+            PYTHON GENERATES THIS STRUCTURE:
+            
+            TEXT SLIDE:
+            <div class="micro-slide" data-slide-type="text" data-slide-id="slide_id">
+                <div class="micro-container-slide-content text-only">
+                    <div class="knowledge-content">
+                        <p>Content goes here...</p>
+                    </div>
+                </div>
+            </div>
+              VISUAL SLIDE WITH EXTERNAL TITLE & DESCRIPTION:
+            <div class="micro-slide" data-slide-type="visual" data-slide-id="slide_id">
+                <div class="micro-container-slide-content visual-only">
+                    <!-- EXTERNAL VISUAL TITLE (above visual) -->
+                    <div class="visual-title-container">
+                        <h2 class="visual-title">Visual Title Here</h2>
+                    </div>
+                    
+                    <!-- FIXED SIZE VISUAL CONTENT (1024x768) -->
+                    <div class="visual-content">
+                        <div class="visual-placeholder">
+                            <div class="visual-container">
+                                <iframe class="visual-iframe" src="..."></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- EXTERNAL VISUAL DESCRIPTION (below visual) -->
+                    <div class="visual-description-container">
+                        <p class="visual-description">Visual description and instructions here...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="micro-slide" data-slide-type="tester" data-slide-id="slide_id">
+                <div class="micro-container-slide-content text-only">
+                    <div class="knowledge-content">
+                        <!-- tester content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- ADD FOOTER FOR CONTINUE BUTTON -->
+            <div class="micro-footer">
+                <button class="continue-button" id="continueButton">Weiter</button>
+            </div>        </div>
+    </div>
+    
+    <script src="micro_scripts.js"></script>
+</body>
+</html>
