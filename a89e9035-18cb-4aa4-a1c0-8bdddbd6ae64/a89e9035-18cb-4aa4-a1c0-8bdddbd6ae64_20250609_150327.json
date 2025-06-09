@@ -1,0 +1,466 @@
+{
+  "knowledge_extraction": {
+    "format_version": "2.0",
+    "micros": [
+      {
+        "id": "micro_1",
+        "title": "DeepSeek-V3: Ein Überblick",
+        "knowledge_md": "Hast du dich jemals gefragt, wie fortschrittliche KI-Modelle wie DeepSeek-V3 aufgebaut sind? 💡 DeepSeek-V3 ist ein großes Mixture-of-Experts (MoE) Modell mit beeindruckenden 671 Milliarden Parametern. Für jede Anfrage werden davon 37 Milliarden Parameter aktiviert, was eine effiziente Verarbeitung ermöglicht. Es ist ein Beispiel für die Fortschritte bei Open-Source-Modellen. Im Vergleich zu anderen Open-Source-Modellen wie LLaMA oder Qwen, die ebenfalls große Fortschritte machen, setzt DeepSeek-V3 neue Maßstäbe in der Skalierung.",
+        "visual_title": "DeepSeek-V3: MoE-Modell",
+        "visual_description_text": "Klicke auf die verschiedenen Bereiche, um mehr über die Parameter und Aktivierung zu erfahren.",
+        "visual_description": {
+          "concept": "DeepSeek-V3 Architektur",
+          "description": "Eine schematische Darstellung eines MoE-Modells. Zeige einen großen Kreis für '671B Parameter' und einen kleineren, hervorgehobenen Bereich innerhalb des Kreises für '37B aktivierte Parameter pro Token'. Pfeile zeigen von 'Input' zu den aktivierten Parametern und dann zu 'Output'.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Verstehen, dass DeepSeek-V3 ein großes MoE-Modell ist und wie viele Parameter aktiviert werden.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "journey",
+          "structure": {
+            "title": "Learning Journey: DeepSeek-V3: Ein Überblick",
+            "sections": [
+              {
+                "name": "Entdeckung",
+                "tasks": [
+                  "Neugier wecken",
+                  "Ersten Eindruck gewinnen"
+                ]
+              },
+              {
+                "name": "Verständnis",
+                "tasks": [
+                  "Konzept verstehen",
+                  "Zusammenhänge erkennen"
+                ]
+              },
+              {
+                "name": "Anwendung",
+                "tasks": [
+                  "Wissen anwenden",
+                  "Erfolg erleben"
+                ]
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Eine schematische Darstellung eines MoE-Modells. Zeige einen großen Kreis für '671B Parameter' und einen kleineren, hervorgehobenen Bereich innerhalb des Kreises für '37B aktivierte Parameter pro Token'. Pfeile zeigen von 'Input' zu den aktivierten Parametern und dann zu 'Output'."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Wie viele Parameter werden in DeepSeek-V3 für jeden Token aktiviert?",
+          "options": [
+            "671 Milliarden",
+            "37 Milliarden",
+            "128 Tausend",
+            "14.8 Billionen"
+          ],
+          "correct_answer": 1,
+          "explanation": "DeepSeek-V3 hat 671 Milliarden Parameter, aber nur 37 Milliarden werden für jeden Token aktiviert."
+        }
+      },
+      {
+        "id": "micro_2",
+        "title": "Effiziente Architektur: MLA & DeepSeekMoE",
+        "knowledge_md": "Möchtest du wissen, wie DeepSeek-V3 trotz seiner Größe so effizient arbeiten kann? 🚀 DeepSeek-V3 nutzt die Multi-head Latent Attention (MLA) für effiziente Inferenz und DeepSeekMoE für kostengünstiges Training. Diese Architekturen wurden bereits in DeepSeek-V2 validiert. Sie ermöglichen robuste Modellleistung bei hoher Effizienz. Dank MLA und DeepSeekMoE kann das Modell seine Leistung beibehalten, während es gleichzeitig effizient trainiert und inferiert wird, ähnlich wie es schon bei DeepSeek-V2 der Fall war.",
+        "visual_title": "MLA & DeepSeekMoE",
+        "visual_description_text": "Klicke auf die Architekturen, um ihre Vorteile zu sehen.",
+        "visual_description": {
+          "concept": "DeepSeek-V3 Effizienz",
+          "description": "Zwei nebeneinander liegende Boxen: Eine beschriftet mit 'Multi-head Latent Attention (MLA)' und darunter 'Effiziente Inferenz'. Die andere Box 'DeepSeekMoE' und darunter 'Kostengünstiges Training'. Eine dritte Box darunter zeigt 'Validiert in DeepSeek-V2'.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die Rolle von MLA und DeepSeekMoE für die Effizienz von DeepSeek-V3 verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Effiziente Architektur: MLA & DeepSeekMoE",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Zwei nebeneinander liegende Boxen: Eine beschriftet mit 'Multi-head Latent Attention (MLA)' und darunter 'Effiziente Inferenz'. Die andere Box 'DeepSeekMoE' und darunter 'Kostengünstiges Training'. Eine dritte Box darunter zeigt 'Validiert in DeepSeek-V2'."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Welche Architektur trägt in DeepSeek-V3 zu kostengünstigem Training bei?",
+          "options": [
+            "Multi-head Latent Attention (MLA)",
+            "DeepSeekMoE",
+            "FP8 Mixed Precision",
+            "DualPipe Algorithmus"
+          ],
+          "correct_answer": 1,
+          "explanation": "DeepSeekMoE ist für kostengünstiges Training verantwortlich, während MLA die effiziente Inferenz unterstützt."
+        }
+      },
+      {
+        "id": "micro_3",
+        "title": "Innovative Trainingsstrategien",
+        "knowledge_md": "Wie verbessert man die Fähigkeiten eines riesigen KI-Modells noch weiter? ✨ DeepSeek-V3 setzt auf zwei zusätzliche Strategien: eine neuartige hilfsverlustfreie Strategie für den Lastausgleich, die Leistungseinbußen minimiert. Zudem wird ein Multi-Token Prediction (MTP) Trainingsziel verwendet, das die Gesamtleistung verbessert. Die hilfsverlustfreie Strategie sorgt dafür, dass der Lastausgleich die Modellleistung nicht negativ beeinflusst, während MTP die Ergebnisse auf Bewertungs-Benchmarks steigert.",
+        "visual_title": "Strategien zur Leistungssteigerung",
+        "visual_description_text": "Entdecke, wie DeepSeek-V3 seine Fähigkeiten erweitert.",
+        "visual_description": {
+          "concept": "DeepSeek-V3 Verbesserungsstrategien",
+          "description": "Zwei Symbole: Ein Waage-Symbol mit einem Haken für 'Hilfsverlustfreie Strategie für Lastausgleich' und darunter 'Minimiert Leistungseinbußen'. Daneben ein Text-Symbol mit einem Pfeil für 'Multi-Token Prediction (MTP) Trainingsziel' und darunter 'Verbessert Gesamtleistung'.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die zwei innovativen Strategien zur Leistungssteigerung von DeepSeek-V3 kennenlernen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Innovative Trainingsstrategien",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Zwei Symbole: Ein Waage-Symbol mit einem Haken für 'Hilfsverlustfreie Strategie für Lastausgleich' und darunter 'Minimiert Leistungseinbußen'. Daneben ein Text-Symbol mit einem Pfeil für 'Multi-Token Prediction (MTP) Trainingsziel' und darunter 'Verbessert Gesamtleistung'."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Welches Trainingsziel wird in DeepSeek-V3 verwendet, um die Gesamtleistung zu verbessern?",
+          "options": [
+            "Auxiliary-Loss-Strategy",
+            "Single-Token Prediction",
+            "Multi-Token Prediction (MTP)",
+            "Load Balancing Objective"
+          ],
+          "correct_answer": 2,
+          "explanation": "DeepSeek-V3 verwendet ein Multi-Token Prediction (MTP) Trainingsziel, um die Gesamtleistung auf Bewertungs-Benchmarks zu steigern."
+        }
+      },
+      {
+        "id": "micro_4",
+        "title": "FP8 Mixed Precision Training",
+        "knowledge_md": "Kann man das Training riesiger KI-Modelle noch schneller und speichereffizienter machen? ⚡ DeepSeek-V3 implementiert FP8 Mixed Precision Training, eine vielversprechende Lösung für effizientes Training. Diese Technik wurde erstmals auf einem extrem großen Modell validiert. Sie ermöglicht beschleunigtes Training und reduziert den GPU-Speicherverbrauch. Durch die Unterstützung von FP8-Berechnungen und -Speicherung kann DeepSeek-V3 schneller trainiert werden und benötigt weniger GPU-Speicher, was die Effizienz erheblich steigert.",
+        "visual_title": "FP8 Mixed Precision",
+        "visual_description_text": "Klicke, um die Vorteile von FP8 zu sehen.",
+        "visual_description": {
+          "concept": "FP8 Training",
+          "description": "Ein Diagramm, das zwei Säulen zeigt: Eine Säule 'Ohne FP8' (höherer Speicherverbrauch, langsameres Training) und eine Säule 'Mit FP8' (niedrigerer Speicherverbrauch, schnelleres Training). Symbole für GPU und Speicher.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die Vorteile von FP8 Mixed Precision Training für DeepSeek-V3 verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "FP8 Mixed Precision Training",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Ein Diagramm, das zwei Säulen zeigt: Eine Säule 'Ohne FP8' (höherer Speicherverbrauch, langsameres Training) und eine Säule 'Mit FP8' (niedrigerer Speicherverbrauch, schnelleres Training). Symbole für GPU und Speicher."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Was sind die Hauptvorteile des FP8 Mixed Precision Trainings in DeepSeek-V3?",
+          "options": [
+            "Erhöhte Modellgenauigkeit und Stabilität",
+            "Beschleunigtes Training und reduzierter GPU-Speicherverbrauch",
+            "Verbesserter Lastausgleich und geringere Kosten",
+            "Längere Kontextlängen und bessere menschliche Ausrichtung"
+          ],
+          "correct_answer": 1,
+          "explanation": "FP8 Mixed Precision Training ermöglicht beschleunigtes Training und reduziert den GPU-Speicherverbrauch."
+        }
+      },
+      {
+        "id": "micro_5",
+        "title": "Beeindruckende Trainingskosten & -effizienz",
+        "knowledge_md": "Was kostet es, ein Top-KI-Modell wie DeepSeek-V3 zu trainieren? Die Zahlen werden dich überraschen! 💰 DeepSeek-V3 wurde auf 14.8 Billionen hochwertigen Tokens vortrainiert. Die gesamten Trainingskosten, inklusive Vortraining, Kontextlängenerweiterung und Nachtraining, belaufen sich auf nur 2.788 Millionen H800 GPU-Stunden. Dies entspricht etwa 5.576 Millionen US-Dollar. Das Vortraining allein dauerte weniger als zwei Monate und kostete 2.664 Millionen GPU-Stunden, was die enorme Effizienz des Designs unterstreicht.",
+        "visual_title": "DeepSeek-V3 Trainingskosten",
+        "visual_description_text": "Erkunde die Aufschlüsselung der Trainingskosten.",
+        "visual_description": {
+          "concept": "Trainingskosten DeepSeek-V3",
+          "description": "Ein Kreisdiagramm oder Balkendiagramm, das die Aufteilung der GPU-Stunden zeigt: Vortraining (2664K), Kontextlängenerweiterung (119K), Nachtraining (5K). Gesamt: 2788K GPU-Stunden und $5.576M.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die Gesamtkosten und die Verteilung der Trainingsphasen von DeepSeek-V3 verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Beeindruckende Trainingskosten & -effizienz",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Ein Kreisdiagramm oder Balkendiagramm, das die Aufteilung der GPU-Stunden zeigt: Vortraining (2664K), Kontextlängenerweiterung (119K), Nachtraining (5K). Gesamt: 2788K GPU-Stunden und $5.576M."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Wie hoch waren die geschätzten Gesamtkosten für das Training von DeepSeek-V3 in US-Dollar?",
+          "options": [
+            "$2.664 Millionen",
+            "$0.238 Millionen",
+            "$5.576 Millionen",
+            "$14.8 Millionen"
+          ],
+          "correct_answer": 2,
+          "explanation": "Die Gesamtkosten für das Training von DeepSeek-V3 beliefen sich auf 5.576 Millionen US-Dollar."
+        }
+      }
+    ],
+    "metadata": {
+      "original_pdf_chapters_count": 1,
+      "total_micros_generated": 5
+    }
+  },
+  "metadata": {
+    "source_file": "temp\\a89e9035-18cb-4aa4-a1c0-8bdddbd6ae64.pdf",
+    "generation_date": "2025-06-09T15:03:27.863098",
+    "source_filename": "a89e9035-18cb-4aa4-a1c0-8bdddbd6ae64"
+  }
+}
