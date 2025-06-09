@@ -1,0 +1,734 @@
+{
+  "knowledge_extraction": {
+    "format_version": "2.0",
+    "micros": [
+      {
+        "id": "micro_1",
+        "title": "DeepSeek-V3: Ein Überblick",
+        "knowledge_md": "Hast du dich je gefragt, wie Open-Source-LLMs mit den Großen mithalten? 🤔 DeepSeek-V3 ist ein riesiges Mixture-of-Experts (MoE) Modell mit beeindruckenden 671 Milliarden Parametern. Es wurde entwickelt, um die Lücke zu Closed-Source-Modellen zu schließen und die Grenzen der Open-Source-Fähigkeiten zu erweitern. Von den 671 Milliarden Parametern werden für jedes Token 37 Milliarden aktiviert, was seine Effizienz zeigt. So wird AGI schrittweise nähergebracht. 🚀",
+        "visual_title": "LLM Evolution",
+        "visual_description_text": "Erkunde die Entwicklung von LLMs und die Position von DeepSeek-V3.",
+        "visual_description": {
+          "concept": "LLM_Evolution",
+          "description": "Eine Zeitleiste, die die schnelle Entwicklung von Large Language Models (LLMs) darstellt, mit einem Fokus auf die Annäherung von Open-Source-Modellen an Closed-Source-Modelle. DeepSeek-V3 wird als prominentes Beispiel für ein Open-Source-MoE-Modell mit 671B Parametern hervorgehoben, das die Lücke zur AGI verringert.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die Positionierung und grundlegende Natur von DeepSeek-V3 im Kontext der LLM-Entwicklung verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "timeline",
+          "structure": {
+            "timeline": {
+              "title": "DeepSeek-V3: Ein Überblick",
+              "sections": [
+                {
+                  "period": "Phase 1",
+                  "events": [
+                    "Einführung",
+                    "Grundlagen"
+                  ]
+                },
+                {
+                  "period": "Phase 2",
+                  "events": [
+                    "Vertiefung",
+                    "Anwendung"
+                  ]
+                },
+                {
+                  "period": "Phase 3",
+                  "events": [
+                    "Meisterschaft",
+                    "Integration"
+                  ]
+                }
+              ]
+            }
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Eine Zeitleiste, die die schnelle Entwicklung von Large Language Models (LLMs) darstellt, mit einem Fokus auf die Annäherung von Open-Source-Modellen an Closed-Source-Modelle. DeepSeek-V3 wird als prominentes Beispiel für ein Open-Source-MoE-Modell mit 671B Parametern hervorgehoben, das die Lücke zur AGI verringert."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Was ist DeepSeek-V3 hauptsächlich?",
+          "options": [
+            "Ein kleines Sprachmodell",
+            "Ein Mixture-of-Experts (MoE) Modell",
+            "Ein Closed-Source-Modell",
+            "Ein reines Bilderkennungsmodell"
+          ],
+          "correct_answer": 1,
+          "explanation": "DeepSeek-V3 ist ein großes Mixture-of-Experts (MoE) Modell mit 671B Parametern."
+        }
+      },
+      {
+        "id": "micro_2",
+        "title": "Effiziente Architektur von DeepSeek-V3",
+        "knowledge_md": "Wie schafft DeepSeek-V3, gleichzeitig leistungsstark und kostengünstig zu sein? 💡 Es nutzt Multi-head Latent Attention (MLA) für effiziente Inferenz und DeepSeekMoE für kostengünstiges Training. Diese Architekturen wurden bereits in DeepSeek-V2 validiert und haben ihre Fähigkeit bewiesen, robuste Modellleistung bei effizientem Training und Inferenz zu gewährleisten. Ein cleverer Ansatz für Top-Performance! ✨",
+        "visual_title": "DeepSeek-V3 Architektur",
+        "visual_description_text": "Entdecke die Schlüsselkomponenten der DeepSeek-V3-Architektur.",
+        "visual_description": {
+          "concept": "DeepSeekV3_Architecture",
+          "description": "Ein Diagramm, das die zwei Hauptarchitekturen von DeepSeek-V3 darstellt: 'Multi-head Latent Attention (MLA)' verbunden mit 'Effiziente Inferenz' und 'DeepSeekMoE' verbunden mit 'Kostengünstiges Training'. Beide sind als Säulen der 'Robuste Modellleistung' und 'Effizienz' dargestellt.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die grundlegenden Architekturen von DeepSeek-V3 und deren Beitrag zu Leistung und Kosten verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Effiziente Architektur von DeepSeek-V3",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Ein Diagramm, das die zwei Hauptarchitekturen von DeepSeek-V3 darstellt: 'Multi-head Latent Attention (MLA)' verbunden mit 'Effiziente Inferenz' und 'DeepSeekMoE' verbunden mit 'Kostengünstiges Training'. Beide sind als Säulen der 'Robuste Modellleistung' und 'Effizienz' dargestellt."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Welche Architekturen nutzt DeepSeek-V3 für Effizienz?",
+          "options": [
+            "Transformer und RNN",
+            "Multi-head Latent Attention (MLA) und DeepSeekMoE",
+            "CNN und GAN",
+            "Nur DeepSeekMoE"
+          ],
+          "correct_answer": 1,
+          "explanation": "DeepSeek-V3 verwendet Multi-head Latent Attention (MLA) für effiziente Inferenz und DeepSeekMoE für kostengünstiges Training."
+        }
+      },
+      {
+        "id": "micro_3",
+        "title": "Innovative Strategien für DeepSeek-V3",
+        "knowledge_md": "Was macht DeepSeek-V3 noch leistungsfähiger als seine Vorgänger? 🧠 DeepSeek-V3 führt zwei neue Strategien ein: eine Auxiliary-Loss-Free-Strategie für Lastausgleich, die Leistungseinbußen minimiert, und ein Multi-Token Prediction (MTP) Trainingsziel. Das MTP-Ziel verbessert die Gesamtleistung auf Bewertungs-Benchmarks und kann auch für spekulatives Decoding zur Inferenzbeschleunigung genutzt werden. Ein echter Fortschritt! 🚀",
+        "visual_title": "DeepSeek-V3 Innovationen",
+        "visual_description_text": "Erfahre mehr über die bahnbrechenden Strategien in DeepSeek-V3.",
+        "visual_description": {
+          "concept": "DeepSeekV3_Innovations",
+          "description": "Zwei separate, aber verbundene Konzepte: 1. 'Auxiliary-Loss-Free-Strategie für Lastausgleich' mit dem Hinweis 'Minimiert Leistungseinbußen'. 2. 'Multi-Token Prediction (MTP) Trainingsziel' mit dem Hinweis 'Verbessert Gesamtleistung & ermöglicht spekulatives Decoding'.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die zwei zusätzlichen Strategien von DeepSeek-V3 und deren Vorteile für die Modellleistung kennenlernen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Innovative Strategien für DeepSeek-V3",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Zwei separate, aber verbundene Konzepte: 1. 'Auxiliary-Loss-Free-Strategie für Lastausgleich' mit dem Hinweis 'Minimiert Leistungseinbußen'. 2. 'Multi-Token Prediction (MTP) Trainingsziel' mit dem Hinweis 'Verbessert Gesamtleistung & ermöglicht spekulatives Decoding'."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Welche neue Strategie minimiert Leistungseinbußen beim Lastausgleich in DeepSeek-V3?",
+          "options": [
+            "Tensor Parallelism",
+            "Auxiliary-Loss-Free-Strategie",
+            "Reinforcement Learning",
+            "Fine-Tuning"
+          ],
+          "correct_answer": 1,
+          "explanation": "DeepSeek-V3 führt eine Auxiliary-Loss-Free-Strategie für Lastausgleich ein, die Leistungseinbußen minimiert."
+        }
+      },
+      {
+        "id": "micro_4",
+        "title": "FP8 Mixed Precision Training",
+        "knowledge_md": "Möchtest du wissen, wie DeepSeek-V3 so effizient trainiert werden kann? ⚡️ Es nutzt ein FP8 Mixed Precision Training Framework. Dies ist eine vielversprechende Lösung für effizientes Training, deren Entwicklung eng mit Hardware-Fortschritten verbunden ist. Durch die Unterstützung von FP8-Berechnungen und -Speicherung werden sowohl das Training beschleunigt als auch der GPU-Speicherverbrauch reduziert. Das spart Zeit und Ressourcen! 💰",
+        "visual_title": "FP8 Training Vorteile",
+        "visual_description_text": "Visualisiere die Vorteile des FP8 Mixed Precision Trainings.",
+        "visual_description": {
+          "concept": "FP8_Training_Benefits",
+          "description": "Eine Infografik, die die zwei Hauptvorteile des FP8 Mixed Precision Trainings hervorhebt: 'Beschleunigtes Training' (symbolisiert durch einen schnell laufenden Pfeil oder eine Stoppuhr) und 'Reduzierter GPU-Speicherverbrauch' (symbolisiert durch eine kleinere Speichereinheit oder einen weniger gefüllten Balken).",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die Vorteile und die Bedeutung des FP8 Mixed Precision Trainings für die Effizienz von DeepSeek-V3 verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "FP8 Mixed Precision Training",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Eine Infografik, die die zwei Hauptvorteile des FP8 Mixed Precision Trainings hervorhebt: 'Beschleunigtes Training' (symbolisiert durch einen schnell laufenden Pfeil oder eine Stoppuhr) und 'Reduzierter GPU-Speicherverbrauch' (symbolisiert durch eine kleinere Speichereinheit oder einen weniger gefüllten Balken)."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Was sind die Hauptvorteile des FP8 Mixed Precision Trainings in DeepSeek-V3?",
+          "options": [
+            "Erhöhte Modellgröße und Komplexität",
+            "Beschleunigtes Training und reduzierter GPU-Speicherverbrauch",
+            "Bessere menschliche Ausrichtung",
+            "Nur reduzierte Trainingskosten"
+          ],
+          "correct_answer": 1,
+          "explanation": "Durch FP8-Berechnungen und -Speicherung werden sowohl das Training beschleunigt als auch der GPU-Speicherverbrauch reduziert."
+        }
+      },
+      {
+        "id": "micro_5",
+        "title": "DualPipe Algorithmus für Trainingseffizienz",
+        "knowledge_md": "Wie überwindet DeepSeek-V3 Kommunikationsengpässe beim Training? 🌐 Das Training Framework von DeepSeek-V3 verwendet den DualPipe Algorithmus für effiziente Pipeline-Parallelisierung. Dieser Algorithmus reduziert Pipeline-Bubbles und verbirgt Kommunikation durch Computation-Communication Overlap. Dieser Overlap stellt sicher, dass selbst bei weiterer Skalierung des Modells ein nahezu null All-to-All-Kommunikations-Overhead erreicht wird. So bleibt das Training effizient! 🚀",
+        "visual_title": "DualPipe Effizienz",
+        "visual_description_text": "Verstehe, wie DualPipe die Trainingseffizienz steigert.",
+        "visual_description": {
+          "concept": "DualPipe_Efficiency",
+          "description": "Ein schematisches Diagramm, das den DualPipe Algorithmus darstellt. Es zeigt überlappende Phasen von 'Computation' (Berechnung) und 'Communication' (Kommunikation), um 'Pipeline Bubbles' (Leerlaufzeiten) zu minimieren. Das Ergebnis ist ein 'nahezu null All-to-All-Kommunikations-Overhead' bei Skalierung.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die Rolle des DualPipe Algorithmus bei der Effizienzsteigerung des Trainings von DeepSeek-V3 verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "timeline",
+          "structure": {
+            "timeline": {
+              "title": "DualPipe Algorithmus für Trainingseffizienz",
+              "sections": [
+                {
+                  "period": "Phase 1",
+                  "events": [
+                    "Einführung",
+                    "Grundlagen"
+                  ]
+                },
+                {
+                  "period": "Phase 2",
+                  "events": [
+                    "Vertiefung",
+                    "Anwendung"
+                  ]
+                },
+                {
+                  "period": "Phase 3",
+                  "events": [
+                    "Meisterschaft",
+                    "Integration"
+                  ]
+                }
+              ]
+            }
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Ein schematisches Diagramm, das den DualPipe Algorithmus darstellt. Es zeigt überlappende Phasen von 'Computation' (Berechnung) und 'Communication' (Kommunikation), um 'Pipeline Bubbles' (Leerlaufzeiten) zu minimieren. Das Ergebnis ist ein 'nahezu null All-to-All-Kommunikations-Overhead' bei Skalierung."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Was ist der Hauptvorteil des DualPipe Algorithmus in DeepSeek-V3?",
+          "options": [
+            "Erhöht die Anzahl der Parameter",
+            "Ermöglicht effiziente Pipeline-Parallelisierung mit weniger Pipeline-Bubbles",
+            "Verbessert die Kontextlänge",
+            "Reduziert die Notwendigkeit von Pre-Training"
+          ],
+          "correct_answer": 1,
+          "explanation": "Der DualPipe Algorithmus ermöglicht effiziente Pipeline-Parallelisierung mit weniger Pipeline-Bubbles und verbirgt Kommunikation durch Computation-Communication Overlap."
+        }
+      },
+      {
+        "id": "micro_6",
+        "title": "Der Trainingsprozess von DeepSeek-V3",
+        "knowledge_md": "Wie wird ein so großes Modell wie DeepSeek-V3 eigentlich trainiert? 🛠️ Der Trainingsprozess umfasst drei Hauptphasen: Vortraining auf 14.8T hochwertigen Tokens, eine zweistufige Kontextlängenerweiterung auf bis zu 128K, und Nach-Training (SFT & RL). Während des Nach-Trainings wird die Denkfähigkeit von DeepSeek-R1-Modellen destilliert, um das Modell an menschliche Präferenzen anzupassen und sein Potenzial freizusetzen. Ein komplexer, aber stabiler Prozess! ✨",
+        "visual_title": "DeepSeek-V3 Trainingsphasen",
+        "visual_description_text": "Verfolge die Schritte des DeepSeek-V3 Trainingsprozesses.",
+        "visual_description": {
+          "concept": "DeepSeekV3_Training_Stages",
+          "description": "Ein Flussdiagramm, das die drei Hauptphasen des DeepSeek-V3 Trainingsprozesses darstellt: 1. 'Vortraining' (auf 14.8T Tokens). 2. 'Kontextlängenerweiterung' (zweistufig, bis 128K). 3. 'Nach-Training' (Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL), inklusive Wissensdestillation von DeepSeek-R1).",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die einzelnen Phasen des Trainingsprozesses von DeepSeek-V3 und deren Zweck verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Der Trainingsprozess von DeepSeek-V3",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Ein Flussdiagramm, das die drei Hauptphasen des DeepSeek-V3 Trainingsprozesses darstellt: 1. 'Vortraining' (auf 14.8T Tokens). 2. 'Kontextlängenerweiterung' (zweistufig, bis 128K). 3. 'Nach-Training' (Supervised Fine-Tuning (SFT) und Reinforcement Learning (RL), inklusive Wissensdestillation von DeepSeek-R1)."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Welche der folgenden Phasen gehört zum Trainingsprozess von DeepSeek-V3?",
+          "options": [
+            "Nur Vortraining",
+            "Vortraining, Kontextlängenerweiterung und Nach-Training",
+            "Nur Nach-Training",
+            "Nur Kontextlängenerweiterung"
+          ],
+          "correct_answer": 1,
+          "explanation": "Der Trainingsprozess umfasst Vortraining, eine zweistufige Kontextlängenerweiterung und Nach-Training (SFT & RL)."
+        }
+      },
+      {
+        "id": "micro_7",
+        "title": "Wirtschaftliche Trainingskosten von DeepSeek-V3",
+        "knowledge_md": "Unglaublich, wie kostengünstig kann das Training eines Top-LLMs sein? 💸 DeepSeek-V3 zeichnet sich durch seine wirtschaftlichen Trainingskosten aus, die durch optimiertes Co-Design von Algorithmen, Frameworks und Hardware erreicht werden. Das Vortraining ist in weniger als zwei Monaten abgeschlossen. Die Gesamtkosten für das vollständige Training belaufen sich auf nur 2.788 Millionen GPU-Stunden, was bei einem H800-Mietpreis von 2 $ pro Stunde etwa 5.576 Millionen $ entspricht. Effizienz zahlt sich aus! 💰",
+        "visual_title": "DeepSeek-V3 Kosten-Effizienz",
+        "visual_description_text": "Erfasse die beeindruckenden Trainingskosten von DeepSeek-V3.",
+        "visual_description": {
+          "concept": "DeepSeekV3_Cost_Efficiency",
+          "description": "Eine Infografik oder ein Balkendiagramm, das die Trainingskosten von DeepSeek-V3 darstellt. Fokus auf die Gesamtkosten (2.788M GPU Stunden / $5.576M) und die Aufteilung auf Vortraining, Kontextlängenerweiterung und Nach-Training, um die Wirtschaftlichkeit hervorzuheben.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die wirtschaftlichen Trainingskosten von DeepSeek-V3 und die Faktoren, die dazu beitragen, verstehen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "Wirtschaftliche Trainingskosten von DeepSeek-V3",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Eine Infografik oder ein Balkendiagramm, das die Trainingskosten von DeepSeek-V3 darstellt. Fokus auf die Gesamtkosten (2.788M GPU Stunden / $5.576M) und die Aufteilung auf Vortraining, Kontextlängenerweiterung und Nach-Training, um die Wirtschaftlichkeit hervorzuheben."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "Wie hoch sind die geschätzten Gesamttrainingskosten für DeepSeek-V3 laut dem Text?",
+          "options": [
+            "$2.664 Millionen",
+            "$0.238 Millionen",
+            "$5.576 Millionen",
+            "$1.0 Millionen"
+          ],
+          "correct_answer": 2,
+          "explanation": "Die Gesamtkosten für das vollständige Training von DeepSeek-V3 belaufen sich auf etwa 5.576 Millionen $ (2.788M GPU Stunden bei 2$/GPU Stunde)."
+        }
+      },
+      {
+        "id": "micro_8",
+        "title": "DeepSeek-V3s beeindruckende Leistung",
+        "knowledge_md": "Kann ein Open-Source-Modell wirklich mit den besten Closed-Source-Modellen mithalten? 🏆 Umfassende Evaluierungen zeigen, dass DeepSeek-V3-Base das derzeit stärkste Open-Source-Basismodell ist, besonders in Code und Mathematik. Seine Chat-Version übertrifft andere Open-Source-Modelle und erreicht eine Leistung, die mit führenden Closed-Source-Modellen wie GPT-4o und Claude-3.5-Sonnet vergleichbar ist. Ein echter Game Changer im Open-Source-Bereich! 🚀",
+        "visual_title": "DeepSeek-V3 Leistungsvergleich",
+        "visual_description_text": "Sieh, wie DeepSeek-V3 im Vergleich zu anderen Modellen abschneidet.",
+        "visual_description": {
+          "concept": "DeepSeekV3_Performance",
+          "description": "Ein Vergleichsdiagramm, das die Leistung von DeepSeek-V3-Base und seiner Chat-Version gegenüber anderen Open-Source-Modellen und führenden Closed-Source-Modellen (GPT-4o, Claude-3.5-Sonnet) darstellt. Hervorhebung der Stärken in Code und Mathematik und der Vergleichbarkeit mit Top-Modellen.",
+          "interaction_type": "click_explore",
+          "learning_goal": "Die herausragende Leistung von DeepSeek-V3 im Vergleich zu anderen Open-Source- und Closed-Source-Modellen erkennen.",
+          "fixed_dimensions": {
+            "width": 1024,
+            "height": 768
+          }
+        },
+        "visual_specification": {
+          "mermaid_type": "flowchart",
+          "structure": {
+            "nodes": [
+              {
+                "id": "start",
+                "label": "Start",
+                "shape": "circle"
+              },
+              {
+                "id": "main",
+                "label": "DeepSeek-V3s beeindruckende Leistung",
+                "shape": "rect"
+              },
+              {
+                "id": "detail1",
+                "label": "Details",
+                "shape": "diamond"
+              },
+              {
+                "id": "end",
+                "label": "Verstanden!",
+                "shape": "circle"
+              }
+            ],
+            "connections": [
+              {
+                "from": "start",
+                "to": "main",
+                "label": ""
+              },
+              {
+                "from": "main",
+                "to": "detail1",
+                "label": "erkunden"
+              },
+              {
+                "from": "detail1",
+                "to": "end",
+                "label": "gelernt"
+              }
+            ]
+          },
+          "styling": {
+            "theme": "dark",
+            "primary_color": "#7F5AF0",
+            "secondary_color": "#2CB67D",
+            "accent_color": "#FBB040",
+            "background_color": "#16213E",
+            "text_color": "#E4E6EA"
+          },
+          "interactivity": {
+            "type": "click_explore",
+            "hover_effects": true,
+            "click_actions": true,
+            "animations": true
+          },
+          "dimensions": {
+            "width": 1024,
+            "height": 768
+          },
+          "ready_to_render": true,
+          "fallback_description": "Ein Vergleichsdiagramm, das die Leistung von DeepSeek-V3-Base und seiner Chat-Version gegenüber anderen Open-Source-Modellen und führenden Closed-Source-Modellen (GPT-4o, Claude-3.5-Sonnet) darstellt. Hervorhebung der Stärken in Code und Mathematik und der Vergleichbarkeit mit Top-Modellen."
+        },
+        "has_mini_quiz": true,
+        "mini_quiz": {
+          "question": "In welchen Bereichen zeichnet sich DeepSeek-V3-Base besonders aus?",
+          "options": [
+            "Bildgenerierung und Musikkomposition",
+            "Code und Mathematik",
+            "Spracherkennung und Übersetzung",
+            "Nur Textzusammenfassung"
+          ],
+          "correct_answer": 1,
+          "explanation": "DeepSeek-V3-Base hat sich als das stärkste Open-Source-Basismodell erwiesen, besonders in Code und Mathematik."
+        }
+      }
+    ],
+    "metadata": {
+      "original_pdf_chapters_count": 1,
+      "total_micros_generated": 8
+    }
+  },
+  "metadata": {
+    "source_file": "temp\\33ac1a75-35d9-4030-a360-3e1c8cebe182.pdf",
+    "generation_date": "2025-06-09T13:43:33.389008",
+    "source_filename": "33ac1a75-35d9-4030-a360-3e1c8cebe182"
+  }
+}
